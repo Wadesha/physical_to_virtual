@@ -2173,6 +2173,132 @@
     addSphere(scene, [0, 1.0, 0], 0.35, [0.3, 0.6, 0.95], 0.6, 14, true);
     addBox(scene, [0, -1.6, 0], [0.7, 0.1, 0.7], [0.6, 0.62, 0.66], 1);
   }
+  function mJohnsonnoise(scene) {  // 约翰逊噪声 k_B（低噪测量链）
+    addCylinder(scene, [-2.1, 0, 0], [-0.5, 0, 0], 0.05, [0.5,0.55,0.62], 1, 8, false);
+    addCylinder(scene, [0.5, 0, 0], [2.1, 0, 0], 0.05, [0.5,0.55,0.62], 1, 8, false);
+    addBox(scene, [0, 0, 0], [0.5, 0.26, 0.26], [0.9,0.7,0.35], 1);
+    var jn = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(jn, [-2.1, 0.55, 0], [2.1, 0.55, 0]);
+    addBox(scene, [0, 1.25, 0], [0.55, 0.3, 0.3], [0.6,0.62,0.66], 1);
+  }
+  function mEsr(scene) {  // 电子自旋共振（DPPH g）
+    addBox(scene, [-1.9, 0, 0], [0.3, 0.9, 0.9], [0.6,0.62,0.66], 1);
+    addBox(scene, [1.9, 0, 0], [0.3, 0.9, 0.9], [0.6,0.62,0.66], 1);
+    addCylinder(scene, [0, -1.5, 0], [0, 1.5, 0], 0.22, [0.4,0.7,0.85], 0.35, 18, false);
+    var es = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(es, [-1.9, 0, 0], [1.9, 0, 0]);
+    addSphere(scene, [0, 0, 0], 0.14, [0.9,0.8,0.4], 1, 12, true);
+  }
+  function mScintillator(scene) { // NaI(Tl) 闪烁体光产额
+    addBox(scene, [0, 0.95, 0], [0.55, 0.55, 0.55], [0.4,0.85,0.6], 0.3);
+    addCylinder(scene, [0, 0.35, 0], [0, -1.6, 0], 0.42, [0.5,0.55,0.62], 1, 18, false);
+    var sc = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(sc, [0, 1.55, 0], [0, 0.4, 0]);
+    addSphere(scene, [0, -1.62, 0], 0.2, [0.9,0.8,0.4], 1, 12, true);
+  }
+  function mFourpointprobe(scene) {  // 四探针硅片电阻率
+    addCylinder(scene, [0, -0.75, 0], [0, -0.5, 0], 1.7, [0.3,0.5,0.8], 0.3, 24, false);
+    var xs = [-0.9, -0.3, 0.3, 0.9];
+    for (var i = 0; i < 4; i++) {
+      addCylinder(scene, [xs[i], -0.5, 0], [xs[i], 0.95, 0], 0.05, [0.5,0.55,0.62], 1, 8, false);
+    }
+    var fp = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(fp, [-1.7, 0.95, 0], [1.7, 0.95, 0]);
+  }
+  function mFrequencycomb(scene) {  // 光频梳重复频率
+    addCylinder(scene, [-1.8, 0, 0], [1.8, 0, 0], 0.45, [0.4,0.6,0.85], 0.22, 20, false);
+    addCylinder(scene, [-1.95, 0, 0], [-1.75, 0, 0], 0.55, [0.5,0.55,0.62], 1, 10, false);
+    addCylinder(scene, [1.75, 0, 0], [1.95, 0, 0], 0.55, [0.5,0.55,0.62], 1, 10, false);
+    var fc = scene.addLine([1.0, 0.85, 0.3], 1);
+    scene.lineSeg(fc, [-1.8, 0, 0], [1.8, 0, 0]);
+    scene.lineSeg(fc, [-1.2, 1.0, 0], [-1.2, 1.45, 0]);
+    scene.lineSeg(fc, [-0.3, 1.0, 0], [-0.3, 1.45, 0]);
+    scene.lineSeg(fc, [0.6, 1.0, 0], [0.6, 1.45, 0]);
+    addBox(scene, [0, -1.15, 0], [1.3, 0.2, 0.8], [0.6,0.62,0.66], 1);
+  }
+  function mBrillouin(scene) {  // 布里渊散射（石英声速）
+    addSphere(scene, [0, 0, 0], 0.4, [0.9,0.8,0.4], 1, 16, true);
+    addBox(scene, [0, -1.35, 0], [0.8, 0.15, 0.8], [0.6,0.62,0.66], 1);
+    var br = scene.addLine([1.0, 0.85, 0.3], 1);
+    scene.lineSeg(br, [-2.0, 0, 0], [0, 0, 0]);
+    scene.lineSeg(br, [0, 0, 0], [1.7, 1.2, 0]);
+    scene.lineSeg(br, [0, 0, 0], [1.7, -1.2, 0]);
+    addCylinder(scene, [-2.0, 0, 0], [-2.0, -1.35, 0], 0.06, [0.5,0.55,0.62], 1, 8, false);
+  }
+  function mC14dating(scene) {   // 碳十四测年（衰变常数 λ）
+    addCylinder(scene, [-1.55, -1.0, 0], [-1.55, 0.9, 0], 0.3, [0.4,0.7,0.85], 0.35, 18, false);
+    addBox(scene, [1.25, 0, 0], [0.55, 0.7, 0.7], [0.6,0.62,0.66], 1);
+    addSphere(scene, [-1.55, 0.35, 0], 0.16, [0.9,0.8,0.4], 1, 12, true);
+    var cd = scene.addLine([1.0, 0.85, 0.3], 1);
+    scene.lineSeg(cd, [-1.55, 0.9, 0], [-0.7, 0.9, 0]);
+    scene.lineSeg(cd, [-0.7, 0.9, 0], [0.7, 0.0, 0]);
+    scene.lineSeg(cd, [0.7, 0.0, 0], [1.25, -0.6, 0]);
+  }
+  function mOpticaltweezers(scene) {  // 光镊阱刚度
+    addCylinder(scene, [-1.5, 1.15, 0], [-0.15, 0.2, 0], 0.55, [0.4,0.6,0.85], 0.28, 20, false);
+    addSphere(scene, [0, -0.5, 0], 0.18, [0.9,0.8,0.4], 1, 14, true);
+    addBox(scene, [0, -1.5, 0], [0.9, 0.15, 0.9], [0.6,0.62,0.66], 1);
+    var ot = scene.addLine([1.0, 0.85, 0.3], 1);
+    scene.lineSeg(ot, [0, 0.35, 0], [0, -0.3, 0]);
+    scene.lineSeg(ot, [-1.5, 1.15, 0], [0, -0.5, 0]);
+    scene.lineSeg(ot, [1.5, 1.15, 0], [0, -0.5, 0]);
+  }
+  function mGravityprobeb(scene) {  // GP-B 测地岁差
+    addBox(scene, [0, 0, 0], [1.0, 1.0, 1.0], [0.6,0.62,0.66], 0.25);
+    addSphere(scene, [0, 0, 0], 0.45, [0.9,0.8,0.4], 1, 16, true);
+    addCylinder(scene, [0, -1.7, 0], [0, 1.7, 0], 0.04, [0.5,0.55,0.62], 1, 8, false);
+    var gb = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(gb, [-1.0, -1.0, 0], [1.0, 1.0, 0]);
+  }
+  function mSeismicrefraction(scene) {  // 地震折射（地壳 P 波）
+    addBox(scene, [0, -1.05, 0], [1.9, 0.35, 0.6], [0.7,0.5,0.35], 0.75);
+    addBox(scene, [-1.6, 0.1, 0], [0.25, 0.32, 0.32], [0.6,0.62,0.66], 1);
+    addBox(scene, [1.6, 0.1, 0], [0.25, 0.32, 0.32], [0.6,0.62,0.66], 1);
+    var sr = scene.addLine([1.0, 0.85, 0.3], 1);
+    scene.lineSeg(sr, [-1.6, 0.45, 0], [0, -0.65, 0]);
+    scene.lineSeg(sr, [0, -0.65, 0], [1.6, 0.45, 0]);
+    scene.lineSeg(sr, [-1.9, 0.42, 0], [1.9, 0.42, 0]);
+  }
+  function mGeothermalgradient(scene) {  // 地温梯度
+    addCylinder(scene, [0, -1.8, 0], [0, 1.6, 0], 0.3, [0.8,0.5,0.3], 0.28, 18, false);
+    addBox(scene, [0, -1.95, 0], [0.7, 0.12, 0.7], [0.6,0.62,0.66], 1);
+    addSphere(scene, [0, 0.2, 0], 0.16, [0.9,0.8,0.4], 1, 12, true);
+    var gg = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(gg, [-1.9, -1.4, 0], [1.9, 1.2, 0]);
+  }
+  function mKeeling(scene) {   // Keeling 曲线（CO₂ 增长率）
+    addCylinder(scene, [1.2, -1.5, 0], [1.2, 1.4, 0], 0.35, [0.4,0.7,0.85], 0.28, 18, false);
+    addBox(scene, [-1.75, -0.9, 0], [0.12, 1.5, 0.12], [0.6,0.62,0.66], 1);
+    addBox(scene, [-1.75, 0.62, 0], [0.45, 0.2, 0.45], [0.5,0.55,0.62], 1);
+    var kl = scene.addLine([1.0, 0.85, 0.3], 1);
+    scene.lineSeg(kl, [-2.15, -1.5, 0], [-1.0, -0.8, 0]);
+    scene.lineSeg(kl, [-1.0, -0.8, 0], [0.0, 0.1, 0]);
+    scene.lineSeg(kl, [0.0, 0.1, 0], [1.0, 0.9, 0]);
+  }
+  function mBeerlambert(scene) {   // 比尔-朗伯（摩尔吸光系数）
+    addBox(scene, [-1.2, 0, 0], [0.4, 0.7, 0.4], [0.4,0.7,0.85], 0.3);
+    addBox(scene, [1.5, 0, 0], [0.4, 0.6, 0.4], [0.6,0.62,0.66], 1);
+    addBox(scene, [-2.0, 0, 0], [0.35, 0.5, 0.35], [0.5,0.55,0.62], 1);
+    var bl = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(bl, [-2.0, 0, 0], [1.1, 0, 0]);
+    addSphere(scene, [-1.2, 0, 0], 0.2, [0.85,0.35,0.5], 1, 12, true);
+  }
+  function mAirbreakdown(scene) {  // 空气击穿场强
+    addSphere(scene, [-1.7, 0, 0], 0.3, [0.9,0.8,0.4], 1, 14, true);
+    addSphere(scene, [1.7, 0, 0], 0.3, [0.9,0.8,0.4], 1, 14, true);
+    addCylinder(scene, [-1.7, -1.6, 0], [-1.7, -0.3, 0], 0.06, [0.5,0.55,0.62], 1, 8, false);
+    addCylinder(scene, [1.7, -1.6, 0], [1.7, -0.3, 0], 0.06, [0.5,0.55,0.62], 1, 8, false);
+    var ab = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(ab, [-1.4, 0, 0], [1.4, 0, 0]);
+    addBox(scene, [0, -1.7, 0], [1.9, 0.1, 0.5], [0.6,0.62,0.66], 1);
+  }
+  function mNeutronactivation(scene) { // 中子活化（金箔截面）
+    addCylinder(scene, [-1.5, 0, 0], [-0.4, 0, 0], 0.55, [0.4,0.6,0.85], 0.3, 18, false);
+    addBox(scene, [0.9, 0, 0], [0.3, 0.5, 0.5], [0.9,0.8,0.35], 1);
+    addCylinder(scene, [1.9, -1.5, 0], [1.9, 0.5, 0], 0.28, [0.5,0.55,0.62], 1, 16, false);
+    var na = scene.addLine([1.0, 0.85, 0.3], 1);
+    scene.lineSeg(na, [-1.5, 0, 0], [0.6, 0, 0]);
+    scene.lineSeg(na, [0.9, 0.55, 0], [1.9, 0.55, 0]);
+    scene.lineSeg(na, [1.9, 0.55, 0], [1.9, 0.6, 0]);
+  }
+  function mVickershardness(scene) {  // 维氏硬度（压痕法）
+    addBox(scene, [0, -1.05, 0], [1.1, 0.3, 0.8], [0.7,0.6,0.5], 1);
+    addBox(scene, [0, 0.15, 0], [0.35, 0.35, 0.35], [0.9,0.8,0.4], 1);
+    addCylinder(scene, [0, 1.7, 0], [0, 0.4, 0], 0.06, [0.5,0.55,0.62], 1, 8, false);
+    var vh = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(vh, [-1.1, -0.75, 0], [1.1, -0.75, 0]);
+  }
   function mElementarycharge(scene) { // 基本电荷 e（油滴仪）
     addBox(scene, [-1.9, 0, 0], [0.25, 0.9, 0.9], [0.6, 0.62, 0.66], 1);
     addBox(scene, [1.9, 0, 0], [0.25, 0.9, 0.9], [0.6, 0.62, 0.66], 1);
@@ -2610,6 +2736,22 @@
     poissonratio: { title: "泊松比 ν", radius: 6, build: mPoissonratio },
     magneticsusceptibility: { title: "体积磁化率 χ_v", radius: 6, build: mMagneticsusceptibility },
     shapiro: { title: "夏皮罗时延 Δt", radius: 6, build: mShapiro },
+    johnsonnoise: { title: "约翰逊噪声 k_B", radius: 6, build: mJohnsonnoise },
+    esr: { title: "电子自旋共振 g（DPPH）", radius: 6, build: mEsr },
+    scintillator: { title: "NaI(Tl) 光产额", radius: 6, build: mScintillator },
+    fourpointprobe: { title: "四探针硅片电阻率 ρ", radius: 6, build: mFourpointprobe },
+    frequencycomb: { title: "光频梳重复频率 f_rep", radius: 6, build: mFrequencycomb },
+    brillouin: { title: "布里渊散射声速 v_a", radius: 6, build: mBrillouin },
+    c14dating: { title: "碳十四衰变常数 λ", radius: 6, build: mC14dating },
+    opticaltweezers: { title: "光镊阱刚度 κ", radius: 6, build: mOpticaltweezers },
+    gravityprobeb: { title: "GP-B 测地岁差率", radius: 6, build: mGravityprobeb },
+    seismicrefraction: { title: "地壳 P 波速度 v_P", radius: 6, build: mSeismicrefraction },
+    geothermalgradient: { title: "地温梯度 dT/dz", radius: 6, build: mGeothermalgradient },
+    keeling: { title: "CO₂ 年增长率", radius: 6, build: mKeeling },
+    beerlambert: { title: "KMnO₄ 摩尔吸光系数 ε", radius: 6, build: mBeerlambert },
+    airbreakdown: { title: "空气击穿场强 E_b", radius: 6, build: mAirbreakdown },
+    neutronactivation: { title: "¹⁹⁷Au(n,γ) 截面 σ", radius: 6, build: mNeutronactivation },
+    vickershardness: { title: "退火铜维氏硬度 HV", radius: 6, build: mVickershardness },
     meltingpoint: { title: "铁熔点 T_m", radius: 6, build: mMeltingpoint },
 
     elementarycharge: { title: "基本电荷 e（密立根, 1913）", radius: 6, build: mElementarycharge },
@@ -4405,6 +4547,54 @@
       forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
       paper: '铁熔点 T_m≈1811 K（高温热电偶/光学高温计）', layer: 'L0(相变)→L4(加热/测温)→L7(相变温度→T_m)', conservation: '相平衡（熔化潜热）', defectsN: ['氧化', '纯度'] }),
 
+    johnsonnoise: S({ key: 'johnsonnoise', title: '约翰逊噪声 k_B', thetaTrue: 1.380649e-23, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.35e-23, fitHi: 1.42e-23,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '约翰逊-奈奎斯特噪声 ⟨V²⟩=4k_BTRΔf 用于 2019 SI 重定义玻尔兹曼常数 k_B=1.380649×10⁻²³ J/K（精确）', layer: 'L0(涨落-耗散)→L4(低噪放大+相关测量)→L7(噪声均方⟨V²⟩→k_B)', conservation: '⟨V²⟩=4k_BTRΔf', defectsN: ['放大器自身噪声', '带宽标定'] }),
+    esr: S({ key: 'esr', title: '电子自旋共振 g（DPPH）', thetaTrue: 2.0036, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.96, fitHi: 2.05,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'X 波段 ESR 以 DPPH 为标样定 g≈2.0036（ISAC/EPR 常用标准物质）', layer: 'L0(自旋塞曼分裂)→L4(谐振腔+扫磁场 ESR 谱仪)→L7(共振频率∝磁场→g)', conservation: 'hν=gμ_B B', defectsN: ['磁场均匀性', '腔耦合失谐'] }),
+    scintillator: S({ key: 'scintillator', title: 'NaI(Tl) 光产额', thetaTrue: 3.8e4, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 3.6e4, fitHi: 4.0e4,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'NaI(Tl) 光产额约 3.8×10⁴ 光子/MeV（≈38 ph/keV，闪烁探测标准值）', layer: 'L0(电离→荧光)→L4(闪烁体+光电倍增管)→L7(光电子数∝沉积能量→产额)', conservation: 'N_γ = Y·E_dep', defectsN: ['非比例响应', '光收集效率'] }),
+    fourpointprobe: S({ key: 'fourpointprobe', title: '四探针硅片电阻率 ρ', thetaTrue: 1.0, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 0.9, fitHi: 1.1,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '直线四探针法测掺杂硅片 ρ≈1.0 Ω·cm（半导体工艺常规监控量）', layer: 'L0(欧姆输运)→L4(四探针台+恒流源+纳伏表)→L7(V/I 斜率→方块电阻→ρ)', conservation: 'R_s=4.532·V/I，ρ=R_s·t', defectsN: ['探针间距误差', '接触注入'] }),
+    frequencycomb: S({ key: 'frequencycomb', title: '光频梳重复频率 f_rep', thetaTrue: 2.5e8, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 2.4e8, fitHi: 2.6e8,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '掺铒光纤光频梳重复频率 f_rep≈2.5×10⁸ Hz（Hall/Hänsch 光频梳，2005 诺贝尔物理）', layer: 'L0(锁模相干)→L4(飞秒光梳+光电拍频+计数器)→L7(梳齿频率∝梳齿序号→f_rep)', conservation: 'ν_n = n·f_rep + f_ceo', defectsN: ['腔长漂移', 'f_ceo 未锁定'] }),
+    brillouin: S({ key: 'brillouin', title: '布里渊散射声速 v_a', thetaTrue: 5.96e3, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 5.8e3, fitHi: 6.1e3,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '熔石英纵向声速由布里渊散射定 v_a≈5.96×10³ m/s（1922 Brillouin 预言，1930s 证实）', layer: 'L0(声光耦合)→L4(单频激光+法布里-珀罗干涉仪)→L7(频移∝散射角→声速)', conservation: 'Δν=2n·v_a·sin(θ/2)/λ', defectsN: ['折射率色散', '自由光谱范围'] }),
+    c14dating: S({ key: 'c14dating', title: '碳十四衰变常数 λ', thetaTrue: 1.2097e-4, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.18e-4, fitHi: 1.24e-4,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'AMS/β 计数定 ¹⁴C 半衰期 5730 a，衰变常数 λ=ln2/T₁/₂≈1.2097×10⁻⁴ a⁻¹（Libby 值）', layer: 'L0(β 衰变)→L4(AMS/液体闪烁计数)→L7(活度∝核数→λ)', conservation: 'A=λN', defectsN: ['现代碳污染', '同位素分馏'] }),
+    opticaltweezers: S({ key: 'opticaltweezers', title: '光镊阱刚度 κ', thetaTrue: 1.0e-4, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 0.8e-4, fitHi: 1.2e-4,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '光镊（Ashkin 1986，2018 诺贝尔物理）对微米球的阱刚度典型 κ≈1.0×10⁻⁴ N/m', layer: 'L0(光动量传递)→L4(高数值孔径物镜+位置探测器)→L7(位移∝外力→κ)', conservation: 'F=−κ·Δx（胡克恢复力）', defectsN: ['位置探测标定', '布朗运动本底'] }),
+    gravityprobeb: S({ key: 'gravityprobeb', title: 'GP-B 测地岁差率', thetaTrue: 6.6018, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 6.4, fitHi: 6.8,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '引力探测器 B（2011 公布）测得测地岁差 6601.8±18.3 mas/yr，即 ≈6.602 arcsec/yr（GR 预言 6606.1）', layer: 'L0(时空曲率)→L4(星载超导陀螺+恒星跟踪器)→L7(累积进动角∝时间→岁差率)', conservation: '测地进动由 Schwarzschild 度规给出', defectsN: ['陀螺电矩噪声', '星表指向误差'] }),
+    seismicrefraction: S({ key: 'seismicrefraction', title: '地壳 P 波速度 v_P', thetaTrue: 6.0e3, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 5.8e3, fitHi: 6.2e3,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '人工地震折射剖面给上地壳 P 波速度 ≈6.0×10³ m/s（1909 Mohorovičić 壳幔界面探测法）', layer: 'L0(弹性波传播)→L4(震源+检波器阵列)→L7(首波走时∝炮检距→v)', conservation: '临界折射首波走时 t=x/v₂+常数', defectsN: ['近地表风化层', '到时拾取误差'] }),
+    geothermalgradient: S({ key: 'geothermalgradient', title: '地温梯度 dT/dz', thetaTrue: 0.025, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 0.022, fitHi: 0.028,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '大陆平均地温梯度约 25 K/km（即 2.5×10⁻² K/m，钻孔测温统计值）', layer: 'L0(稳态热传导)→L4(钻孔测温链+热流探针)→L7(温升∝深度→梯度)', conservation: 'q=−λ·dT/dz', defectsN: ['地下水对流扰动', '钻进热扰动'] }),
+    keeling: S({ key: 'keeling', title: 'CO₂ 年增长率', thetaTrue: 2.4, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 2.2, fitHi: 2.6,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '莫纳罗亚站自 1958 年连续观测给出 CO₂ 长期增长率 ≈2.4 ppm/yr（Keeling 曲线；近十年升至 2.5–3）', layer: 'L0(碳循环)→L4(非色散红外分析仪+标准气)→L7(摩尔分数∝年份→增长率)', conservation: '浓度年际线性增长叠加季节波动', defectsN: ['标准气标定漂移', '局地源汇干扰'] }),
+    beerlambert: S({ key: 'beerlambert', title: 'KMnO₄ 摩尔吸光系数 ε', thetaTrue: 2.2e3, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 2.0e3, fitHi: 2.4e3,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '高锰酸钾在 525 nm 摩尔吸光系数 ε≈2.2×10³ L·mol⁻¹·cm⁻¹（分光光度法常规标定）', layer: 'L0(选择性吸收)→L4(分光光度计+石英比色皿)→L7(吸光度∝浓度→εL)', conservation: 'A=ε·c·L', defectsN: ['杂散光', '光程/皿差'] }),
+    airbreakdown: S({ key: 'airbreakdown', title: '空气击穿场强 E_b', thetaTrue: 3.0e6, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 2.8e6, fitHi: 3.2e6,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '标准状态干燥空气直流击穿场强 ≈3.0×10⁶ V/m（约 30 kV/cm；均匀场下的近似基准）', layer: 'L0(碰撞电离电子崩)→L4(高压源+平板电极)→L7(击穿电压∝间隙→E_b)', conservation: 'V_b=E_b·d', defectsN: ['湿度与空气密度', '电极表面粗糙度'] }),
+    neutronactivation: S({ key: 'neutronactivation', title: '¹⁹⁷Au(n,γ) 截面 σ', thetaTrue: 98.8, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 95, fitHi: 103,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '金箔活化法测得热中子 ¹⁹⁷Au(n,γ) 截面 σ≈98.8 b（中子通量标准的经典标定点）', layer: 'L0(中子辐射俘获)→L4(反应堆照射+HPGe γ 谱仪)→L7(活度∝通量×截面→σ)', conservation: 'A=NσΦ(1−e^{−λt})', defectsN: ['通量空间梯度', '自屏蔽与自吸收'] }),
+    vickershardness: S({ key: 'vickershardness', title: '退火铜维氏硬度 HV', thetaTrue: 50, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 46, fitHi: 54,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '退火纯铜维氏硬度约 50 HV（金刚石正四棱锥压痕法的常规标称值）', layer: 'L0(塑性屈服)→L4(维氏压头+显微测长)→L7(载荷∝压痕面积→HV)', conservation: 'HV=1.854·F/d²', defectsN: ['对角线读数误差', '表面粗糙度'] }),
     elementarycharge: S({ key: 'elementarycharge', title: '基本电荷 e', thetaTrue: 1.602176634e-19, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.55e-19, fitHi: 1.65e-19,
       forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
       paper: '由密立根油滴（1913）与 2019 SI 重定义 e=1.602176634×10⁻¹⁹ C（精确）', layer: 'L0(电荷量子化)→L4(油滴仪/电流天平)→L7(偏转/电荷→e)', conservation: 'e = I·t/N（单电子电流）', defectsN: ['油滴电荷离散', '斯托克斯修正'] }),
@@ -4745,6 +4935,22 @@
     shapiro: { title: '夏皮罗时延 Δt', paper: '夏皮罗时延 Δt≈2.5×10⁻⁴ s（水星凌日雷达 1976 实测，广义相对论）', layer: 'L0(时空弯曲)→L4(雷达测距)→L7(时延→GM☉/c³)', conservation: 'Δt=(2GM☉/c³)·ln(...)', defects: ['太阳大气折射', '轨道要素'] },
     meltingpoint: { title: '铁熔点 T_m', paper: '铁熔点 T_m≈1811 K（高温热电偶/光学高温计）', layer: 'L0(相变)→L4(加热/测温)→L7(相变温度→T_m)', conservation: '相平衡（熔化潜热）', defects: ['氧化', '纯度'] },
 
+    johnsonnoise: { title: '约翰逊噪声 k_B', paper: '约翰逊-奈奎斯特噪声 ⟨V²⟩=4k_BTRΔf 用于 2019 SI 重定义玻尔兹曼常数 k_B=1.380649×10⁻²³ J/K（精确）', layer: 'L0(涨落-耗散)→L4(低噪放大+相关测量)→L7(噪声均方⟨V²⟩→k_B)', conservation: '⟨V²⟩=4k_BTRΔf', defects: ['放大器自身噪声', '带宽标定'] },
+    esr: { title: '电子自旋共振 g（DPPH）', paper: 'X 波段 ESR 以 DPPH 为标样定 g≈2.0036（ISAC/EPR 常用标准物质）', layer: 'L0(自旋塞曼分裂)→L4(谐振腔+扫磁场 ESR 谱仪)→L7(共振频率∝磁场→g)', conservation: 'hν=gμ_B B', defects: ['磁场均匀性', '腔耦合失谐'] },
+    scintillator: { title: 'NaI(Tl) 光产额', paper: 'NaI(Tl) 光产额约 3.8×10⁴ 光子/MeV（≈38 ph/keV，闪烁探测标准值）', layer: 'L0(电离→荧光)→L4(闪烁体+光电倍增管)→L7(光电子数∝沉积能量→产额)', conservation: 'N_γ = Y·E_dep', defects: ['非比例响应', '光收集效率'] },
+    fourpointprobe: { title: '四探针硅片电阻率 ρ', paper: '直线四探针法测掺杂硅片 ρ≈1.0 Ω·cm（半导体工艺常规监控量）', layer: 'L0(欧姆输运)→L4(四探针台+恒流源+纳伏表)→L7(V/I 斜率→方块电阻→ρ)', conservation: 'R_s=4.532·V/I，ρ=R_s·t', defects: ['探针间距误差', '接触注入'] },
+    frequencycomb: { title: '光频梳重复频率 f_rep', paper: '掺铒光纤光频梳重复频率 f_rep≈2.5×10⁸ Hz（Hall/Hänsch 光频梳，2005 诺贝尔物理）', layer: 'L0(锁模相干)→L4(飞秒光梳+光电拍频+计数器)→L7(梳齿频率∝梳齿序号→f_rep)', conservation: 'ν_n = n·f_rep + f_ceo', defects: ['腔长漂移', 'f_ceo 未锁定'] },
+    brillouin: { title: '布里渊散射声速 v_a', paper: '熔石英纵向声速由布里渊散射定 v_a≈5.96×10³ m/s（1922 Brillouin 预言，1930s 证实）', layer: 'L0(声光耦合)→L4(单频激光+法布里-珀罗干涉仪)→L7(频移∝散射角→声速)', conservation: 'Δν=2n·v_a·sin(θ/2)/λ', defects: ['折射率色散', '自由光谱范围'] },
+    c14dating: { title: '碳十四衰变常数 λ', paper: 'AMS/β 计数定 ¹⁴C 半衰期 5730 a，衰变常数 λ=ln2/T₁/₂≈1.2097×10⁻⁴ a⁻¹（Libby 值）', layer: 'L0(β 衰变)→L4(AMS/液体闪烁计数)→L7(活度∝核数→λ)', conservation: 'A=λN', defects: ['现代碳污染', '同位素分馏'] },
+    opticaltweezers: { title: '光镊阱刚度 κ', paper: '光镊（Ashkin 1986，2018 诺贝尔物理）对微米球的阱刚度典型 κ≈1.0×10⁻⁴ N/m', layer: 'L0(光动量传递)→L4(高数值孔径物镜+位置探测器)→L7(位移∝外力→κ)', conservation: 'F=−κ·Δx（胡克恢复力）', defects: ['位置探测标定', '布朗运动本底'] },
+    gravityprobeb: { title: 'GP-B 测地岁差率', paper: '引力探测器 B（2011 公布）测得测地岁差 6601.8±18.3 mas/yr，即 ≈6.602 arcsec/yr（GR 预言 6606.1）', layer: 'L0(时空曲率)→L4(星载超导陀螺+恒星跟踪器)→L7(累积进动角∝时间→岁差率)', conservation: '测地进动由 Schwarzschild 度规给出', defects: ['陀螺电矩噪声', '星表指向误差'] },
+    seismicrefraction: { title: '地壳 P 波速度 v_P', paper: '人工地震折射剖面给上地壳 P 波速度 ≈6.0×10³ m/s（1909 Mohorovičić 壳幔界面探测法）', layer: 'L0(弹性波传播)→L4(震源+检波器阵列)→L7(首波走时∝炮检距→v)', conservation: '临界折射首波走时 t=x/v₂+常数', defects: ['近地表风化层', '到时拾取误差'] },
+    geothermalgradient: { title: '地温梯度 dT/dz', paper: '大陆平均地温梯度约 25 K/km（即 2.5×10⁻² K/m，钻孔测温统计值）', layer: 'L0(稳态热传导)→L4(钻孔测温链+热流探针)→L7(温升∝深度→梯度)', conservation: 'q=−λ·dT/dz', defects: ['地下水对流扰动', '钻进热扰动'] },
+    keeling: { title: 'CO₂ 年增长率', paper: '莫纳罗亚站自 1958 年连续观测给出 CO₂ 长期增长率 ≈2.4 ppm/yr（Keeling 曲线；近十年升至 2.5–3）', layer: 'L0(碳循环)→L4(非色散红外分析仪+标准气)→L7(摩尔分数∝年份→增长率)', conservation: '浓度年际线性增长叠加季节波动', defects: ['标准气标定漂移', '局地源汇干扰'] },
+    beerlambert: { title: 'KMnO₄ 摩尔吸光系数 ε', paper: '高锰酸钾在 525 nm 摩尔吸光系数 ε≈2.2×10³ L·mol⁻¹·cm⁻¹（分光光度法常规标定）', layer: 'L0(选择性吸收)→L4(分光光度计+石英比色皿)→L7(吸光度∝浓度→εL)', conservation: 'A=ε·c·L', defects: ['杂散光', '光程/皿差'] },
+    airbreakdown: { title: '空气击穿场强 E_b', paper: '标准状态干燥空气直流击穿场强 ≈3.0×10⁶ V/m（约 30 kV/cm；均匀场下的近似基准）', layer: 'L0(碰撞电离电子崩)→L4(高压源+平板电极)→L7(击穿电压∝间隙→E_b)', conservation: 'V_b=E_b·d', defects: ['湿度与空气密度', '电极表面粗糙度'] },
+    neutronactivation: { title: '¹⁹⁷Au(n,γ) 截面 σ', paper: '金箔活化法测得热中子 ¹⁹⁷Au(n,γ) 截面 σ≈98.8 b（中子通量标准的经典标定点）', layer: 'L0(中子辐射俘获)→L4(反应堆照射+HPGe γ 谱仪)→L7(活度∝通量×截面→σ)', conservation: 'A=NσΦ(1−e^{−λt})', defects: ['通量空间梯度', '自屏蔽与自吸收'] },
+    vickershardness: { title: '退火铜维氏硬度 HV', paper: '退火纯铜维氏硬度约 50 HV（金刚石正四棱锥压痕法的常规标称值）', layer: 'L0(塑性屈服)→L4(维氏压头+显微测长)→L7(载荷∝压痕面积→HV)', conservation: 'HV=1.854·F/d²', defects: ['对角线读数误差', '表面粗糙度'] },
     elementarycharge: { title: '基本电荷 e', paper: '由密立根油滴（1913）与 2019 SI 重定义 e=1.602176634×10⁻¹⁹ C（精确）', layer: 'L0(电荷量子化)→L4(油滴仪/电流天平)→L7(偏转/电荷→e)', conservation: 'e = I·t/N（单电子电流）', defects: ['油滴电荷离散', '斯托克斯修正'] },
     newtong: { title: '引力常数 G', paper: '卡文迪许扭秤（1798）定 G≈6.67430×10⁻¹¹ m³/(kg·s²)（CODATA 2018）', layer: 'L0(万有引力)→L4(扭秤)→L7(扭角→G)', conservation: 'F=Gm₁m₂/r²', defects: ['扭丝滞回', '温度漂移'] },
     lightspeed: { title: '真空光速 c', paper: '罗默/斐索/傅科与 1972 激光频梳定 c=299792458 m/s（SI 精确值）', layer: 'L0(电磁/相对论)→L4(干涉/腔)→L7(波长×频率→c)', conservation: 'c=λ·ν', defects: ['空气折射修正', '腔长标定'] },
@@ -5396,6 +5602,54 @@ var META = {
     chain:"高温加热铁并测相变温度，由潜热平衡定 T_m；氧化与纯度影响结果。",
     defects:["氧化","纯度"]},
 
+  johnsonnoise:{paper:"约翰逊-奈奎斯特噪声 ⟨V²⟩=4k_BTRΔf 用于 2019 SI 重定义玻尔兹曼常数 k_B=1.380649×10⁻²³ J/K（精确）",
+    chain:"在不同阻值 R 上测带宽 Δf 内的噪声电压均方 ⟨V²⟩，由 ⟨V²⟩=4k_BTRΔf 的比例系数反推 k_B。",
+    defects:["放大器自身噪声","带宽标定"]},
+  esr:{paper:"X 波段 ESR 以 DPPH 为标样定 g≈2.0036（ISAC/EPR 常用标准物质）",
+    chain:"把 DPPH 样品置于扫磁场谐振腔中找吸收峰频率，由 hν=gμ_B B 的 ν-B 比例系数反推 g 因子。",
+    defects:["磁场均匀性","腔耦合失谐"]},
+  scintillator:{paper:"NaI(Tl) 光产额约 3.8×10⁴ 光子/MeV（≈38 ph/keV，闪烁探测标准值）",
+    chain:"用已知能量的 γ 源照射 NaI(Tl)，把 PMT 输出电荷折算成光电子数，由光电子数对沉积能量的比例系数定光产额。",
+    defects:["非比例响应","光收集效率"]},
+  fourpointprobe:{paper:"直线四探针法测掺杂硅片 ρ≈1.0 Ω·cm（半导体工艺常规监控量）",
+    chain:"外侧两针通恒流 I、内侧两针测压降 V，由 V-I 斜率取几何修正因子 4.532 与片厚 t 反推电阻率 ρ。",
+    defects:["探针间距误差","接触注入"]},
+  frequencycomb:{paper:"掺铒光纤光频梳重复频率 f_rep≈2.5×10⁸ Hz（Hall/Hänsch 光频梳，2005 诺贝尔物理）",
+    chain:"把飞秒脉冲序列转换为射频梳齿并与参考拍频，由第 n 根梳齿频率对 n 的比例系数定重复频率 f_rep。",
+    defects:["腔长漂移","f_ceo 未锁定"]},
+  brillouin:{paper:"熔石英纵向声速由布里渊散射定 v_a≈5.96×10³ m/s（1922 Brillouin 预言，1930s 证实）",
+    chain:"用单频激光照样品并以法布里-珀罗分析散射光的频移 Δν，由 Δν=2n v_a sin(θ/2)/λ 反推声速 v_a。",
+    defects:["折射率色散","自由光谱范围"]},
+  c14dating:{paper:"AMS/β 计数定 ¹⁴C 半衰期 5730 a，衰变常数 λ=ln2/T₁/₂≈1.2097×10⁻⁴ a⁻¹（Libby 值）",
+    chain:"测已知 ¹⁴C 核数 N 样品的放射性活度 A，由 A=λN 的比例系数反推衰变常数 λ，进而得半衰期。",
+    defects:["现代碳污染","同位素分馏"]},
+  opticaltweezers:{paper:"光镊（Ashkin 1986，2018 诺贝尔物理）对微米球的阱刚度典型 κ≈1.0×10⁻⁴ N/m",
+    chain:"给被囚禁微粒施加已知的 Stokes 阻力 F=6πηrv，测其偏离阱心的位移 Δx，由 F-Δx 比例系数定阱刚度 κ。",
+    defects:["位置探测标定","布朗运动本底"]},
+  gravityprobeb:{paper:"引力探测器 B（2011 公布）测得测地岁差 6601.8±18.3 mas/yr，即 ≈6.602 arcsec/yr（GR 预言 6606.1）",
+    chain:"在极轨卫星上长期跟踪四只超导陀螺的自旋轴指向，由累积进动角随时间的比例系数定测地岁差率。",
+    defects:["陀螺电矩噪声","星表指向误差"]},
+  seismicrefraction:{paper:"人工地震折射剖面给上地壳 P 波速度 ≈6.0×10³ m/s（1909 Mohorovičić 壳幔界面探测法）",
+    chain:"沿测线布设检波器记录人工震源的首波到时，由到时对炮检距的比例系数（1/v）反演界面速度。",
+    defects:["近地表风化层","到时拾取误差"]},
+  geothermalgradient:{paper:"大陆平均地温梯度约 25 K/km（即 2.5×10⁻² K/m，钻孔测温统计值）",
+    chain:"在钻孔内按深度连续测温，由温度对深度的比例系数定地温梯度，配合岩芯热导率 λ 得热流密度 q。",
+    defects:["地下水对流扰动","钻进热扰动"]},
+  keeling:{paper:"莫纳罗亚站自 1958 年连续观测给出 CO₂ 长期增长率 ≈2.4 ppm/yr（Keeling 曲线；近十年升至 2.5–3）",
+    chain:"用标准气定期校准的红外分析仪连续测空气 CO₂ 摩尔分数，由年际浓度对年份的比例系数定增长率。",
+    defects:["标准气标定漂移","局地源汇干扰"]},
+  beerlambert:{paper:"高锰酸钾在 525 nm 摩尔吸光系数 ε≈2.2×10³ L·mol⁻¹·cm⁻¹（分光光度法常规标定）",
+    chain:"配系列浓度的高锰酸钾溶液并测 525 nm 吸光度 A，由 A 对浓度 c 的比例系数除以光程 L 得 ε。",
+    defects:["杂散光","光程/皿差"]},
+  airbreakdown:{paper:"标准状态干燥空气直流击穿场强 ≈3.0×10⁶ V/m（约 30 kV/cm；均匀场下的近似基准）",
+    chain:"改变平板电极间隙 d 并逐步升压读出击穿电压 V_b，由 V_b 对 d 的比例系数定击穿场强 E_b。",
+    defects:["湿度与空气密度","电极表面粗糙度"]},
+  neutronactivation:{paper:"金箔活化法测得热中子 ¹⁹⁷Au(n,γ) 截面 σ≈98.8 b（中子通量标准的经典标定点）",
+    chain:"把已知核数 N 的金箔置于已知中子通量 Φ 中照射，测生成 ¹⁹⁸Au 的特征 γ 活度，由 A=NσΦ 反演 σ。",
+    defects:["通量空间梯度","自屏蔽与自吸收"]},
+  vickershardness:{paper:"退火纯铜维氏硬度约 50 HV（金刚石正四棱锥压痕法的常规标称值）",
+    chain:"以金刚石正四棱锥压头在给定载荷 F 下压入抛光样品，显微测量压痕对角线 d，由 HV=1.854F/d² 定硬度。",
+    defects:["对角线读数误差","表面粗糙度"]},
   elementarycharge:{paper:"由密立根油滴（1913）与 2019 SI 重定义 e=1.602176634×10⁻¹⁹ C（精确）",
     chain:"在油滴仪中测单个油滴在电场里的平衡与运动，由 mg=qE 反推元电荷 e。",
     defects:["油滴电荷离散","斯托克斯修正"]},
@@ -5505,17 +5759,18 @@ var META = {
   var SIM = window.P2V_SIM;                 // 与主语料库页面的 25 个可运行装置同源
   var currentKey = keys[0];
   // ── 顶部一二级菜单数据（由 _gen_menu.py 生成，学科领域→装置键，顺序同 D3.list）──
+  // BEGIN DOMAIN DATA（由 _domain_update.py 生成；加装置后重跑即整体替换，勿手改本段）
   var DOMAIN_TREE = {
     "基本物理常数": ["planck","avogadro","boltzmann","bohrmagneton","nuclearmagneton","elementarycharge","newtong","lightspeed","neutronmass","deuteronmass","planckmass","vacuumpermittivity","vacuumpermeability","vacuumimpedance","gravityg","stdatm","earthradius","astronomicalunit","lightyear","solarmass","massenergy","electronmass","protonmass","gasconstant","atomicmass","hyperfine","finestructure","gyromagnetic"],
-    "力学与引力": ["alphag","micro","poundrebka","eotvos","foucaultpendulum","gravlens","cavendish","galileopendulum","torricelli","coulomb","stokes","mach","reynolds","bernoulli","escapevelocity","keplerthird","titiusbode","shapiro"],
-    "电磁学": ["radius","qsh","bragg","millikan","qhe","moseley","thomsoncrt","roentgen","faradayrot","hall","nmr","wheatstone","hertz","oersted","faraday","ampere","faradayconstant","ohm","thomsone","laue","protonradius","copperresistivity"],
-    "光学与波": ["g2","olc","alphaconst","qed","transit","rydberg","debroglie","photoelectric","michelson","laser","davisson","fiber","debye","youngslit","fraunhofer","squid","cepheid","fabryperot","pockels","photomultiplier","fizeau","roemer","newtonprism","malus","newtonring","michelsonmorley","brewster","eddington","doppler","bradley","balmer","snell","rayleigh","kerr","solarluminosity","soundspeed"],
-    "热学与统计物理": ["perrin","brownian","joule","boyle","loschmidt","charles","stefanboltzmann","kelvin","weinberg","seebeck","debyetemp","criticalpoint","carnot","clausiusclapeyron","vanderwaals","specificheat","triplepoint","curietemp","thermalcond"],
-    "量子与原子分子": ["willow","katrin","colorcode","wboson","lhcb","rcs","bec","alphafold","prime","dna","compton","wien","rutherford","franckhertz","sterngerlach","raman","massspec","stark","josephson","aspect","zeeman","andersonpositron","sem","afm","teleport","maser","betatron","lamb","casimir","bohrradius","schrodinger","heisenberg"],
-    "核与粒子物理": ["nif","collider","borexino","kamlandzen","neutronbottle","th229","higgsself","gw170817","pre","fermi","osc","cyclotron","cherenkov","chadwick","mossbauer","gm","cloud","bubble","neutrino","solarnu","geigermarsden","cockcroftwalton","curie","becquerel","sparkchamber","dirac","sn1987a","parity"],
+    "力学与引力": ["alphag","micro","poundrebka","eotvos","foucaultpendulum","gravlens","cavendish","galileopendulum","torricelli","coulomb","stokes","mach","reynolds","bernoulli","escapevelocity","keplerthird","titiusbode","shapiro","gravityprobeb"],
+    "电磁学": ["radius","qsh","bragg","millikan","qhe","moseley","thomsoncrt","roentgen","faradayrot","hall","nmr","wheatstone","hertz","oersted","faraday","ampere","faradayconstant","ohm","thomsone","laue","protonradius","airbreakdown","copperresistivity"],
+    "光学与波": ["g2","olc","alphaconst","qed","transit","rydberg","debroglie","photoelectric","michelson","laser","davisson","fiber","debye","youngslit","fraunhofer","squid","cepheid","fabryperot","pockels","photomultiplier","fizeau","roemer","newtonprism","malus","newtonring","michelsonmorley","brewster","eddington","doppler","bradley","balmer","snell","rayleigh","kerr","solarluminosity","frequencycomb","brillouin","opticaltweezers","beerlambert","soundspeed"],
+    "热学与统计物理": ["perrin","brownian","joule","boyle","loschmidt","charles","stefanboltzmann","kelvin","weinberg","seebeck","debyetemp","criticalpoint","carnot","clausiusclapeyron","vanderwaals","johnsonnoise","specificheat","triplepoint","curietemp","thermalcond"],
+    "量子与原子分子": ["willow","katrin","colorcode","wboson","lhcb","rcs","bec","alphafold","prime","dna","compton","wien","rutherford","franckhertz","sterngerlach","raman","massspec","stark","josephson","aspect","zeeman","andersonpositron","sem","afm","teleport","maser","betatron","lamb","casimir","bohrradius","schrodinger","heisenberg","esr"],
+    "核与粒子物理": ["nif","collider","borexino","kamlandzen","neutronbottle","th229","higgsself","gw170817","pre","fermi","osc","cyclotron","cherenkov","chadwick","mossbauer","gm","cloud","bubble","neutrino","solarnu","geigermarsden","cockcroftwalton","curie","becquerel","sparkchamber","dirac","sn1987a","parity","scintillator","c14dating","neutronactivation"],
     "天文与宇宙学": ["lz","desi","jwst","hubble","sgra","gw150914","wasp","nano","chirp","muon","hulsetaylor","cmb","bessel","chandrasekhar","bellpulsar","leavitt","schwarzschild","hawking","penzias","solarconstant"],
-    "材料与凝聚态": ["perovskite","battery","magic","stm","supercon","transistor","gmr","superfluid","meissner","youngmodulus","onnes","bandgap","piezoelectric","thermalexpansion","shearmodulus","bulkmodulus","poissonratio","magneticsusceptibility","meltingpoint","surfacetension","dielectricwater"],
-    "地球与行星科学": ["geomagnetic","richter"]
+    "材料与凝聚态": ["perovskite","battery","magic","stm","supercon","transistor","gmr","superfluid","meissner","youngmodulus","onnes","bandgap","piezoelectric","thermalexpansion","shearmodulus","bulkmodulus","poissonratio","magneticsusceptibility","fourpointprobe","vickershardness","meltingpoint","surfacetension","dielectricwater"],
+    "地球与行星科学": ["geomagnetic","richter","seismicrefraction","geothermalgradient","keeling"]
   };
   var KEY2DOMAIN = {
     "nif": "核与粒子物理",
@@ -5712,6 +5967,22 @@ var META = {
     "poissonratio": "材料与凝聚态",
     "magneticsusceptibility": "材料与凝聚态",
     "shapiro": "力学与引力",
+    "johnsonnoise": "热学与统计物理",
+    "esr": "量子与原子分子",
+    "scintillator": "核与粒子物理",
+    "fourpointprobe": "材料与凝聚态",
+    "frequencycomb": "光学与波",
+    "brillouin": "光学与波",
+    "c14dating": "核与粒子物理",
+    "opticaltweezers": "光学与波",
+    "gravityprobeb": "力学与引力",
+    "seismicrefraction": "地球与行星科学",
+    "geothermalgradient": "地球与行星科学",
+    "keeling": "地球与行星科学",
+    "beerlambert": "光学与波",
+    "airbreakdown": "电磁学",
+    "neutronactivation": "核与粒子物理",
+    "vickershardness": "材料与凝聚态",
     "meltingpoint": "材料与凝聚态",
     "elementarycharge": "基本物理常数",
     "newtong": "基本物理常数",
@@ -5746,6 +6017,7 @@ var META = {
     "gyromagnetic": "基本物理常数"
   };
   var DOMAIN_ORDER = ["基本物理常数","力学与引力","电磁学","光学与波","热学与统计物理","量子与原子分子","核与粒子物理","天文与宇宙学","材料与凝聚态","地球与行星科学"];
+  // END DOMAIN DATA
 
   var simCanvas = document.getElementById("simCanvas");
   var simOut = document.getElementById("simOut");
@@ -5763,6 +6035,9 @@ var META = {
   // ── 顶部一二级菜单（领域→装置）──
   var domainSel = document.getElementById("domainSel");
   var subSel = document.getElementById("subSel");
+  var optAll = document.createElement("option");
+  optAll.value = "__all__"; optAll.textContent = "全部装置（" + keys.length + " 台）";
+  domainSel.appendChild(optAll);
   DOMAIN_ORDER.forEach(function(d){
     var o = document.createElement("option");
     o.value = d; o.textContent = d + "（" + DOMAIN_TREE[d].length + "）";
@@ -5808,7 +6083,11 @@ var META = {
     // 回写顶部菜单（当前装置与位置）
     // 同步顶部一二级菜单（devSel 仍作为扁平兜底）
     var cd = KEY2DOMAIN[currentKey];
-    if (domainSel.value === "__all__") {
+    if (!cd) {
+      // 防御：该装置未归入任何学科领域时绝不调 populateSub(undefined)（会 TypeError），
+      // 退化为「全部装置」扁平视图，并把一级菜单显式切回全部。
+      domainSel.value = "__all__"; populateSub("__all__"); subSel.value = String(idx);
+    } else if (domainSel.value === "__all__") {
       subSel.value = String(idx);
     } else if (domainSel.value !== cd) {
       domainSel.value = cd; populateSub(cd); subSel.value = String(idx);
