@@ -2378,7 +2378,55 @@
       paper: 'Bohr 1913 / 磁矩量子化: 玻尔磁子 μ_B=eℏ/(2m_e)≈9.274×10⁻²⁴ J/T', layer: 'L0(磁矩量子化)→L4(磁强计/ESR)→L7(能级分裂→μ_B)', conservation: 'μ_B=eℏ/(2m_e)', defectsN: ['磁场标定', 'g 因子修正'] }),
     parity: S({ key: 'parity', title: '宇称不守恒（吴健雄）', thetaTrue: -0.4, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: -0.6, fitHi: -0.2,
       forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
-      paper: 'Wu, Ambler et al. 1957: ⁶⁰Co β 衰变角分布不对称，证明弱相互作用宇称不守恒，|A|≈0.4', layer: 'L0(宇称不守恒)→L4(极化核+探测器)→L7(角分布→A)', conservation: '宇称在弱作用下不守恒', defectsN: ['立体角修正', '极化度标定'] })
+      paper: 'Wu, Ambler et al. 1957: ⁶⁰Co β 衰变角分布不对称，证明弱相互作用宇称不守恒，|A|≈0.4', layer: 'L0(宇称不守恒)→L4(极化核+探测器)→L7(角分布→A)', conservation: '宇称在弱作用下不守恒', defectsN: ['立体角修正', '极化度标定'] }),
+    nuclearmagneton: S({ key: 'nuclearmagneton', title: '核磁子 μ_N', thetaTrue: 5.05078e-27, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 4.8e-27, fitHi: 5.3e-27,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '核磁子 μ_N=eℏ/(2m_p)≈5.05078×10⁻²⁷ J/T（NMR/质量磁强计定）', layer: 'L0(核磁矩量子化)→L4(磁强计/ENDOR)→L7(能级分裂→μ_N)', conservation: 'μ_N=eℏ/(2m_p)', defectsN: ['磁场标定', '质量比修正'] }),
+    electronmass: S({ key: 'electronmass', title: '电子质量 m_e', thetaTrue: 9.10938e-31, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 8.8e-31, fitHi: 9.4e-31,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '电子质量 m_e：由 e/m（汤姆逊/质谱）与 e（密立根）反演 m_e≈9.10938×10⁻³¹ kg', layer: 'L0(粒子质量)→L4(e/m 管+油滴)→L7(曲率/电荷→m_e)', conservation: 'm_e = e/(e/m)', defectsN: ['e/m 标定', '油滴电荷离散'] }),
+    protonmass: S({ key: 'protonmass', title: '质子质量 m_p', thetaTrue: 1.67262e-27, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.6e-27, fitHi: 1.75e-27,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '质子质量 m_p：质谱（Aston/Bainbridge）定 m_p≈1.67262×10⁻²⁷ kg', layer: 'L0(核质量)→L4(质谱仪)→L7(偏转半径→m_p)', conservation: 'm_p = 1.007276 u', defectsN: ['加速电压标定', '同位素纯度'] }),
+    gasconstant: S({ key: 'gasconstant', title: '理想气体常数 R', thetaTrue: 8.31446, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 8.0, fitHi: 8.6,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '理想气体常数 R：pV=nRT 由低压气体实测 R≈8.31446 J/(mol·K)', layer: 'L0(气体状态)→L4(定容/定压量热)→L7(压强-体积-温度→R)', conservation: 'pV=nRT', defectsN: ['非理想修正', '温度计标定'] }),
+    atomicmass: S({ key: 'atomicmass', title: '原子质量单位 u', thetaTrue: 1.66054e-27, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.6e-27, fitHi: 1.72e-27,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '原子质量单位 u=1/12 m(¹²C)≈1.660539×10⁻²⁷ kg（质谱+阿伏伽德罗晶体法）', layer: 'L0(质量基准)→L4(质谱+晶体法 N_A)→L7(摩尔质量→u)', conservation: 'u = M/N_A', defectsN: ['N_A 测定', '同位素丰度'] }),
+    soundspeed: S({ key: 'soundspeed', title: '空气中声速', thetaTrue: 343, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 320, fitHi: 360,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '空气中声速：20°C 干燥空气 c≈343 m/s，c=√(γRT/M)', layer: 'L0(声速)→L4(驻波管/Kundt)→L7(驻波波长→c)', conservation: 'c=√(γRT/M)', defectsN: ['温湿度修正', '管端修正'] }),
+    surfacetension: S({ key: 'surfacetension', title: '水的表面张力 γ', thetaTrue: 0.0728, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 0.065, fitHi: 0.080,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '水的表面张力：20°C γ≈0.0728 N/m（毛细上升/环法）', layer: 'L0(表面张力)→L4(毛细管/扭秤)→L7(液面高度/拉力→γ)', conservation: 'ΔP=2γ/R（毛细）', defectsN: ['接触角标定', '温度系数'] }),
+    specificheat: S({ key: 'specificheat', title: '水的比热 c', thetaTrue: 4186, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 3900, fitHi: 4400,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '水的比热：量热实测 c≈4186 J/(kg·K)（4°C 附近）', layer: 'L0(热容)→L4(水量热器)→L7(温升→c)', conservation: 'Q=mcΔT', defectsN: ['热漏', '温度计标定'] }),
+    triplepoint: S({ key: 'triplepoint', title: '水的三相点', thetaTrue: 273.16, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 270, fitHi: 276,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '水的三相点：国际温标定义 T_tp=273.16 K（冰-水-汽共存）', layer: 'L0(相平衡)→L4(三相池+铂电阻)→L7(电阻→T_tp)', conservation: '三相共存单点', defectsN: ['杂质', '热平衡'] }),
+    curietemp: S({ key: 'curietemp', title: '铁的居里温度 T_C', thetaTrue: 1043, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 980, fitHi: 1100,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '铁的居里温度：磁化率发散 T_C≈1043 K（约 770°C）', layer: 'L0(铁磁相变)→L4(磁强计+变温)→L7(磁化率峰→T_C)', conservation: '居里-外斯律', defectsN: ['温度标定', '样品纯度'] }),
+    thermalcond: S({ key: 'thermalcond', title: '铜的热导率 κ', thetaTrue: 401, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 370, fitHi: 430,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '铜的热导率：室温 κ≈401 W/(m·K)（稳态/瞬态法）', layer: 'L0(热传导)→L4(热棒+温差)→L7(热流→κ)', conservation: '傅里叶定律 q=-κ∇T', defectsN: ['接触热阻', '温度标定'] }),
+    copperresistivity: S({ key: 'copperresistivity', title: '铜的电阻率 ρ', thetaTrue: 1.68e-8, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.4e-8, fitHi: 2.0e-8,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '铜的电阻率：20°C ρ≈1.68×10⁻⁸ Ω·m（四探针法）', layer: 'L0(电阻)→L4(四探针/电桥)→L7(电压-电流→ρ)', conservation: 'R=ρL/A', defectsN: ['几何因子', '温度系数'] }),
+    hyperfine: S({ key: 'hyperfine', title: '氢 21cm 超精细分裂', thetaTrue: 1.420405751e9, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.40e9, fitHi: 1.44e9,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '氢 21cm 超精细分裂：基态 F=1↔0 ν≈1.420405751 GHz（中性氢线）', layer: 'L0(超精细结构)→L4(射电谱/原子钟)→L7(频率→ΔE_hfs)', conservation: 'ΔE_hfs=hν', defectsN: ['磁场塞曼', '频率标定'] }),
+    finestructure: S({ key: 'finestructure', title: '氢精细结构双线', thetaTrue: 4.53e-5, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 4.0e-5, fitHi: 5.0e-5,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '氢精细结构双线：2p_{3/2}-2p_{1/2} 分裂 ΔE≈4.53×10⁻⁵ eV（高分辨光谱）', layer: 'L0(精细结构)→L4(高分辨光谱)→L7(双线间隔→ΔE_fs)', conservation: 'Dirac+QED 修正', defectsN: ['谱线重叠', '波长标定'] }),
+    dielectricwater: S({ key: 'dielectricwater', title: '水的相对介电常数 ε_r', thetaTrue: 80.1, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 75, fitHi: 85,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '水的相对介电常数：20°C ε_r≈80.1（电容法/1 kHz）', layer: 'L0(介电)→L4(电容电桥)→L7(电容比→ε_r)', conservation: 'C=ε_r ε₀ A/d', defectsN: ['频率色散', '电极边缘'] }),
+    gyromagnetic: S({ key: 'gyromagnetic', title: '质子旋磁比 γ_p', thetaTrue: 4.2577e7, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 4.1e7, fitHi: 4.4e7,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '质子旋磁比：γ_p/2π≈42.577 MHz/T（NMR 反演，CODATA）', layer: 'L0(核磁矩)→L4(NMR 谱仪)→L7(共振频率→γ_p)', conservation: 'ω=γ_p B', defectsN: ['磁场均匀性', '化学位移'] })
   };
   // lz 是上限型，hubble 要单独标注张力
   SPECS.lz.fmt = function (inf) {
@@ -2607,7 +2655,23 @@
     clausiusclapeyron: { title: '克劳修斯-克拉珀龙', paper: 'Clausius 1832 / Clapeyron 1834: dP/dT=L·P/(R_v T²)；水 L_v≈2.26×10⁶ J/kg', layer: 'L0(相平衡)→L4(饱和蒸汽压+温度)→L7(斜率→L)', conservation: 'L=−(dP/dT)·TΔv', defects: ['饱和蒸汽压标定', '温度梯度'] },
     vanderwaals: { title: '范德瓦尔斯方程', paper: 'van der Waals 1873: (P+a/Vm²)(Vm−b)=RT；N₂ a≈0.137, b≈3.87×10⁻⁵', layer: 'L0(实际气体)→L4(P-V 测量)→L7(等温线→a,b)', conservation: '范德瓦尔斯状态方程', defects: ['气体纯度', '体积标定'] },
     bohrmagneton: { title: '玻尔磁子 μ_B', paper: 'Bohr 1913 / 磁矩量子化: μ_B=eℏ/(2m_e)≈9.274×10⁻²⁴ J/T', layer: 'L0(磁矩量子化)→L4(磁强计/ESR)→L7(能级分裂→μ_B)', conservation: 'μ_B=eℏ/(2m_e)', defects: ['磁场标定', 'g 因子修正'] },
-    parity: { title: '宇称不守恒（吴健雄）', paper: 'Wu, Ambler et al. 1957: ⁶⁰Co β 不对称证明弱作用宇称不守恒，|A|≈0.4', layer: 'L0(宇称不守恒)→L4(极化核+探测器)→L7(角分布→A)', conservation: '宇称在弱作用下不守恒', defects: ['立体角修正', '极化度标定'] }
+    parity: { title: '宇称不守恒（吴健雄）', paper: 'Wu, Ambler et al. 1957: ⁶⁰Co β 不对称证明弱作用宇称不守恒，|A|≈0.4', layer: 'L0(宇称不守恒)→L4(极化核+探测器)→L7(角分布→A)', conservation: '宇称在弱作用下不守恒', defects: ['立体角修正', '极化度标定'] },
+    nuclearmagneton: { title: '核磁子 μ_N', paper: '核磁子 μ_N=eℏ/(2m_p)≈5.05078×10⁻²⁷ J/T（NMR/质量磁强计定）', layer: 'L0(核磁矩量子化)→L4(磁强计/ENDOR)→L7(能级分裂→μ_N)', conservation: 'μ_N=eℏ/(2m_p)', defects: ['磁场标定', '质量比修正'] },
+    electronmass: { title: '电子质量 m_e', paper: '电子质量 m_e：由 e/m（汤姆逊/质谱）与 e（密立根）反演 m_e≈9.10938×10⁻³¹ kg', layer: 'L0(粒子质量)→L4(e/m 管+油滴)→L7(曲率/电荷→m_e)', conservation: 'm_e = e/(e/m)', defects: ['e/m 标定', '油滴电荷离散'] },
+    protonmass: { title: '质子质量 m_p', paper: '质子质量 m_p：质谱（Aston/Bainbridge）定 m_p≈1.67262×10⁻²⁷ kg', layer: 'L0(核质量)→L4(质谱仪)→L7(偏转半径→m_p)', conservation: 'm_p = 1.007276 u', defects: ['加速电压标定', '同位素纯度'] },
+    gasconstant: { title: '理想气体常数 R', paper: '理想气体常数 R：pV=nRT 由低压气体实测 R≈8.31446 J/(mol·K)', layer: 'L0(气体状态)→L4(定容/定压量热)→L7(压强-体积-温度→R)', conservation: 'pV=nRT', defects: ['非理想修正', '温度计标定'] },
+    atomicmass: { title: '原子质量单位 u', paper: '原子质量单位 u=1/12 m(¹²C)≈1.660539×10⁻²⁷ kg（质谱+阿伏伽德罗晶体法）', layer: 'L0(质量基准)→L4(质谱+晶体法 N_A)→L7(摩尔质量→u)', conservation: 'u = M/N_A', defects: ['N_A 测定', '同位素丰度'] },
+    soundspeed: { title: '空气中声速', paper: '空气中声速：20°C 干燥空气 c≈343 m/s，c=√(γRT/M)', layer: 'L0(声速)→L4(驻波管/Kundt)→L7(驻波波长→c)', conservation: 'c=√(γRT/M)', defects: ['温湿度修正', '管端修正'] },
+    surfacetension: { title: '水的表面张力 γ', paper: '水的表面张力：20°C γ≈0.0728 N/m（毛细上升/环法）', layer: 'L0(表面张力)→L4(毛细管/扭秤)→L7(液面高度/拉力→γ)', conservation: 'ΔP=2γ/R（毛细）', defects: ['接触角标定', '温度系数'] },
+    specificheat: { title: '水的比热 c', paper: '水的比热：量热实测 c≈4186 J/(kg·K)（4°C 附近）', layer: 'L0(热容)→L4(水量热器)→L7(温升→c)', conservation: 'Q=mcΔT', defects: ['热漏', '温度计标定'] },
+    triplepoint: { title: '水的三相点', paper: '水的三相点：国际温标定义 T_tp=273.16 K（冰-水-汽共存）', layer: 'L0(相平衡)→L4(三相池+铂电阻)→L7(电阻→T_tp)', conservation: '三相共存单点', defects: ['杂质', '热平衡'] },
+    curietemp: { title: '铁的居里温度 T_C', paper: '铁的居里温度：磁化率发散 T_C≈1043 K（约 770°C）', layer: 'L0(铁磁相变)→L4(磁强计+变温)→L7(磁化率峰→T_C)', conservation: '居里-外斯律', defects: ['温度标定', '样品纯度'] },
+    thermalcond: { title: '铜的热导率 κ', paper: '铜的热导率：室温 κ≈401 W/(m·K)（稳态/瞬态法）', layer: 'L0(热传导)→L4(热棒+温差)→L7(热流→κ)', conservation: '傅里叶定律 q=-κ∇T', defects: ['接触热阻', '温度标定'] },
+    copperresistivity: { title: '铜的电阻率 ρ', paper: '铜的电阻率：20°C ρ≈1.68×10⁻⁸ Ω·m（四探针法）', layer: 'L0(电阻)→L4(四探针/电桥)→L7(电压-电流→ρ)', conservation: 'R=ρL/A', defects: ['几何因子', '温度系数'] },
+    hyperfine: { title: '氢 21cm 超精细分裂', paper: '氢 21cm 超精细分裂：基态 F=1↔0 ν≈1.420405751 GHz（中性氢线）', layer: 'L0(超精细结构)→L4(射电谱/原子钟)→L7(频率→ΔE_hfs)', conservation: 'ΔE_hfs=hν', defects: ['磁场塞曼', '频率标定'] },
+    finestructure: { title: '氢精细结构双线', paper: '氢精细结构双线：2p_{3/2}-2p_{1/2} 分裂 ΔE≈4.53×10⁻⁵ eV（高分辨光谱）', layer: 'L0(精细结构)→L4(高分辨光谱)→L7(双线间隔→ΔE_fs)', conservation: 'Dirac+QED 修正', defects: ['谱线重叠', '波长标定'] },
+    dielectricwater: { title: '水的相对介电常数 ε_r', paper: '水的相对介电常数：20°C ε_r≈80.1（电容法/1 kHz）', layer: 'L0(介电)→L4(电容电桥)→L7(电容比→ε_r)', conservation: 'C=ε_r ε₀ A/d', defects: ['频率色散', '电极边缘'] },
+    gyromagnetic: { title: '质子旋磁比 γ_p', paper: '质子旋磁比：γ_p/2π≈42.577 MHz/T（NMR 反演，CODATA）', layer: 'L0(核磁矩)→L4(NMR 谱仪)→L7(共振频率→γ_p)', conservation: 'ω=γ_p B', defects: ['磁场均匀性', '化学位移'] }
   };
   Object.keys(CLASSIC_META).forEach(function (k) { api.meta[k] = CLASSIC_META[k]; });
   // 变体农场：把 25 套模板做参数化扫描，可惰性产出至多 999,999 个可运行配置
@@ -4021,6 +4085,93 @@
     for (var p_i = 0; p_i < 8; p_i++) { var p_a = p_i / 8 * 2 * Math.PI; addCylinder(scene, [0, 0, 0], [0.7 * Math.cos(p_a), 1.4 + 0.5 * Math.sin(p_a), 0], 0.05, [0.3, 0.6, 0.9], 1, 8, false); }
     addCylinder(scene, [0, 0, 0], [0, -0.9, 0], 0.05, [0.9, 0.4, 0.3], 1, 8, false);
   }
+  // ── 第九批（F-CORE-20261029-04）：16 台空闲真实实验几何 ──
+  function mNuclearmagneton(scene) {  // 核磁子（核磁矩量子化）
+    addSphere(scene, [0, 0, 0], 0.3, [0.9, 0.7, 0.3], 1, 14, true);
+    var nm = scene.addLine([1.0, 0.85, 0.3], 1); var pnm = null;
+    for (var nmi = 0; nmi <= 18; nmi++) { var na = nmi / 18 * 2 * Math.PI; var cur = [1.7 * Math.cos(na), 1.7 * Math.sin(na), 0]; if (pnm) scene.lineSeg(nm, pnm, cur); pnm = cur; }
+  }
+  function mElectronmass(scene) {     // 电子质量（e/m 与 e 反演）
+    addCylinder(scene, [-2.4, 0, 0], [2.4, 0, 0], 0.18, [0.4, 0.6, 0.85], 0.18, 16, false);
+    addBox(scene, [-2.6, 0, 0], [0.2, 0.45, 0.45], [0.6, 0.62, 0.66], 1);
+    addBox(scene, [2.6, 0, 0], [0.2, 0.45, 0.45], [0.6, 0.62, 0.66], 1);
+    addSphere(scene, [0, 0.4, 0], 0.1, [0.9, 0.7, 0.3], 1, 10, true);
+    var el = scene.addLine([1.0, 0.5, 0.3], 1); scene.lineSeg(el, [0, 0.4, 0], [0.8, -0.6, 0]);
+  }
+  function mProtonmass(scene) {       // 质子质量（质谱反演）
+    addSphere(scene, [0, 0, 0], 0.4, [0.9, 0.7, 0.3], 1, 16, true);
+    addTorus(scene, [0, 0, 0], [0, 0, 1], 2.0, 0.07, [0.6, 0.62, 0.66], 1, 30, 2, false);
+    addSphere(scene, [2.0, 0, 0], 0.12, [0.3, 0.6, 0.9], 1, 10, true);
+  }
+  function mGasconstant(scene) {      // 理想气体常数 R（pV=nRT）
+    addBox(scene, [0, 0, 0], [1.3, 1.3, 1.3], [0.4, 0.6, 0.85], 0.12);
+    var gn = 0; for (var gx = 0; gx < 3; gx++) for (var gy = 0; gy < 3; gy++) for (var gz = 0; gz < 3; gz++) { if (gn >= 18) break; addSphere(scene, [-0.9 + gx * 0.9, -0.9 + gy * 0.9, -0.9 + gz * 0.9], 0.1, [0.9, 0.7, 0.3], 1, 8, true); gn++; }
+  }
+  function mAtomicmass(scene) {       // 原子质量单位 u（天平）
+    addBox(scene, [0, 1.4, 0], [1.6, 0.06, 0.3], [0.6, 0.62, 0.66], 1);
+    addCylinder(scene, [0, 0.6, 0], [0, 1.4, 0], 0.08, [0.5, 0.55, 0.62], 1, 8, false);
+    addBox(scene, [-1.4, 0.5, 0], [0.5, 0.35, 0.5], [0.9, 0.7, 0.3], 1);
+    addBox(scene, [1.4, 0.5, 0], [0.5, 0.35, 0.5], [0.9, 0.7, 0.3], 1);
+  }
+  function mSoundspeed(scene) {       // 空气中声速（驻波/干涉）
+    addCone(scene, [0, 0, 0], [0.6, 0, 0], 0.5, [0.6, 0.62, 0.66], 1, 16, false);
+    var sfx = 0; for (var si = 0; si < 6; si++) { addSphere(scene, [1.2 + sfx, 0, 0], 0.12, [0.9, 0.5, 0.3], 0.6, 10, true); sfx += 0.45; }
+    var sf = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(sf, [0.6, 0, 0], [3.2, 0, 0]);
+  }
+  function mSurfacetension(scene) {   // 水的表面张力（液滴+弯月面）
+    addBox(scene, [0, -1.4, 0], [1.6, 0.1, 1.6], [0.4, 0.6, 0.85], 0.2);
+    addSphere(scene, [0, -0.9, 0], 0.55, [0.3, 0.6, 0.95], 0.7, 16, true);
+    var stl = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(stl, [-0.9, -1.0, 0], [0.9, -1.0, 0]);
+  }
+  function mSpecificheat(scene) {     // 水的比热（量热）
+    addCylinder(scene, [0, -1.0, 0], [0, 1.2, 0], 0.8, [0.4, 0.6, 0.85], 0.18, 20, false);
+    addSphere(scene, [0, 0, 0], 0.4, [0.3, 0.6, 0.95], 0.6, 14, true);
+    addCylinder(scene, [0, 1.2, 0], [0, 1.9, 0], 0.1, [0.6, 0.62, 0.66], 1, 8, false);
+  }
+  function mTriplepoint(scene) {      // 水的三相点
+    addSphere(scene, [0, 0, 0], 0.35, [0.9, 0.7, 0.3], 1, 14, true);
+    addSphere(scene, [-1.6, 0.8, 0], 0.22, [0.3, 0.6, 0.95], 1, 12, true);
+    addSphere(scene, [1.6, 0.8, 0], 0.22, [0.9, 0.5, 0.3], 1, 12, true);
+    addBox(scene, [0, -1.4, 0], [0.4, 0.4, 0.4], [0.6, 0.62, 0.66], 1);
+  }
+  function mCurietemp(scene) {        // 铁的居里温度（磁有序→无序）
+    for (var ci = 0; ci < 7; ci++) { var ca = ci / 7 * 2 * Math.PI; addCylinder(scene, [0, 0, 0], [1.1 * Math.cos(ca), 1.1 * Math.sin(ca), 0], 0.05, [0.9, 0.4, 0.3], 1, 8, false); }
+    addSphere(scene, [0, 0, 0], 0.25, [0.6, 0.62, 0.66], 1, 12, true);
+    addCylinder(scene, [0, 0, 0], [0, -1.7, 0], 0.05, [0.5, 0.55, 0.62], 1, 8, false);
+  }
+  function mThermalcond(scene) {      // 铜的热导率（热棒）
+    addCylinder(scene, [-2.0, 0, 0], [2.0, 0, 0], 0.35, [0.6, 0.62, 0.66], 1, 16, false);
+    addBox(scene, [-2.3, 0, 0], [0.4, 0.5, 0.5], [0.95, 0.4, 0.2], 1);
+    addBox(scene, [2.3, 0, 0], [0.4, 0.5, 0.5], [0.2, 0.5, 0.95], 1);
+    var tc = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(tc, [-2.0, 0.35, 0], [2.0, 0.35, 0]);
+  }
+  function mCopperresistivity(scene) {// 铜的电阻率（导线+电流）
+    addCylinder(scene, [-2.4, 0, 0], [2.4, 0, 0], 0.18, [0.6, 0.62, 0.66], 1, 16, false);
+    addBox(scene, [-2.6, 0, 0], [0.25, 0.4, 0.4], [0.95, 0.4, 0.2], 1);
+    addBox(scene, [2.6, 0, 0], [0.25, 0.4, 0.4], [0.2, 0.5, 0.95], 1);
+    var cr = scene.addLine([1.0, 0.5, 0.3], 1); scene.lineSeg(cr, [-2.2, 0.2, 0], [2.2, 0.2, 0]);
+  }
+  function mHyperfine(scene) {        // 氢 21cm 超精细分裂
+    addSphere(scene, [0, 0, 0], 0.3, [0.9, 0.7, 0.3], 1, 14, true);
+    addSphere(scene, [-1.4, 0.6, 0], 0.12, [0.3, 0.6, 0.9], 1, 10, true);
+    addSphere(scene, [-1.4, -0.6, 0], 0.12, [0.9, 0.5, 0.3], 1, 10, true);
+    var hf = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(hf, [-1.4, 0.6, 0], [-1.4, -0.6, 0]);
+  }
+  function mFinestructure(scene) {    // 氢精细结构双线
+    var fs = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(fs, [-2.2, 0, 0], [2.2, 0, 0]);
+    addSphere(scene, [-0.3, 0, 0], 0.12, [0.3, 0.6, 0.9], 1, 10, true);
+    addSphere(scene, [0.3, 0, 0], 0.12, [0.9, 0.5, 0.3], 1, 10, true);
+  }
+  function mDielectricwater(scene) {  // 水的相对介电常数（电容器）
+    addBox(scene, [-0.6, 0, 0], [0.05, 1.0, 1.0], [0.6, 0.62, 0.66], 1);
+    addBox(scene, [0.6, 0, 0], [0.05, 1.0, 1.0], [0.6, 0.62, 0.66], 1);
+    addBox(scene, [0, 0, 0], [0.5, 0.95, 0.95], [0.3, 0.6, 0.95], 0.5);
+  }
+  function mGyromagnetic(scene) {     // 质子旋磁比（NMR 进动）
+    addSphere(scene, [0, 0, 0], 0.3, [0.9, 0.7, 0.3], 1, 14, true);
+    var gm = scene.addLine([1.0, 0.85, 0.3], 1); var pgm = null;
+    for (var gmi = 0; gmi <= 18; gmi++) { var ga = gmi / 18 * 2 * Math.PI; var cur = [1.7 * Math.cos(ga), 1.7 * Math.sin(ga), 0]; if (pgm) scene.lineSeg(gm, pgm, cur); pgm = cur; }
+  }
   function mThomsone(scene) {         // J.J. 汤姆逊阴极射线测 e/m（1897）
     addCylinder(scene, [-2.5, 0, 0], [2.5, 0, 0], 0.15, [0.4, 0.6, 0.85], 0.18, 16, false);        // 玻璃管（半透明）
     addBox(scene, [-2.7, 0, 0], [0.2, 0.45, 0.45], [0.6, 0.62, 0.66], 1);                          // 阴极
@@ -4282,7 +4433,23 @@
     clausiusclapeyron: { title: "克劳修斯-克拉珀龙（1834）", radius: 6, build: mClausiusclapeyron },
     vanderwaals: { title: "范德瓦尔斯方程（1873）", radius: 6, build: mVanderwaals },
     bohrmagneton: { title: "玻尔磁子 μ_B（1913）", radius: 6, build: mBohrmagneton },
-    parity: { title: "宇称不守恒（吴健雄, 1957）", radius: 6, build: mParity }
+    parity: { title: "宇称不守恒（吴健雄, 1957）", radius: 6, build: mParity },
+    nuclearmagneton: { title: "核磁子 μ_N（1930s）", radius: 6, build: mNuclearmagneton },
+    electronmass: { title: "电子质量 m_e（e/m, 1897）", radius: 6, build: mElectronmass },
+    protonmass: { title: "质子质量 m_p（质谱, 1919）", radius: 6, build: mProtonmass },
+    gasconstant: { title: "理想气体常数 R（pV=nRT）", radius: 6, build: mGasconstant },
+    atomicmass: { title: "原子质量单位 u（1910）", radius: 6, build: mAtomicmass },
+    soundspeed: { title: "空气中声速（驻波, 1738）", radius: 6, build: mSoundspeed },
+    surfacetension: { title: "水的表面张力 γ（1890s）", radius: 6, build: mSurfacetension },
+    specificheat: { title: "水的比热 c（量热, 1840s）", radius: 6, build: mSpecificheat },
+    triplepoint: { title: "水的三相点（273.16 K）", radius: 6, build: mTriplepoint },
+    curietemp: { title: "铁的居里温度 T_C（1043 K）", radius: 6, build: mCurietemp },
+    thermalcond: { title: "铜的热导率 κ（1860s）", radius: 6, build: mThermalcond },
+    copperresistivity: { title: "铜的电阻率 ρ（1860s）", radius: 6, build: mCopperresistivity },
+    hyperfine: { title: "氢 21cm 超精细分裂（中性氢线）", radius: 6, build: mHyperfine },
+    finestructure: { title: "氢精细结构双线（1887）", radius: 6, build: mFinestructure },
+    dielectricwater: { title: "水的相对介电常数 ε_r（80.1）", radius: 6, build: mDielectricwater },
+    gyromagnetic: { title: "质子旋磁比 γ_p（NMR, 1946）", radius: 6, build: mGyromagnetic }
   };
 
   /* ── WebGL 引擎（仅在浏览器、有 GL 时启用） ── */
