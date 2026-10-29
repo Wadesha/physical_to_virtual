@@ -56,6 +56,21 @@
   </div>
 </header>
 
+<div style="padding:8px 0 12px">
+  <button id="wheelZoom" style="font:13px system-ui;padding:5px 12px;border:1px solid currentColor;background:transparent;color:inherit;border-radius:6px;cursor:pointer">滚轮缩放：关</button>
+</div>
+<script>
+  window.WHEEL_ZOOM = false;
+  (function () {
+    var wz = document.getElementById("wheelZoom");
+    if (wz) wz.addEventListener("click", function () {
+      window.WHEEL_ZOOM = !window.WHEEL_ZOOM;
+      wz.textContent = "滚轮缩放：" + (window.WHEEL_ZOOM ? "开" : "关");
+      wz.style.fontWeight = window.WHEEL_ZOOM ? "700" : "400";
+    });
+  })();
+</script>
+
 <div class="wrap">
 
   <!-- ════════════ 1. NIF 聚变点火 ════════════ -->

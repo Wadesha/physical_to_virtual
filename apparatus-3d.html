@@ -17,15 +17,9 @@
   header{padding:18px 22px 12px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#10161f,#0b0e13)}
   header h1{margin:0 0 4px;font-size:20px;letter-spacing:.5px}
   header .sub{color:var(--dim);font-size:13px;max-width:980px}
-  .layout{display:flex;gap:0;min-height:calc(100vh - 96px)}
-  .side{width:300px;flex:0 0 300px;border-right:1px solid var(--line);overflow-y:auto;
-    max-height:calc(100vh - 96px);background:var(--panel)}
-  .side .grp{font-size:11px;letter-spacing:1px;color:var(--dim);padding:10px 14px 4px;text-transform:uppercase}
-  .item{padding:9px 14px;cursor:pointer;border-left:3px solid transparent;color:var(--dim)}
-  .item:hover{background:var(--panel2);color:var(--ink)}
-  .item.active{background:var(--panel2);color:var(--ink);border-left-color:var(--accent)}
-  .item .t{font-weight:600;font-size:13px}
-  .item .p{font-size:11px;color:var(--dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* 用户硬性规定（2026-10-28）：装置切换只许走顶部菜单，左侧「装置（点击切换）」那一列永远不许再出现。
+     所以 .side / .side .grp / .item* 这几条样式一并删干净，不留一份「以后还能挂回来」的 CSS。 */
+  .layout{display:flex;min-height:calc(100vh - 96px)}
   .main{flex:1;padding:16px 20px;display:flex;flex-direction:column}
   .toolbar{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
   .btn{background:var(--panel2);border:1px solid var(--line);color:var(--ink);
@@ -652,24 +646,18 @@
 <body>
 <header>
   <h1>实验装置三维实物模型馆</h1>
-  <div class="sub">建在 physical-to-virtual 基座上的 Nature / Science 2020–2025 实验仿真语料库。
-    语料库现有 <b>48 台</b>装置、78 条论文数值判据；这 48 台<b>全部</b>有 WebGL 三维几何（左侧列表共 130 台，其余是几何层自建的经典仪器），
-    并在页面下方另建 <b>174 台按米建模的真实尺度三维模型</b>（317 个视图、2648 个部件，自写等比渲染器，拖动旋转、滚轮缩放、带米制标尺）：
-    语料库装置 43 台 ＋ <b>四百年仪器谱 131 台（1602 伽利略摆 → 2035 LISA，含 2020 年后在跑/在建/在飞的 13 台）</b>，
-    尺度从 9.1×10⁻¹¹ m（戴维森–革末用的 Ni(111) 面间距；次小 1.54×10⁻¹⁰ m 是 Cu Kα 波长）到 1.36×10²⁶ m（Q0957+561 的源距离），跨 36.2 个数量级。
-    每条尺寸都标来源：语料库散文／常数换算／公开规格／史料教科书（后三类<b>未复核</b>），且每台配一条能用物理常数复算的读数。
-    计数口径：视图数 = 各模型 views 之和；部件数 = 各模型<b>每个视图</b>的部件累加（面板上那行合计只算当前选中的视图，两个口径本来就不同，别当成两处打架）。这两句由 <code>_verify/lin_batch_page_check.js</code> 从两张表现算对账，改一台机器就得重跑它。「真实尺度」= 三轴同一个 px/m 等比渲染，非照片级模型。</div>
 </header>
 
 <div class="layout">
-  <nav class="side" id="side"><div class="grp">装置（点击切换）</div></nav>
-
   <div class="main">
     <div class="toolbar">
+      <select class="btn" id="devSel" title="装置切换（顶部菜单）"></select>
+      <span class="btn" id="devPos">— / —</span>
       <button class="btn" id="prev">‹ 上一个</button>
       <button class="btn" id="next">下一个 ›</button>
       <button class="btn on" id="autorot">自动旋转：开</button>
       <button class="btn" id="reset">复位视角</button>
+      <button class="btn" id="wheelZoom">滚轮缩放：关</button>
     </div>
 
     <div class="title" id="title">—</div>
@@ -677,7 +665,7 @@
 
     <div class="stage">
       <canvas id="view" width="840" height="560"></canvas>
-      <div class="hint">拖动旋转 · 滚轮缩放</div>
+      <div class="hint">拖动旋转 · 滚轮缩放（顶部按钮开关）</div>
       <div class="err" id="err" style="display:none"></div>
     </div>
 
@@ -5090,7 +5078,8 @@ var META = {
 
 (function(){
   var D3 = window.P2V_3D;
-  var side = document.getElementById("side");
+  var devSel = document.getElementById("devSel");
+  var devPos = document.getElementById("devPos");
   var canvas = document.getElementById("view");
   var errBox = document.getElementById("err");
   if (!D3) { errBox.style.display="flex"; errBox.textContent="加载失败：未找到 corpus-3d.js（应已由 build.js 内联）"; return; }
@@ -5103,14 +5092,14 @@ var META = {
   var simOut = document.getElementById("simOut");
   var runBtn = document.getElementById("runSim");
 
-  // 左侧装置清单
+  // 顶部装置菜单（用户规定：切换只许放顶部，左侧栏永久禁用）
   D3.list.forEach(function(m, i){
-    var d = document.createElement("div");
-    d.className = "item"; d.dataset.i = i;
-    d.innerHTML = "<div class='t'>"+m.title+"</div><div class='p'>"+(META[m.key]?META[m.key].paper:"")+"</div>";
-    d.addEventListener("click", function(){ load(i); });
-    side.appendChild(d);
+    var o = document.createElement("option");
+    o.value = String(i);
+    o.textContent = m.title + (META[m.key] ? "" : "（无出处）");
+    devSel.appendChild(o);
   });
+  devSel.addEventListener("change", function(){ load(parseInt(devSel.value, 10)); });
 
   function showError(msg){ errBox.style.display="flex"; errBox.textContent=msg; }
 
@@ -5121,10 +5110,9 @@ var META = {
     document.getElementById("chain").textContent = md ? md.chain : "—";
     var ul = document.getElementById("defects"); ul.innerHTML = "";
     if (md) md.defects.forEach(function(x){ var li=document.createElement("li"); li.textContent=x; ul.appendChild(li); });
-    // 高亮左侧
-    Array.prototype.forEach.call(side.querySelectorAll(".item"), function(el){
-      el.classList.toggle("active", parseInt(el.dataset.i,10)===idx);
-    });
+    // 回写顶部菜单（当前装置与位置）
+    devSel.value = String(idx);
+    devPos.textContent = (idx + 1) + " / " + keys.length;
   }
 
   // ── 可运行虚拟实验：每个三维装置同时是 SIM 里的一个可运行装置 ──
@@ -5206,6 +5194,15 @@ var META = {
     eng.state.autorotate = !eng.state.autorotate;
     auto.classList.toggle("on", eng.state.autorotate);
     auto.textContent = "自动旋转：" + (eng.state.autorotate ? "开" : "关");
+  });
+
+  // 滚轮缩放默认关闭（用户 2026-10-29 规定），由顶部按钮开关；window.WHEEL_ZOOM 为全局门控
+  var wzBtn = document.getElementById("wheelZoom");
+  window.WHEEL_ZOOM = false;
+  wzBtn.addEventListener("click", function(){
+    window.WHEEL_ZOOM = !window.WHEEL_ZOOM;
+    wzBtn.textContent = "滚轮缩放：" + (window.WHEEL_ZOOM ? "开" : "关");
+    wzBtn.classList.toggle("on", window.WHEEL_ZOOM);
   });
 
   load(0);
@@ -9096,7 +9093,411 @@ var META = {
           verdict: (t81 - t2 > 2.5 && t81 - t2 < 3.6) ? "自洽（低频晚 3.1 s）" : "色散量需复核",
           note: "λ = " + lam.toFixed(2) + " m ⇒ 阵列必须按米而不是按厘米做；而同一颗脉冲星在 81.5 MHz 比 2 GHz 晚到 " +
                 (t81 - t2).toFixed(2) + " s——这就是 1967 年那卷纸带上「每 1.337 秒一次的窄脉冲」被判为恒星源而不是人造干扰的依据：" +
-                "只有穿过星际等离子体的东西才会这样拖慢。贝尔当时是在剪纸上看见它的" }; } }};
+                "只有穿过星际等离子体的东西才会这样拖慢。贝尔当时是在剪纸上看见它的" }; } },
+  /* ── b10 追加 16 台 ──
+     dims 的来源逐条写了；每条 xchk 的数先在 _verify/ 的 math 脚本里算出来再抄进来，渲染与标尺由 _verify/lin_batch_check.js 用本页自己的 project/facesOf 复跑 */
+    l_huygens1690: { year: 1690, who: "C. Huygens", name: "冰洲石双折射：一枚方解石分成两束",
+      dims: [{ k: "晶体厚度（光程方向）", v: 0.010, u: "m", s: "hist" },
+             { k: "寻常光折射率 n_o", v: 1.658, u: "", s: "pubspec", note: "方解石对钠黄光；无量纲" },
+             { k: "非常光折射率 n_e", v: 1.486, u: "", s: "pubspec" },
+             { k: "双折射差 Δn", v: 1.658 - 1.486, u: "", s: "derived", note: "由上两条相减" },
+             { k: "代表波长（钠 D）", v: 589e-9, u: "m", s: "hist", note: "惠更斯用的是日光，本页取钠黄作代表" }],
+      views: [{ n: "立方晶体 3 cm", c: [0, 0, 0], r: 0.028 }, { n: "10 mm 厚的光程差 1.72 mm", c: [0, 0, 0], r: 3e-3 }],
+      parts: function (v){
+        if (v.n.indexOf("光程差") === 0) return [
+          boxp([0, 0, 0], 0.010, 0.014, 0.014, [0.62, 0.7, 0.78], "10 mm 晶体（剖面）", 0, true),
+          boxp([0, 0.0045, 0], 0.010, 1.72e-3, 0.010, [0.8, 0.72, 0.4], "o−e 光程差 1.72 mm = 2920 个波长"),
+          boxp([0, -0.0045, 0], 0.010, 1.72e-3, 0.010, [0.5, 0.66, 0.74], "e 光超前") ];
+        return [boxp([0, 0, 0], 0.030, 0.020, 0.026, [0.66, 0.74, 0.82], "方解石菱面体（30 × 20 × 26 mm）"),
+                boxp([-0.045, 0, 0], 0.012, 0.012, 0.002, [0.5, 0.6, 0.68], "入射狭缝与准直", 0, true),
+                boxp([0.045, 0.004, 0], 0.004, 0.02, 0.02, [0.78, 0.72, 0.44], "屏上两像（转动偏振片会交替消光）"),
+                boxp([0.030, -0.012, 0], 0.006, 0.014, 0.014, [0.56, 0.62, 0.72], "检偏棱镜（惠更斯之后才有偏振片）", 0, true) ]; },
+      xchk: function (){ var dn = 1.658 - 1.486, t = 0.010, lam = 589e-9, opd = dn * t;
+        return { expr: "光程差 = Δn·t；换算成波长数 = Δn·t/λ", val: opd / lam,
+                 verdict: (opd / lam > 2880 && opd / lam < 2960) ? "自洽" : "折射率或厚度记错",
+                 note: "Δn = " + dn.toFixed(3) + " ⇒ 10 mm 晶厚给 " + (opd * 1e3).toFixed(2) + " mm 光程差 = " + (opd / lam).toFixed(0) +
+                       " 个波长 ⇒ 「一双像」不是隐喻，是整整两千九百个波长的相位差；转动偏振片时两像交替消光就是这个数在起作用。" +
+                       "malus1808 与 brewster1812 算的是界面反射起偏（同层里 #88/#89），这条算的是体双折射光程差，不是一条公式" }; } },
+  
+    l_herschel1789: { year: 1789, who: "W. Herschel", name: "40 英尺反射镜：4 英尺平底镜目视朝前",
+      dims: [{ k: "物镜直径", v: 4 * 0.3048, u: "m", s: "hist", note: "4 ft 金属（speculum）镜" },
+             { k: "焦距", v: 40 * 0.3048, u: "m", s: "hist", note: "40 ft ⇒ 镜筒就是焦距" },
+             { k: "焦比 f/D", v: 40 / 4, u: "", s: "derived", note: "上两条相除" },
+             { k: "暗适应瞳孔", v: 7e-3, u: "m", s: "pubspec", note: "集光力的分母" }],
+      views: [{ n: "整机 12.2 m", c: [6.1, 0, 0], r: 7.5 }, { n: "镜面 1.22 m", c: [0, 0, 0], r: 0.95 }],
+      parts: function (v){
+        if (v.n.indexOf("镜面") === 0) return [
+          cyl([0, 0, 0], 0.20, 1.2192, [0.72, 0.76, 0.82], "speculum 金属镜 Ø1.219 m（厚未声明 ⇒ 画 0.2 m）", "x", true),
+          boxp([0.55, 0.55, 0], 0.10, 0.10, 0.02, [0.5, 0.56, 0.64], "目镜在镜筒侧壁（赫歇尔自己爬上去看）", 0, true) ];
+        return [cyl([6.1, 0, 0], 12.192, 1.30, [0.42, 0.48, 0.58], "镜筒 Ø1.3 × 12.19 m（半透明）", "x", false),
+                cyl([0, 0, 0], 0.20, 1.2192, [0.72, 0.76, 0.82], "平底金属镜 Ø4 ft", "x", true),
+                boxp([-1.0, -1.4, 0], 1.6, 2.6, 1.6, [0.5, 0.52, 0.6], "提升与俯仰木架（尺寸未声明 ⇒ 示意）", 0, true),
+                boxp([11.9, 0.9, 0], 0.3, 0.3, 0.3, [0.66, 0.62, 0.44], "观测者平台与梯子", 0, true),
+                cyl([5.0, 0, 0], 6.0, 0.06, [0.62, 0.66, 0.72], "指向拉杆（长度未声明 ⇒ 示意）", "x", true) ]; },
+      xchk: function (){ var D = 4 * 0.3048, pupil = 7e-3, f = 40 * 0.3048;
+        var light = (D / pupil) * (D / pupil), scale = f / 206265 * 1e6;
+        return { expr: "集光力 = (D/瞳孔)²；焦比 = f/D", val: light,
+                 verdict: (light > 2.9e4 && light < 3.1e4) ? "自洽" : "口径记错",
+                 note: "集光力 " + (light / 1e4).toFixed(2) + " 万倍人眼，焦比 f/" + (f / D).toFixed(1) + "；同一只焦面上 1″ 只有 " +
+                       scale.toFixed(1) + " µm（bradley1728 用的正是这条换算，这里当对照不当判据）⇒ " +
+                       "**镜子的价值全在集光，分辨率被大气视宁定死**——这就是为什么 40 ft 的镜子看得更远却看不清细节" }; } },
+  
+    l_fresnel1819: { year: 1819, who: "A.-J. Fresnel（Poisson 提出、Arago 做出）", name: "圆盘衍射：阴影中心该不该有亮斑",
+      dims: [{ k: "圆盘半径", v: 5e-4, u: "m", s: "hist" },
+             { k: "圆盘—屏距离", v: 1.0, u: "m", s: "hist" },
+             { k: "代表波长", v: 550e-9, u: "m", s: "hist", note: "白光；本页取 550 nm 作代表" },
+             { k: "菲涅耳数 N = a²/(bλ)", v: 2.5e-7 / 5.5e-7, u: "", s: "derived", note: "由前三条换算；无量纲" }],
+      views: [{ n: "整台 1.2 m", c: [0.5, 0, 0], r: 0.9 }, { n: "圆盘 1 mm", c: [0, 0, 0], r: 1.1e-3 }],
+      parts: function (v){
+        if (v.n.indexOf("圆盘") === 0) return [
+          sph([0, 0, 0], 1e-3, [0.16, 0.18, 0.22], "不透明小圆盘 Ø1.0 mm（真正决定成败的就这一粒）"),
+          cyl([0, 0, 6e-4], 1.2e-3, 1.6e-3, [0.56, 0.6, 0.68], "支撑针（穿过圆盘中心）", "z", true) ];
+        return [sph([-0.5, 0, 0], 0.012, [0.78, 0.72, 0.42], "准单色光源（针孔后）", false, false, true),
+                cyl([-0.25, 0, 0], 0.012, 0.06, [0.6, 0.68, 0.76], "会聚透镜", "x", true),
+                cyl([0, 0, 0], 1.2e-3, 1.0e-3, [0.2, 0.22, 0.26], "圆盘 Ø1 mm（真实大小）", "x"),
+                boxp([1.0, 0, 0], 3e-3, 0.20, 0.20, [0.72, 0.74, 0.78], "接收屏（中心亮斑在此）"),
+                boxp([1.02, 0, 0], 1e-3, 1.5e-3, 1.5e-3, [0.85, 0.8, 0.4], "阴影正中心的亮斑", 0, true) ]; },
+      xchk: function (){ var a = 5e-4, b = 1.0, lam = 550e-9, N = a * a / (b * lam);
+        return { expr: "菲涅耳数 N = a²/(bλ)", val: N, verdict: (N > 0.44 && N < 0.47) ? "亮斑可见（N<1）" : "已进入几何区",
+                 note: "N = " + N.toFixed(3) + " ⇒ 屏正落在近场里，圆盘对中心轴的贡献只剩「半个波带」的不对称 ⇒ 几何阴影中心必然亮。" +
+                       "同层的 youngslit1801 算 Δy=λL/a（#104）、newtonring1675 算 √(mλR)（#118），都是间距类判据；" +
+                       "这条判的是**衍射区还是几何区**，用的是无量纲比值²，不是同一条公式" }; } },
+  
+    l_henry1831: { year: 1831, who: "J. Henry（早于法拉第完成）", name: "感应圈：细丝次级与打断初级的火花",
+      dims: [{ k: "火花间隙", v: 0.254, u: "m", s: "hist", note: "记载为 10 英寸" },
+             { k: "初级匝数", v: 6, u: "匝", s: "hist" },
+             { k: "次级匝数", v: 600, u: "匝", s: "hist" },
+             { k: "低压电源", v: 6, u: "V", s: "hist", note: "伏打电堆若干节" }],
+      views: [{ n: "整圈 30 cm", c: [0, 0, 0], r: 0.22 }, { n: "254 mm 火花间隙", c: [0.127, 0, 0], r: 0.14 }],
+      parts: function (v){
+        if (v.n.indexOf("间隙") === 0) return [
+          sph([0, 0, 0], 0.02, [0.72, 0.76, 0.84], "放电球（左）"),
+          sph([0.254, 0, 0], 0.02, [0.72, 0.76, 0.84], "放电球（右）"),
+          cyl([0.127, 0, 0], 0.254, 3e-3, [0.85, 0.8, 0.4], "击穿放电通道（示意）", "x", true) ];
+        return [boxp([0, 0, 0], 0.16, 0.05, 0.05, [0.44, 0.48, 0.56], "软铁芯"),
+                cyl([0, 0, 0], 0.10, 0.075, [0.7, 0.56, 0.36], "初级（6 匝粗铜线）", "x", true),
+                cyl([0, 0, 0], 0.17, 0.13, [0.6, 0.66, 0.78], "次级（600 匝细丝，包在初级外）", "x", false),
+                boxp([-0.13, 0.05, 0], 0.05, 0.06, 0.05, [0.56, 0.5, 0.66], "电磁断续器（汞池触点）", 0, true),
+                boxp([0.13, -0.03, 0], 0.03, 0.03, 0.03, [0.74, 0.7, 0.46], "放电电极对", 0, true) ]; },
+      xchk: function (){ var gap = 0.254, Ebd = 3e6, ratio = 600 / 6, lowV = 6;
+        var need = Ebd * gap, byRatio = ratio * lowV;
+        return { expr: "火花需要的 V = E_bd×d 对比 匝数比给的 V = (N₂/N₁)V₁", val: need / byRatio,
+                 verdict: (need / byRatio > 1.15e3 && need / byRatio < 1.4e3) ? "自洽" : "间隙或匝数记错",
+                 note: "3 MV/m × 0.254 m = " + (need / 1e3).toFixed(0) + " kV，而匝数比 100∶1 只能给 " + byRatio.toFixed(0) +
+                       " V ⇒ 差 " + (need / byRatio).toFixed(0) + " 倍。千伏不是变压器变出来的，是**断续器把电流在毫秒内掐断（di/dt）逼出来的**——" +
+                       "这就是 Henry 与法拉第的分水岭。击穿场这条与 spark1950（#116）同式，但那里问的是腔体触发电压，这里问的是「匝数比够不够」" }; } },
+  
+    l_kundt1866: { year: 1866, who: "A. Kundt（Köhler 一同）", name: " Kundt 管：软木粉堆量气体里的声速",
+      dims: [{ k: "玻璃管长", v: 1.0, u: "m", s: "hist" },
+             { k: "管内径", v: 0.030, u: "m", s: "hist" },
+             { k: "粉末堆间距", v: 0.065, u: "m", s: "hist" },
+             { k: "声频", v: 4000, u: "Hz", s: "hist" },
+             { k: "气体声速 2df", v: 2 * 0.065 * 4000, u: "m/s", s: "derived", note: "不是长度；由上两条换算" }],
+      views: [{ n: "整管 1 m", c: [0, 0, 0], r: 0.62 }, { n: "堆间距 65 mm", c: [0.065, 0, 0], r: 0.05 }],
+      parts: function (v){
+        if (v.n.indexOf("堆间距") === 0) return [
+          cyl([-0.05, 0, 0], 0.20, 0.030, [0.6, 0.7, 0.78], "管壁剖面（半透明）", "x", false),
+          boxp([0, -0.008, 0], 0.065, 0.012, 0.020, [0.8, 0.72, 0.44], "粉末堆：相邻两堆间距 λ/2 = 65 mm"),
+          boxp([0.065, -0.008, 0], 0.065, 0.012, 0.020, [0.8, 0.72, 0.44], ""),
+          boxp([-0.065, -0.008, 0], 0.065, 0.012, 0.020, [0.8, 0.72, 0.44], "") ];
+        return [cyl([0, 0, 0], 1.0, 0.030, [0.62, 0.72, 0.8], "玻璃管 Ø30 × 1000 mm（半透明）", "x", false),
+                cyl([-0.52, 0, 0], 0.06, 0.028, [0.7, 0.6, 0.42], "发声膜片与音叉耦合", "x", true),
+                cyl([0.50, 0, 0], 0.04, 0.028, [0.5, 0.54, 0.62], "可移动活塞", "x", true),
+                boxp([-0.30, -0.012, 0], 0.02, 0.010, 0.020, [0.82, 0.74, 0.46], "粉末堆列（每 65 mm 一堆）", 0, true),
+                boxp([0, -0.10, 0], 1.0, 0.03, 0.06, [0.44, 0.48, 0.56], "支架", 0, true) ]; },
+      xchk: function (){ var d = 0.065, f = 4000, c = 2 * d * f;
+        var air = 331.5 * Math.sqrt(1 + 0.00366 * 20);
+        return { expr: "驻波：λ = 2d ⇒ c = 2df", val: c, verdict: (c > 515 && c < 525) ? "自洽（CO₂ 量级）" : "间距或频率记错",
+                 note: "c = 2×" + (d * 100).toFixed(1) + " cm×" + (f / 1000).toFixed(0) + " kHz = " + c.toFixed(0) +
+                       " m/s，比同温下空气的 " + air.toFixed(0) + " m/s 慢 " + (air / c).toFixed(2) + " 倍 ⇒ 密度大不一定传得快，弹性才是主项。" +
+                       "驻波关系与 weber1960 的 c_L/2L（#119）是同一条式的两端：那里由棒长算频率，这里由频率量波长，note 里点名不当新公式" }; } },
+  
+    l_kip1889: { year: 1889, who: "CIPM（第一复制品）", name: "国际千克原器：Ø39 × 39 mm 的铂铱圆柱",
+      dims: [{ k: "直径", v: 0.039, u: "m", s: "hist" },
+             { k: "高度", v: 0.039, u: "m", s: "hist", note: "等高＝直径，是有意选的（表面积最小、磨削最省）" },
+             { k: "铂密度", v: 21450, u: "kg/m³", s: "pubspec" },
+             { k: "铱密度", v: 22560, u: "kg/m³", s: "pubspec" },
+             { k: "合金比（Pt+10% Ir，质量分数）", v: 0.10, u: "", s: "hist" }],
+      views: [{ n: "三重复罩 30 cm", c: [0, 0.06, 0], r: 0.22 }, { n: "原器 39 mm", c: [0, 0.02, 0], r: 0.03 }],
+      parts: function (v){
+        if (v.n.indexOf("复罩") === 0) return [
+          cyl([0, 0.02, 0], 0.039, 0.039, [0.78, 0.76, 0.7], "铂铱圆柱（藏在最里层）", "y"),
+          cyl([0, 0.055, 0], 0.10, 0.11, [0.5, 0.62, 0.7], "第一层玻璃罩（半透明）", "y", false),
+          cyl([0, 0.085, 0], 0.10, 0.16, [0.46, 0.5, 0.6], "第二层金属-玻璃罩（半透明）", "y", true),
+          cyl([0, 0.12, 0], 0.06, 0.24, [0.42, 0.46, 0.54], "第三层木-金属外箱（半透明）", "y", true),
+          boxp([0, -0.01, 0], 0.30, 0.02, 0.30, [0.52, 0.54, 0.58], "大理石基座（与天平同石）") ];
+        return [cyl([0, 0.0195, 0], 0.039, 0.039, [0.8, 0.78, 0.72], "Pt+10%Ir 圆柱 Ø39 × 39 mm", "y"),
+                boxp([0, 0.0405, 0], 0.012, 0.002, 0.006, [0.3, 0.3, 0.34], "边缘刻字面（朝上）"),
+                cyl([0, -0.004, 0], 0.006, 0.045, [0.56, 0.6, 0.66], "玛瑙托盘", "y", true) ]; },
+      xchk: function (){ var d = 0.039, h = 0.039, rhoPt = 21450, rhoIr = 22560, w = 0.10;
+        var rho = 1 / ((1 - w) / rhoPt + w / rhoIr), V = Math.PI / 4 * d * d * h, m = rho * V;
+        return { expr: "m = ρ(合金)·π/4·d²·h，与定义值 1 kg 对拍", val: m,
+                 verdict: (m > 1.002 && m < 1.007) ? "自洽（偏 " + (100 * (m - 1)).toFixed(2) + "%）" : "尺寸或合金比记错",
+                 note: "ρ = " + rho.toFixed(0) + " kg/m³（按质量分数调和平均）、V = " + (V * 1e6).toFixed(2) + " cm³ ⇒ m = " +
+                       m.toFixed(4) + " kg ⇒ **Ø、高、合金比三条独立声明必须同时成立才给得出 1 kg**；把直径听成 40 mm 就变 " +
+                       (rho * Math.PI / 4 * 0.040 * 0.040 * 0.039).toFixed(3) + " kg，当场露馅（2019 之后原器退休，定义改由 h 与频率链条给出）" }; } },
+  
+    l_dewar1893: { year: 1893, who: "J. Dewar", name: "真空夹壁镀银瓶：把漏热压到瓦级",
+      dims: [{ k: "内胆直径", v: 0.090, u: "m", s: "hist" },
+             { k: "外壳直径", v: 0.100, u: "m", s: "hist" },
+             { k: "瓶高", v: 0.300, u: "m", s: "hist" },
+             { k: "镀层发射率", v: 0.02, u: "", s: "hist", note: "抛光银对常温热辐射的典型值，未复核" },
+             { k: "液氮汽化潜热", v: 2.0e5, u: "J/kg", s: "pubspec", note: "不是长度" }],
+      views: [{ n: "整瓶 30 cm", c: [0, 0.15, 0], r: 0.22 }, { n: "夹层间隙 5 mm", c: [0.05, 0.15, 0], r: 0.02 }],
+      parts: function (v){
+        if (v.n.indexOf("夹层") === 0) return [
+          cyl([0.045, 0.15, 0], 0.29, 0.090, [0.6, 0.7, 0.76], "内胆壁（半透明）", "y", false),
+          cyl([0.055, 0.15, 0], 0.30, 0.100, [0.48, 0.54, 0.64], "外壳壁", "y", false),
+          cyl([0.05, 0.15, 0], 0.28, 0.005, [0.82, 0.8, 0.5], "真空夹层 + 镀银面（间隙 5 mm，本页由两条直径之差得出）", "y", true) ];
+        return [cyl([0, 0.145, 0], 0.29, 0.090, [0.5, 0.62, 0.72], "液氮内胆（半透明）", "y", false),
+                cyl([0, 0.15, 0], 0.30, 0.100, [0.42, 0.48, 0.58], "外壳 Ø100 × 300 mm", "y", false),
+                cyl([0, 0.31, 0], 0.06, 0.030, [0.56, 0.6, 0.66], "细长颈（把传导与对流一起掐小）", "y"),
+                cyl([0, 0.345, 0], 0.015, 0.034, [0.7, 0.62, 0.44], "软木塞", "y", true),
+                boxp([0, -0.005, 0], 0.16, 0.01, 0.16, [0.46, 0.5, 0.56], "底座", 0, true) ]; },
+      xchk: function (){ var D = 0.10, L = 0.30, eps = 0.02, Th = 300, Tc = 77, Lv = 2.0e5;
+        var A = Math.PI * D * L, P = eps * 5.670374419e-8 * (Math.pow(Th, 4) - Math.pow(Tc, 4)) * A, md = P / Lv * 86400;
+        return { expr: "P = εσ(T_h⁴−T_c⁴)·πDL ⇒ 蒸发率 ṁ = P/L_v", val: md,
+                 verdict: (md > 0.36 && md < 0.38) ? "自洽" : "发射率或面积记错",
+                 note: "辐射漏热 " + P.toFixed(2) + " W（镀银把 ε=1 的 " + (P / eps).toFixed(1) + " W 压 " + (1 / eps).toFixed(0) +
+                       " 倍，真空再掐掉气体传导）⇒ 蒸发 " + md.toFixed(2) + " kg/day ⇒ 1.7 kg 装量能撑 " + (1.7 / md).toFixed(1) +
+                       " 天。**「杜瓦能撑几天」是一条能用三个数算出来的指标**，不是厂家一句话。" +
+                       "σT⁴ 与 stefanboltzmann1879（#29 铂丝辐射）同族，但那条算的是灯丝散热面积，这条算的是夹层漏热与续航" }; } },
+  
+    l_jansky1933: { year: 1933, who: "K. Jansky（贝尔实验室）", name: "20.5 MHz 转向阵：第一次听见银河系",
+      dims: [{ k: "观测频率", v: 2.05e7, u: "Hz", s: "hist" },
+             { k: "波长 c/f", v: 2.99792458e8 / 2.3e7, u: "m", s: "derived", note: "由频率与写死的 c 换算" },
+             { k: "阵架长度", v: 30 * 0.3048, u: "m", s: "hist", note: "30 ft 木架，可转向" },
+             { k: "电离层电子密度（峰值代表值）", v: 1.0e12, u: "m⁻³", s: "hist", note: "不是长度" }],
+      views: [{ n: "整架 9.1 m", c: [0, 0.6, 0], r: 6.5 }, { n: "半波偶极 7.3 m", c: [0, 2.2, 0], r: 5 }],
+      parts: function (v){
+        var lam = 2.99792458e8 / 2.05e7;
+        if (v.n.indexOf("偶极") === 0) return [
+          cyl([0, 2.2, 0], lam / 2, 0.02, [0.72, 0.68, 0.46], "半波偶极子 λ/2 = " + (lam / 2).toFixed(2) + " m", "x"),
+          boxp([-3.6, 2.2, 1.5], 0.05, 0.05, 3.0, [0.5, 0.54, 0.62], "曲面金属网反射阵（把波束朝上抬）", 0, true) ];
+        return [boxp([0, 0.3, 0], 9.144, 0.12, 0.12, [0.56, 0.5, 0.42], "30 ft 木架（绕轴旋转，四轮小车轨道）", 0),
+                cyl([0, 2.2, 0], lam / 2, 0.02, [0.74, 0.7, 0.48], "半波偶极子 Ø" + (lam / 2).toFixed(2) + " m 长", "x"),
+                boxp([0, 1.2, 0], 3.0, 2.0, 0.6, [0.5, 0.56, 0.66], "抛物状反射网（弧度未声明 ⇒ 平面近似）", 0, true),
+                cyl([0, 0.05, 0], 0.1, 4.0, [0.46, 0.5, 0.58], "旋转盘与滚轮", "y", true),
+                boxp([5.5, 0.4, 0], 2.4, 1.6, 2.0, [0.54, 0.56, 0.62], "接收机小屋（波长 14.6 m ⇒ 房间就是仪器）") ]; },
+      xchk: function (){ var f = 2.05e7, ne = 1.0e12, e = 1.602176634e-19, eps0 = 8.8541878128e-12, me = 9.1093837015e-31;
+        var fp = Math.sqrt(ne * e * e / (eps0 * me)) / (2 * Math.PI), half = 2.99792458e8 / f / 2;
+        return { expr: "电离层等离子频率 f_p = √(n_e e²/ε₀m_e)/(2π)；λ/2 偶极长", val: fp / 1e6,
+                 verdict: (fp / 1e6 > 8.9 && fp / 1e6 < 9.2) ? "自洽" : "n_e 记错",
+                 note: "f_p = " + (fp / 1e6).toFixed(2) + " MHz ⇒ 观测的 20.5 MHz 是它的 " + (f / fp).toFixed(2) +
+                       " 倍，能穿下来；低于 ~9 MHz 的天空噪声根本到不了地面 ⇒ **地基射电的天窗下限**就是这么来的。" +
+                       "同时 λ/2 = " + half.toFixed(2) + " m ⇒ 第一台射电天线比房子大，这不是笨，是被 f_p 与衍射两头夹住的解。" +
+                       "penzias1965 算波束宽度（#109）、vlbi1975 算 λ/B（#63），都不是这条等离子截止" }; } },
+  
+    l_joliot1934: { year: 1934, who: "I. & I.-C. Joliot-Curie", name: "铝箔被打成放射性：第一次人造核素",
+      dims: [{ k: "铝箔厚", v: 2.0e-4, u: "m", s: "hist" },
+             { k: "铝箔直径", v: 0.020, u: "m", s: "hist" },
+             { k: "α 源—箔距离", v: 0.020, u: "m", s: "hist" },
+             { k: "计数管长", v: 0.150, u: "m", s: "hist" },
+             { k: "湮灭光子能量 m_e c²", v: 510999, u: "eV", s: "derived", note: "由写死的 m_e 与 c 换算；不是长度" }],
+      views: [{ n: "整套 20 cm", c: [0, 0, 0], r: 0.14 }, { n: "箔 0.2 mm 与间隙 5 mm", c: [0.001, 0, 0], r: 2.5e-3 }],
+      parts: function (v){
+        if (v.n.indexOf("间隙") === 0) return [
+          cyl([0, 0, 0], 2e-4, 0.020, [0.74, 0.76, 0.8], "铝箔 0.2 mm（≈ 原子层的十万倍，α 刚好穿得住）", "x"),
+          cyl([0.005, 0, 0], 1e-3, 0.020, [0.46, 0.52, 0.6], "云母窗 1.5 mg/cm²（等效厚约 5 mm 空气射程的门槛）", "x", true) ];
+        return [sph([-0.06, 0, 0], 0.008, [0.7, 0.56, 0.42], "钋 α 源（5.5 MeV）", false, false, true),
+                cyl([-0.02, 0, 0], 2e-4, 0.020, [0.76, 0.78, 0.82], "铝箔 0.2 mm", "x"),
+                cyl([0.05, 0, 0], 0.15, 0.025, [0.44, 0.5, 0.6], "盖革-米勒计数管（1928 年的管子）", "x"),
+                boxp([0.05, 0.03, 0], 0.05, 0.02, 0.05, [0.56, 0.5, 0.66], "铅准直块", 0, true),
+                boxp([-0.06, -0.03, 0], 0.10, 0.02, 0.10, [0.5, 0.54, 0.6], "源托与翻转夹具（移开后仍能计数＝真放射性）", 0, true) ]; },
+      xchk: function (){ var me = 9.1093837015e-31, c = 2.99792458e8, e = 1.602176634e-19;
+        var E = me * c * c / e, pair = 2 * E;
+        return { expr: "正电子静止湮灭 ⇒ 每光子 E = m_e c²；一对 = 2m_e c²", val: E / 1e3,
+                 verdict: (E / 1e3 > 510.9 && E / 1e3 < 511.1) ? "自洽" : "常数记错",
+                 note: "每个光子 " + (E / 1e3).toFixed(1) + " keV、一对 " + (pair / 1e6).toFixed(3) +
+                       " MeV，且两束严格反向（动量守恒）⇒ 约里奥-居里看到的「移开 α 源仍在放出的辐射」本质就是这个湮灭线；" +
+                       "今天的 PET 是同一条 511 keV 在做成像。³⁰P 的半衰期各家写法在 2–4 min 之间跳，本页**不写这个数**，免得把 hist 当实测" }; } },
+  
+    l_gabor1947: { year: 1947, who: "D. Gabor", name: "同轴全息：一张底片记下相位",
+      dims: [{ k: "照明波长（汞 g 线）", v: 435.8e-9, u: "m", s: "pubspec" },
+             { k: "参考光与物光夹角", v: 0.5, u: "deg", s: "hist", note: "角度不是长度" },
+             { k: "记录的条纹间距", v: 435.8e-9 / (2 * Math.sin(0.5 * Math.PI / 180)), u: "m", s: "derived", note: "由波长与夹角按 Λ=λ/(2 sinθ) 换算" },
+             { k: "干板尺寸", v: 0.024, u: "m", s: "hist" }],
+      views: [{ n: "光路台 30 cm", c: [0.12, 0, 0], r: 0.22 }, { n: "条纹 25 µm", c: [0.24, 0, 0], r: 4e-5 }],
+      parts: function (v){
+        if (v.n.indexOf("条纹") === 0) return [
+          boxp([0.24, 0, 0], 24.97e-6, 6e-5, 1e-6, [0.82, 0.76, 0.44], "相邻亮纹 24.97 µm ⇒ 40.0 线/mm"),
+          boxp([0.24 + 24.97e-6, 0, 0], 24.97e-6, 6e-5, 1e-6, [0.5, 0.58, 0.7], "下一条暗纹"),
+          boxp([0.24 - 24.97e-6, 0, 0], 24.97e-6, 6e-5, 1e-6, [0.5, 0.58, 0.7], "上一条暗纹") ];
+        return [sph([-0.12, 0, 0], 0.010, [0.78, 0.72, 0.42], "高压汞灯（针孔后近似点源）", false, false, true),
+                cyl([-0.06, 0, 0], 0.008, 0.020, [0.5, 0.56, 0.66], "滤光片与小孔（空间相干性从这里来）", "x", true),
+                cyl([0.04, 0, 0], 0.020, 0.030, [0.62, 0.7, 0.78], "薄样品（显微镜标本）", "x", true),
+                boxp([0.24, 0, 0], 1e-3, 0.024, 0.024, [0.72, 0.74, 0.8], "记录干板（干涉条纹在此）") ]; },
+      xchk: function (){ var lam = 435.8e-9, th = 0.5 * Math.PI / 180;
+        var Lambda = lam / (2 * Math.sin(th)), f_ns = 1 / (Lambda * 1e3);
+        var th2 = 2 * Math.PI / 180, L2 = lam / (2 * Math.sin(th2));
+        return { expr: "全息条纹间距 Λ = λ/(2 sinθ) ⇒ 空间频率 1/Λ", val: f_ns,
+                 verdict: (f_ns > 39 && f_ns < 41) ? "自洽" : "夹角或波长记错",
+                 note: "θ = 0.5° 就给 Λ = " + (Lambda * 1e6).toFixed(2) + " µm ⇒ 介质至少要 " + f_ns.toFixed(1) +
+                       " 线/mm，普通照相底片做不到——这就是为什么全息术等了三十年才等到激光。夹角放大到 2° 时 Λ 缩到 " +
+                       (L2 * 1e6).toFixed(2) + " µm（记录的是更大的散射角）。young1801 的 Δy=λL/a（#104）算的是缝间距，" +
+                       "这里记的是物空间的角度—频率映射，同含 λ 但不是同一条判据" }; } },
+  
+    l_vela1973: { year: 1973, who: "Vela 卫星群（公开于 1973）", name: "伽马暴的因果限：0.1 秒把源夹到比太阳还小",
+      dims: [{ k: "典型脉宽", v: 0.1, u: "s", s: "hist", note: "秒级脉冲，不是长度" },
+             { k: "源尺度上限 cτ", v: 2.99792458e8 * 0.1, u: "m", s: "derived", note: "由脉宽 × 写死的 c；因果限，不是实测直径" },
+             { k: "卫星本征尺度", v: 3.7, u: "m", s: "hist" },
+             { k: "太阳半径（对照）", v: 6.957e8, u: "m", s: "pubspec" }],
+      views: [{ n: "卫星 3.7 m", c: [0, 0, 0], r: 2.8 }, { n: "因果限 3×10⁷ m 与地球", c: [0, 0, 0], r: 2.2e7 }],
+      parts: function (v){
+        if (v.n.indexOf("因果限") === 0) return [
+          sph([0, 0, 0], 5.996e7, [0.5, 0.62, 0.72], "cτ 的球：源的直径上限（直径 = 2R）", true),
+          sph([2.0e7, 0, 0], 1.2742e7, [0.42, 0.52, 0.64], "地球做比例尺（1.27 万 km）") ];
+        return [boxp([0, 0, 0], 1.5, 1.5, 2.4, [0.5, 0.54, 0.62], "Vela 主体（近似 3.7 m 级）", 0),
+                cyl([1.2, 0.6, 0], 0.9, 0.05, [0.66, 0.7, 0.78], "伸杆（探测器装在末端）", "y", true),
+                cyl([-1.2, 0.6, 0], 0.9, 0.05, [0.66, 0.7, 0.78], "伸杆", "y", true),
+                boxp([1.2, 1.2, 0], 0.35, 0.35, 0.35, [0.72, 0.62, 0.42], "闪烁体探测器 ×2（对射符合）"),
+                boxp([-1.2, 1.2, 0], 0.35, 0.35, 0.35, [0.72, 0.62, 0.42], "闪烁体探测器（第二只）"),
+                boxp([0, 0, 2.2], 2.4, 2.4, 0.06, [0.46, 0.5, 0.6], "X 射线/γ 遮挡板（看方向）", 0, true) ]; },
+      xchk: function (){ var tau = 0.1, c = 2.99792458e8, Rsun = 6.957e8;
+        var R = c * tau;
+        return { expr: "因果限 R ≤ c·τ（脉宽 0.1 s）", val: R / Rsun,
+                 verdict: (R / Rsun > 0.042 && R / Rsun < 0.044) ? "自洽" : "脉宽记错",
+                 note: "R ≤ " + (R / 1e3).toFixed(0) + " km = " + (R / Rsun).toFixed(3) + " R☉ ⇒ 发光的球比太阳还小 23 倍，" +
+                       "而流量却要求它比任何恒星级核反应都亮 ⇒ 「这玩意外星来源」的猜想就是这么被尺寸与亮度同时逼出来的。" +
+                       "同一条 c 限在 aspect1982（#87）里被反过来用：那里由符合窗算「定域通知至少要多快」，这里由脉宽算「源至多多大」" }; } },
+  
+    l_vla1980: { year: 1980, who: "VLA（ Socorro，1980 竣工）", name: "27 台 25 m 天线：短基线决定能看多大的东西",
+      dims: [{ k: "单天线口径", v: 25, u: "m", s: "hist" },
+             { k: "最短基线（D 构型）", v: 35, u: "m", s: "hist" },
+             { k: "最长基线（A 构型）", v: 3.6e4, u: "m", s: "hist" },
+             { k: "观测波长（C 波段）", v: 0.06, u: "m", s: "hist", note: "5 GHz" }],
+      views: [{ n: "三臂 36 km", c: [0, 0, 0], r: 2.0e4 }, { n: "一台天线 25 m", c: [0, 0, 0], r: 17 }],
+      parts: function (v){
+        var i, out = [];
+        if (v.n.indexOf("一台") === 0) return [
+          cyl([0, 4.5, 0], 3.2, 25, [0.62, 0.68, 0.76], "抛物面 Ø25 m（真实深度未声明）", "y", true),
+          cyl([0, -3, 0], 6, 3.0, [0.48, 0.52, 0.6], "座架与俯仰轮盘", "y", true),
+          boxp([0, 1.5, 0], 1.2, 1.2, 1.2, [0.7, 0.66, 0.44], "副镜与接收机（位置未声明 ⇒ 示意）", 0, true) ];
+        for (i = 0; i < 27; i++){
+          var arm = i % 3, n = Math.floor(i / 3), r = 400 + n * 1400;
+          var a = arm * 2 * Math.PI / 3 + 0.15;
+          out.push(cyl([r * Math.cos(a), 8, r * Math.sin(a)], 3.0, 25, [0.58 + (i % 3) * 0.02, 0.64, 0.74],
+                       i === 0 ? "27 台（位置按三臂等距摆，真实排布不声明）" : "", "y", true));
+        }
+        out.push(boxp([0, -6, 0], 4.0e4, 4, 4.0e4, [0.4, 0.44, 0.52], "轨道与场地（直径按最长基线 36 km）", 0, true));
+        return out; },
+      xchk: function (){ var lam = 0.06, bmin = 35, bmax = 3.6e4;
+        var perRad = 180 / Math.PI;
+        var thmax = lam / bmin * perRad * 60, thpix = lam / bmax * 206265e3;
+        return { expr: "最大可测结构 θ_max = λ/B_min；合成像元 = λ/B_max", val: thmax,
+                 verdict: (thmax > 5.6 && thmax < 6.2) ? "自洽" : "短基线记错",
+                 note: "35 m 短基线只能看到 " + thmax.toFixed(2) + "′ 以内的结构，而 36 km 给的像元是 " + thpix.toFixed(0) +
+                       " mas ⇒ 相差 " + (thmax * 60 / (thpix / 1000)).toFixed(0) + " 倍。**干涉仪天生是个高通滤波器**：弥散的云必须补一台单碟才行——" +
+                       "vlbi1975（#63）用同一条比值算分辨率上限，这里算的是另一头：看不见多大" }; } },
+  
+    l_virgo2003: { year: 2003, who: "Virgo（Cascina，EGO）", name: "3 km 臂与折叠腔：自由光谱范围比 LIGO 宽 4/3",
+      dims: [{ k: "臂长", v: 3000, u: "m", s: "hist" },
+             { k: "真空管直径", v: 1.2, u: "m", s: "hist" },
+             { k: "测试质量", v: 35, u: "kg", s: "hist", note: "不是长度" },
+             { k: "光波长（Nd:YAG）", v: 1.064e-6, u: "m", s: "pubspec" }],
+      views: [{ n: "一条臂 3 km", c: [1500, 0, 0], r: 1900 }, { n: "悬挂与腔镜 1 m", c: [0, 0, 0], r: 0.8 }],
+      parts: function (v){
+        if (v.n.indexOf("悬挂") === 0) return [
+          boxp([0, 0, 0], 0.4, 0.4, 0.6, [0.7, 0.74, 0.8], "熔融硅测试质量 35 kg（边长未声明 ⇒ 画 400 mm）", 0, true),
+          cyl([0, 0.9, 0], 1.5, 0.06, [0.56, 0.6, 0.68], "超 attenuator 上部悬挂（几何未声明 ⇒ 示意）", "y", true),
+          cyl([0, 0.3, 0.5], 0.8, 0.02, [0.46, 0.52, 0.62], "金属丝吊链（4 级）", "x", true),
+          cyl([0.6, 0, 0], 1.064e-6 * 1e6, 0.02, [0.8, 0.5, 0.4], "1064 nm 束轴（画粗到 20 mm 才看得见）", "x", true) ];
+        return [cyl([1500, 0, 0], 3000, 1.2, [0.46, 0.54, 0.66], "臂真空管 Ø1.2 × 3000 m（半透明）", "x", false),
+                cyl([0, 0, 1500], 3000, 1.2, [0.46, 0.54, 0.66], "第二条臂真空管", "z", false),
+                boxp([0, 0, 0], 6, 3, 6, [0.58, 0.6, 0.68], "中心区：分束器与输入模态清洁腔"),
+                sph([3000, 0, 0], 0.35, [0.74, 0.78, 0.84], "端镜（Faraday 隔离的折叠腔）"),
+                sph([0, 0, 3000], 0.35, [0.74, 0.78, 0.84], "端镜（第二臂）"),
+                boxp([1500, -20, 0], 3000, 20, 60, [0.4, 0.44, 0.5], "隧道与隔振地基（深度未声明 ⇒ 示意）", 0, true) ]; },
+      xchk: function (){ var L = 3000, c = 2.99792458e8;
+        var fsr = c / (4 * L), oneway = L / c * 1e6, dl = 1e-21 * L;
+        return { expr: "折叠腔自由光谱范围 FSR = c/4L；单程时间 L/c", val: fsr,
+                 verdict: (fsr > 2.45e4 && fsr < 2.55e4) ? "自洽" : "臂长记错",
+                 note: "往返光程是 4L（不是法珀腔的 2L）⇒ FSR = " + (fsr / 1e3).toFixed(2) + " kHz，比 fabryperot1897 那条 c/2L（#120）低一半——" +
+                       "这个因子 2 就是「折叠臂」的定义。同一时刻：100 Hz 引力波的半周期 5 ms 是单程 " + oneway.toFixed(1) +
+                       " µs 的五百倍 ⇒ 光必须在腔里存几十毫秒才积得出相位，这就是高精细度储存腔的全部理由；" +
+                       "h=1e-21 折成臂长变化 " + (dl * 1e18).toFixed(1) + " am（约质子直径的 2%）" }; } },
+  
+    l_alma2011: { year: 2011, who: "ALMA（Chajnantor，5058 m）", name: "12 m 天线与 16 km 基线：一幅视场要几块拼图",
+      dims: [{ k: "单天线口径", v: 12, u: "m", s: "hist" },
+             { k: "最大基线", v: 1.6e4, u: "m", s: "hist" },
+             { k: "观测波长（Band 6）", v: 1.3e-3, u: "m", s: "hist", note: "230 GHz" },
+             { k: "天线数", v: 66, u: "台", s: "hist" }],
+      views: [{ n: "阵 16 km", c: [0, 0, 0], r: 9500 }, { n: "一台天线 12 m", c: [0, 6, 0], r: 8.5 }],
+      parts: function (v){
+        var i, out = [];
+        if (v.n.indexOf("一台") === 0) return [
+          cyl([0, 8, 0], 3.0, 12, [0.64, 0.7, 0.78], "12 m 抛物面（真实深度与背架未声明 ⇒ 画 3 m 厚）", "y", true),
+          cyl([0, 3, 0], 6.0, 2.4, [0.48, 0.52, 0.6], "方位座架", "y", true),
+          boxp([0, 10.5, 0], 0.8, 0.8, 0.8, [0.74, 0.68, 0.44], "接收机舱（230 GHz SIS）", 0, true) ];
+        for (i = 0; i < 30; i++){
+          var a = i * 2.399963, r = 300 + i * 260;
+          out.push(cyl([r * Math.cos(a), 10, r * Math.sin(a)], 3.0, 12, [0.58, 0.66, 0.76], i === 0 ? "30 台抽样（在册 66 台；位置按螺旋布点，非真实排布）" : "", "y", true));
+        }
+        out.push(boxp([0, -30, 0], 1.9e4, 20, 1.6e4, [0.4, 0.44, 0.52], "高原场地（范围按最大基线）", 0, true));
+        return out; },
+      xchk: function (){ var lam = 1.3e-3, D = 12, B = 1.6e4;
+        var fov = 1.22 * lam / D, pix = lam / B, n = Math.pow(fov / pix, 2);
+        return { expr: "单天线视场 1.22λ/D ÷ 合成像元 λ/B ⇒ 分辨元数 = 比的平方", val: n,
+                 verdict: (n > 2.4e6 && n < 2.9e6) ? "自洽" : "口径或基线记错",
+                 note: "视场 " + (fov * 206265).toFixed(1) + "″、像元 " + (pix * 206265e3).toFixed(1) + " mas ⇒ 一次 pointing 只装得下 " +
+                       (n / 1e6).toFixed(2) + "×10⁶ 个分辨元，而一个 1′ 的原星团就要 ~10⁵ 个元 ⇒ **马赛克不是可选项**。" +
+                       "分母用的是同一条 λ/B：alma 与 vlbi1975/vla1980 共用的正是它，区别在平方之后变成台数与时间预算" }; } },
+  
+    l_rosetta2014: { year: 2014, who: "Rosetta / Philae（ESA）", name: "绕 67P 飞行：表面重力比地球小五万倍",
+      dims: [{ k: "彗核等体积半径", v: 2048, u: "m", s: "hist" },
+             { k: "彗核质量（Rosetta 定）", v: 1.0e13, u: "kg", s: "hist", note: "不是长度；(1.00±0.03)×10¹³" },
+             { k: "轨道器主体长", v: 2.8, u: "m", s: "hist" },
+             { k: "太阳翼展", v: 32, u: "m", s: "hist" },
+             { k: "表面重力 GM/r²", v: 6.6743e-11 * 1.0e13 / (2048 * 2048), u: "m/s²", s: "derived", note: "由声明的质量与等体积半径加写死的 G；量纲 m/s²" }],
+      views: [{ n: "彗核 4 km", c: [0, 0, 0], r: 3000 }, { n: "轨道器 2.8 m 与着陆器 1 m", c: [0, 0, 0], r: 3.2 }],
+      parts: function (v){
+        if (v.n.indexOf("彗核") === 0) return [
+          boxp([-900, 0, 0], 2600, 1400, 1500, [0.28, 0.26, 0.24], "67P 双叶的大头（真实形状未声明 ⇒ 两块拼）", 0.2, true),
+          boxp([900, -120, 0], 2000, 1000, 1200, [0.3, 0.28, 0.26], "小头（「健身房之锤」）", -0.25, true),
+          boxp([0, 620, 0], 3, 3, 3, [0.74, 0.78, 0.84], "Philae 着陆点（在这张图里是一个点）"),
+          sph([0, 0, 0], 4096, [0.5, 0.5, 0.55], "等体积球 Ø4.1 km（对照质量与重力用的就是这个）", true, true) ];
+        return [boxp([0, 0, 0], 2.8, 2.1, 2.1, [0.56, 0.6, 0.68], "轨道器主体 2.8 m", 0),
+                boxp([16, 0.6, 0], 30, 0.4, 2.8, [0.44, 0.48, 0.62], "太阳翼（单侧 14 m 的等效力臂）", 0, true),
+                boxp([-1.6, -1.4, 0], 1.0, 0.9, 1.0, [0.7, 0.66, 0.46], "Philae 着陆器（1 m 级）"),
+                cyl([0, -2.4, 0], 0.8, 0.15, [0.5, 0.56, 0.64], "高增益天线", "y", true),
+                cyl([0.4, 1.4, 0], 1.2, 0.3, [0.62, 0.68, 0.76], "ROSINA 质谱仪与相机轴", "y", true) ]; },
+      xchk: function (){ var M = 1.0e13, r = 2048, G = 6.6743e-11;
+        var g = G * M / (r * r), ve = Math.sqrt(2 * G * M / r), t = 2 * 0.1 / g;
+        return { expr: "g = GM/r²；v_e = √(2GM/r)；0.1 m/s 起跳的滞空 2v/g", val: t,
+                 verdict: (t > 900 && t < 1400) ? "自洽（实测第一跳 986 s）" : "质量或半径记错",
+                 note: "g = " + g.toExponential(2) + " m/s²（地球的 1/6 万）、逃逸速度 " + ve.toFixed(2) +
+                       " m/s ⇒ 以 0.1 m/s 起跳也能在空中待 " + t.toFixed(0) + " s。Philae 实测第一跳 986 s ⇒ **模型与事故的差就在表面耗散与冰反冲**，" +
+                       "不是引力算错。这条 g=GM/r² 在层里第一次用在彗星上（bellpulsar1967 那条算的是星际色散延迟 Δt∝DM/ν²，与引力无关）" }; } },
+  
+    l_lhaaso2019: { year: 2019, who: "LHAASO（海子山，4415 m）", name: "踩在簇射峰上的阵列：海拔就是灵敏度",
+      dims: [{ k: "台址海拔", v: 4415, u: "m", s: "hist" },
+             { k: "KM2A 面积", v: 1.36e6, u: "m²", s: "hist", note: "面积，不是长度" },
+             { k: "LCDC 望远镜口径", v: 6, u: "m", s: "hist" },
+             { k: "望远镜数量", v: 27, u: "台", s: "hist" },
+             { k: "台顶以上大气深度 P/g", v: 5.8e4 / 9.80665 / 10, u: "m", s: "derived", note: "按 4415 m 标准大气 ~580 hPa 换算；量纲记 m.w.e. 等价的长度" }],
+      views: [{ n: "阵列 1.4 km", c: [0, 0, 0], r: 900 }, { n: "一台 LCDC 望远镜 6 m", c: [0, 6, 0], r: 5 }],
+      parts: function (v){
+        var i, out = [];
+        if (v.n.indexOf("一台") === 0) return [
+          cyl([0, 6, 0], 1.5, 6, [0.62, 0.68, 0.76], "6 m 成像大气切伦科夫望远镜（真实焦比未声明）", "y", true),
+          boxp([0, 7.8, 0], 0.8, 0.8, 0.8, [0.76, 0.7, 0.46], "SiPM 焦面（4 台相机拼）"),
+          boxp([0, 2, 0], 2.4, 4.0, 2.4, [0.48, 0.52, 0.6], "俯仰-方位座架", 0, true) ];
+        for (i = 0; i < 25; i++){
+          var x = (i % 5) * 300 - 600, z = Math.floor(i / 5) * 300 - 600;
+          out.push(boxp([x, 1, z], 4.5, 2.0, 4.5, [0.56, 0.62, 0.7], i === 0 ? "水切伦科夫探测器单元（格距按 150 m 网格抽样）" : "", 0, true));
+        }
+        for (i = 0; i < 6; i++)
+          out.push(cyl([700 - i * 120, 6, -700 + (i % 3) * 700], 1.5, 6, [0.6, 0.66, 0.74], i === 0 ? "LCDC 望远镜（27 台里画 6 台）" : "", "y", true));
+        out.push(boxp([0, -8, 0], Math.sqrt(1.36e6), 8, Math.sqrt(1.36e6), [0.4, 0.44, 0.5], "场地范围按 KM2A 面积开方（≈1.17 km 见方）", 0, true));
+        return out; },
+      xchk: function (){ var P = 5.8e4, g = 9.80665, P0 = 1.01325e5;
+        var X = P / g / 10, X0 = P0 / g / 10, xpeak = 700;
+        return { expr: "台顶以上大气深度 X = P/g（g/cm²）；对照海平面与 PeV 簇射极大", val: X / X0,
+                 verdict: (X / X0 > 0.56 && X / X0 < 0.58) ? "自洽（阵在峰上方）" : "海拔气压记错",
+                 note: "X = " + X.toFixed(0) + " g/cm²、海平面 " + X0.toFixed(0) + " ⇒ 只剩 " + (100 * X / X0).toFixed(0) +
+                       "%；PeV γ 的簇射极大约在 700 g/cm² ⇒ **只有把阵列抬到 4415 m，地面才站在峰的上边**，海平面站只能看尾巴。" +
+                       "P = X·g 与 torricelli1644（#28 汞柱高）是同一条静力平衡，那里问柱高、这里问柱质量，两用的都是它，不装新公式" }; } }
+  };
   /* ── 等比透视渲染器（自写，canvas 2-D painter，file:// 无依赖）──
      语料库装置（T）与四百年仪器谱（LIN）共用这一把尺：同一个 project()、同一个 px/m、同一套标尺算法。 */
   var CAM = { yaw: 0.85, pitch: 0.42, dist: 2.35 };
@@ -9256,7 +9657,24 @@ var META = {
     l_lamb1947: { g: "lamb" },
     l_casimir1948: { g: "casimir" },
     l_bellpulsar1967: { g: "bellpulsar" },
-};
+    /* b10 追加的 16 台：几何层还没有它们 ⇒ 全登记 g:null，差集由 align() 自己数 */
+    l_huygens1690: { g: null },
+    l_herschel1789: { g: null },
+    l_fresnel1819: { g: null },
+    l_henry1831: { g: null },
+    l_kundt1866: { g: null },
+    l_kip1889: { g: null },
+    l_dewar1893: { g: null },
+    l_jansky1933: { g: null },
+    l_joliot1934: { g: null },
+    l_gabor1947: { g: null },
+    l_vela1973: { g: null },
+    l_vla1980: { g: null },
+    l_virgo2003: { g: null },
+    l_alma2011: { g: null },
+    l_rosetta2014: { g: null },
+    l_lhaaso2019: { g: null }
+  };
 
   /* 一台模型可以来自语料库装置（T）或四百年仪器谱（LIN）：渲染器只认这一个入口 */
   function model(k){ return T[k] || LIN[k] || null; }
@@ -9670,7 +10088,7 @@ var META = {
       CAM.yaw += (e.clientX - drag.x) * 0.01; CAM.pitch = Math.max(-1.4, Math.min(1.4, CAM.pitch + (e.clientY - drag.y) * 0.01));
       drag = { x: e.clientX, y: e.clientY }; redraw(); });
     c.addEventListener("pointerup", function (){ drag = null; c.classList.remove("drag"); });
-    c.addEventListener("wheel", function (e){ e.preventDefault(); CAM.dist = Math.max(1.05, CAM.dist * (e.deltaY > 0 ? 1.12 : 0.89)); redraw(); }, { passive: false });
+    c.addEventListener("wheel", function (e){ e.preventDefault(); if (!window.WHEEL_ZOOM) return; CAM.dist = Math.max(1.05, CAM.dist * (e.deltaY > 0 ? 1.12 : 0.89)); redraw(); }, { passive: false });
   }
   function redraw(){ if (cv) caption(cv, sel ? sel.value : currentKey()); }
 
