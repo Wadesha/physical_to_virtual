@@ -2095,6 +2095,84 @@
     var nm = scene.addLine([1.0, 0.85, 0.3], 1); var pnm = null;
     for (var nmi = 0; nmi <= 18; nmi++) { var na = nmi / 18 * 2 * Math.PI; var cur = [1.7 * Math.cos(na), 1.7 * Math.sin(na), 0]; if (pnm) scene.lineSeg(nm, pnm, cur); pnm = cur; }
   }
+  function mElementarycharge(scene) { // 基本电荷 e（油滴仪）
+    addBox(scene, [-1.9, 0, 0], [0.25, 0.9, 0.9], [0.6, 0.62, 0.66], 1);
+    addBox(scene, [1.9, 0, 0], [0.25, 0.9, 0.9], [0.6, 0.62, 0.66], 1);
+    addSphere(scene, [0, 0.6, 0], 0.14, [0.9, 0.7, 0.3], 1, 12, true);
+    var el = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(el, [-1.9, 0.9, 0], [1.9, 0.9, 0]);
+  }
+  function mNewtong(scene) {          // 引力常数 G（扭秤）
+    addSphere(scene, [-1.8, 0, 0], 0.3, [0.9, 0.7, 0.3], 1, 14, true);
+    addSphere(scene, [1.8, 0, 0], 0.3, [0.9, 0.7, 0.3], 1, 14, true);
+    addCylinder(scene, [0, 1.4, 0], [0, -1.4, 0], 0.04, [0.5, 0.55, 0.62], 1, 8, false);
+    var ng = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(ng, [-1.8, 0, 0], [1.8, 0, 0]);
+  }
+  function mLightspeed(scene) {       // 光速 c（谐振腔）
+    addCylinder(scene, [-2.2, 0, 0], [2.2, 0, 0], 0.5, [0.4, 0.6, 0.85], 0.15, 20, false);
+    var lc = 0; for (var li = 0; li < 5; li++) { addSphere(scene, [-1.6 + lc, 0, 0], 0.08, [0.9, 0.5, 0.3], 0.7, 8, true); lc += 0.8; }
+    var ls = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(ls, [-2.2, 0, 0], [2.2, 0, 0]);
+  }
+  function mNeutronmass(scene) {      // 中子质量 m_n
+    addSphere(scene, [0, 0, 0], 0.35, [0.9, 0.7, 0.3], 1, 14, true);
+    addTorus(scene, [0, 0, 0], [0, 0, 1], 2.0, 0.06, [0.6, 0.62, 0.66], 1, 30, 2, false);
+  }
+  function mDeuteronmass(scene) {     // 氘核质量 m_d
+    addSphere(scene, [-0.3, 0, 0], 0.28, [0.9, 0.7, 0.3], 1, 12, true);
+    addSphere(scene, [0.3, 0, 0], 0.28, [0.9, 0.7, 0.3], 1, 12, true);
+    addTorus(scene, [0, 0, 0], [0, 0, 1], 1.9, 0.05, [0.6, 0.62, 0.66], 1, 28, 2, false);
+  }
+  function mPlanckmass(scene) {       // 普朗克质量 m_P
+    addBox(scene, [0, 0, 0], [1.5, 1.5, 1.5], [0.4, 0.6, 0.85], 0.15);
+    addSphere(scene, [0, 0, 0], 0.4, [0.9, 0.7, 0.3], 1, 14, true);
+    addTorus(scene, [0, 0, 0], [0, 0, 1], 1.8, 0.05, [0.9, 0.7, 0.3], 1, 28, 2, false);
+  }
+  function mVacuumpermittivity(scene) { // 真空介电常数 ε0（电容）
+    addBox(scene, [-1.8, 0, 0], [0.2, 1.0, 1.0], [0.6, 0.62, 0.66], 1);
+    addBox(scene, [1.8, 0, 0], [0.2, 1.0, 1.0], [0.6, 0.62, 0.66], 1);
+    var ve = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(ve, [-1.8, 0.3, 0], [1.8, 0.3, 0]); scene.lineSeg(ve, [-1.8, -0.3, 0], [1.8, -0.3, 0]);
+  }
+  function mVacuumpermeability(scene) { // 真空磁导率 μ0（螺线管）
+    addCylinder(scene, [-1.8, 0, 0], [1.8, 0, 0], 0.7, [0.4, 0.6, 0.85], 0.15, 20, false);
+    for (var vi = 0; vi < 8; vi++) { var va = vi / 8 * 2 * Math.PI; addSphere(scene, [0, 0.7 * Math.cos(va), 0.7 * Math.sin(va)], 0.06, [0.9, 0.5, 0.3], 0.7, 8, true); }
+  }
+  function mVacuumimpedance(scene) {  // 真空波阻抗 Z0（波导）
+    addCylinder(scene, [-2.0, 0, 0], [2.0, 0, 0], 0.6, [0.4, 0.6, 0.85], 0.15, 20, false);
+    var zi = 0; for (var zj = 0; zj < 4; zj++) { addSphere(scene, [-1.4 + zi, 0, 0], 0.1, [0.9, 0.5, 0.3], 0.6, 10, true); zi += 0.9; }
+  }
+  function mGravityg(scene) {         // 标准重力 g（落体/摆）
+    addSphere(scene, [0, -1.6, 0], 0.3, [0.9, 0.7, 0.3], 1, 14, true);
+    var gg = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(gg, [0, 1.4, 0], [0, -1.6, 0]);
+    addCylinder(scene, [0, 1.5, 0], [0, 1.9, 0], 0.06, [0.5, 0.55, 0.62], 1, 8, false);
+  }
+  function mStdatm(scene) {           // 标准大气压 P0（水银柱）
+    addCylinder(scene, [0, -1.4, 0], [0, 2.0, 0], 0.5, [0.4, 0.6, 0.85], 0.18, 18, false);
+    addSphere(scene, [0, 1.0, 0], 0.35, [0.3, 0.6, 0.95], 0.6, 14, true);
+    addBox(scene, [0, -1.6, 0], [0.7, 0.1, 0.7], [0.6, 0.62, 0.66], 1);
+  }
+  function mEarthradius(scene) {      // 地球半径 R⊕
+    addSphere(scene, [0, 0, 0], 1.9, [0.3, 0.6, 0.95], 0.9, 20, true);
+    addTorus(scene, [0, 0, 0], [0, 0, 1], 2.3, 0.04, [0.9, 0.7, 0.3], 1, 30, 2, false);
+  }
+  function mAstronomicalunit(scene) { // 天文单位 AU（轨道）
+    addSphere(scene, [0, 0, 0], 0.5, [0.9, 0.7, 0.3], 1, 16, true);
+    addTorus(scene, [0, 0, 0], [0, 0, 1], 2.4, 0.05, [0.6, 0.62, 0.66], 1, 32, 2, false);
+    addSphere(scene, [2.4, 0, 0], 0.18, [0.3, 0.6, 0.95], 1, 10, true);
+  }
+  function mLightyear(scene) {        // 光行年 ly（恒星+光束）
+    addSphere(scene, [0, 0, 0], 0.5, [0.9, 0.7, 0.3], 1, 16, true);
+    var ly = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(ly, [0.5, 0, 0], [2.6, 0, 0]);
+    addSphere(scene, [2.6, 0, 0], 0.14, [0.9, 0.5, 0.3], 0.7, 10, true);
+  }
+  function mSolarmass(scene) {        // 太阳质量 M☉
+    addSphere(scene, [0, 0, 0], 1.6, [0.9, 0.7, 0.3], 1, 18, true);
+    addTorus(scene, [0, 0, 0], [0, 0, 1], 2.4, 0.05, [0.6, 0.62, 0.66], 1, 32, 2, false);
+    addSphere(scene, [2.4, 0, 0], 0.2, [0.3, 0.6, 0.95], 1, 10, true);
+  }
+  function mMassenergy(scene) {       // 质能当量 c²（核反应）
+    addBox(scene, [0, 0, 0], [1.7, 1.7, 1.7], [0.4, 0.6, 0.85], 0.15);
+    addSphere(scene, [0, 0, 0], 0.45, [0.9, 0.7, 0.3], 1, 14, true);
+    var me = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(me, [-1.7, 0, 0], [1.7, 0, 0]);
+  }
   function mElectronmass(scene) {     // 电子质量（e/m 与 e 反演）
     addCylinder(scene, [-2.4, 0, 0], [2.4, 0, 0], 0.18, [0.4, 0.6, 0.85], 0.18, 16, false);
     addBox(scene, [-2.6, 0, 0], [0.2, 0.45, 0.45], [0.6, 0.62, 0.66], 1);
@@ -2439,6 +2517,22 @@
     bohrmagneton: { title: "玻尔磁子 μ_B（1913）", radius: 6, build: mBohrmagneton },
     parity: { title: "宇称不守恒（吴健雄, 1957）", radius: 6, build: mParity },
     nuclearmagneton: { title: "核磁子 μ_N（1930s）", radius: 6, build: mNuclearmagneton },
+    elementarycharge: { title: "基本电荷 e（密立根, 1913）", radius: 6, build: mElementarycharge },
+    newtong: { title: "引力常数 G（卡文迪许, 1798）", radius: 6, build: mNewtong },
+    lightspeed: { title: "真空光速 c", radius: 6, build: mLightspeed },
+    neutronmass: { title: "中子质量 m_n", radius: 6, build: mNeutronmass },
+    deuteronmass: { title: "氘核质量 m_d", radius: 6, build: mDeuteronmass },
+    planckmass: { title: "普朗克质量 m_P", radius: 6, build: mPlanckmass },
+    vacuumpermittivity: { title: "真空介电常数 ε0", radius: 6, build: mVacuumpermittivity },
+    vacuumpermeability: { title: "真空磁导率 μ0", radius: 6, build: mVacuumpermeability },
+    vacuumimpedance: { title: "真空波阻抗 Z0", radius: 6, build: mVacuumimpedance },
+    gravityg: { title: "标准重力加速度 g", radius: 6, build: mGravityg },
+    stdatm: { title: "标准大气压 P0", radius: 6, build: mStdatm },
+    earthradius: { title: "地球平均半径 R⊕", radius: 6, build: mEarthradius },
+    astronomicalunit: { title: "天文单位 AU", radius: 6, build: mAstronomicalunit },
+    lightyear: { title: "光行年 ly", radius: 6, build: mLightyear },
+    solarmass: { title: "太阳质量 M☉", radius: 6, build: mSolarmass },
+    massenergy: { title: "质能当量 c²", radius: 6, build: mMassenergy },
     electronmass: { title: "电子质量 m_e（e/m, 1897）", radius: 6, build: mElectronmass },
     protonmass: { title: "质子质量 m_p（质谱, 1919）", radius: 6, build: mProtonmass },
     gasconstant: { title: "理想气体常数 R（pV=nRT）", radius: 6, build: mGasconstant },
@@ -2527,7 +2621,7 @@
       if (!st.dragging) return; var dx = e.clientX - st.lx, dy = e.clientY - st.ly; st.lx = e.clientX; st.ly = e.clientY;
       st.az -= dx * 0.01; st.el = Math.max(-1.4, Math.min(1.4, st.el + dy * 0.01));
     });
-    canvas.addEventListener("wheel", function (e) { e.preventDefault(); st.radius = Math.max(3, Math.min(28, st.radius * (e.deltaY > 0 ? 1.1 : 0.9))); }, { passive: false });
+    canvas.addEventListener("wheel", function (e) { e.preventDefault(); if (!window.WHEEL_ZOOM) return; st.radius = Math.max(3, Math.min(28, st.radius * (e.deltaY > 0 ? 1.1 : 0.9))); }, { passive: false });
     return { ok: true, state: st, setModel: function (parts) { st.model = parts; }, start: function () { requestAnimationFrame(render); } };
   }
 
@@ -4167,6 +4261,54 @@
     nuclearmagneton: S({ key: 'nuclearmagneton', title: '核磁子 μ_N', thetaTrue: 5.05078e-27, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 4.8e-27, fitHi: 5.3e-27,
       forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
       paper: '核磁子 μ_N=eℏ/(2m_p)≈5.05078×10⁻²⁷ J/T（NMR/质量磁强计定）', layer: 'L0(核磁矩量子化)→L4(磁强计/ENDOR)→L7(能级分裂→μ_N)', conservation: 'μ_N=eℏ/(2m_p)', defectsN: ['磁场标定', '质量比修正'] }),
+    elementarycharge: S({ key: 'elementarycharge', title: '基本电荷 e', thetaTrue: 1.602176634e-19, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.55e-19, fitHi: 1.65e-19,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '由密立根油滴（1913）与 2019 SI 重定义 e=1.602176634×10⁻¹⁹ C（精确）', layer: 'L0(电荷量子化)→L4(油滴仪/电流天平)→L7(偏转/电荷→e)', conservation: 'e = I·t/N（单电子电流）', defectsN: ['油滴电荷离散', '斯托克斯修正'] }),
+    newtong: S({ key: 'newtong', title: '引力常数 G', thetaTrue: 6.67430e-11, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 6.60e-11, fitHi: 6.75e-11,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '卡文迪许扭秤（1798）定 G≈6.67430×10⁻¹¹ m³/(kg·s²)（CODATA 2018）', layer: 'L0(万有引力)→L4(扭秤)→L7(扭角→G)', conservation: 'F=Gm₁m₂/r²', defectsN: ['扭丝滞回', '温度漂移'] }),
+    lightspeed: S({ key: 'lightspeed', title: '真空光速 c', thetaTrue: 299792458, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 2.99e8, fitHi: 3.00e8,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '罗默/斐索/傅科与 1972 激光频梳定 c=299792458 m/s（SI 精确值）', layer: 'L0(电磁/相对论)→L4(干涉/腔)→L7(波长×频率→c)', conservation: 'c=λ·ν', defectsN: ['空气折射修正', '腔长标定'] }),
+    neutronmass: S({ key: 'neutronmass', title: '中子质量 m_n', thetaTrue: 1.67492749804e-27, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.65e-27, fitHi: 1.70e-27,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '质谱/中子瓶与 m_n=m_p+m_e−Δ（β 衰变 Q 值）定 m_n≈1.674927×10⁻²⁷ kg', layer: 'L0(核质量)→L4(质谱/瓶)→L7(TOF/能谱→m_n)', conservation: 'm_n = m_p + m_e − Q_β/c²', defectsN: ['束缚能修正', '吸附损失'] }),
+    deuteronmass: S({ key: 'deuteronmass', title: '氘核质量 m_d', thetaTrue: 3.3435837724e-27, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 3.30e-27, fitHi: 3.38e-27,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '氘原子/分子质谱定 m_d≈3.34358377×10⁻²⁷ kg（=2.013553 u）', layer: 'L0(核质量)→L4(质谱)→L7(偏转半径→m_d)', conservation: 'm_d ≈ 2u − B_d/c²', defectsN: ['同位素纯度', '加速电压标定'] }),
+    planckmass: S({ key: 'planckmass', title: '普朗克质量 m_P', thetaTrue: 2.176434e-8, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 2.1e-8, fitHi: 2.25e-8,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '由 √(ℏc/G) 组合定 m_P≈2.176434×10⁻⁸ kg（理论尺度）', layer: 'L0(普朗克尺度)→L4(常数组合)→L7(量纲分析→m_P)', conservation: 'm_P=√(ℏc/G)', defectsN: ['常数不确定度传播', '量纲一致性'] }),
+    vacuumpermittivity: S({ key: 'vacuumpermittivity', title: '真空介电常数 ε0', thetaTrue: 8.8541878128e-12, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 8.7e-12, fitHi: 8.95e-12,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '由 c²=1/(ε0μ0) 与 μ0 定 ε0≈8.8541878128×10⁻¹² F/m（SI 精确）', layer: 'L0(电磁)→L4(电容/腔)→L7(电容→ε0)', conservation: 'ε0=1/(μ0 c²)', defectsN: ['边缘场修正', '频率标定'] }),
+    vacuumpermeability: S({ key: 'vacuumpermeability', title: '真空磁导率 μ0', thetaTrue: 1.25663706212e-6, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.23e-6, fitHi: 1.28e-6,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'μ0=4π×10⁻⁷ H/m（2019 前精确；现由 c 与 ε0 导出）', layer: 'L0(电磁)→L4(螺线管/腔)→L7(电感→μ0)', conservation: 'μ0=4π×10⁻⁷ (由 c,ε0 导出)', defectsN: ['几何因子', '温度系数'] }),
+    vacuumimpedance: S({ key: 'vacuumimpedance', title: '真空波阻抗 Z0', thetaTrue: 376.730313668, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 370, fitHi: 384,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'Z0=√(μ0/ε0)≈376.730313668 Ω（自由空间波阻抗）', layer: 'L0(电磁)→L4(波导/腔)→L7(行波比→Z0)', conservation: 'Z0=√(μ0/ε0)', defectsN: ['连接器失配', '频率标定'] }),
+    gravityg: S({ key: 'gravityg', title: '标准重力加速度 g', thetaTrue: 9.80665, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 9.78, fitHi: 9.83,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '绝对重力仪（落体/原子干涉）定标准重力 g=9.80665 m/s²', layer: 'L0(引力场)→L4(落体/干涉)→L7(自由落体→g)', conservation: 'g=GM⊕/R⊕²', defectsN: ['海拔/纬度修正', '振动隔离'] }),
+    stdatm: S({ key: 'stdatm', title: '标准大气压 P0', thetaTrue: 101325, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 100000, fitHi: 103000,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '托里拆利/活塞式压力计定义 P0=101325 Pa（1 atm）', layer: 'L0(流体静力)→L4(水银柱/活塞)→L7(液柱高→P0)', conservation: 'P0=ρ_Hg·g·h', defectsN: ['汞密度标定', '温度修正'] }),
+    earthradius: S({ key: 'earthradius', title: '地球平均半径 R⊕', thetaTrue: 6.371e6, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 6.30e6, fitHi: 6.45e6,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '子午线弧长/卫星测地定 R⊕≈6.371×10⁶ m（均值）', layer: 'L0(几何/地球)→L4(测地/卫星)→L7(弧长→R⊕)', conservation: '周长=2πR⊕', defectsN: ['椭率修正', '潮汐形变'] }),
+    astronomicalunit: S({ key: 'astronomicalunit', title: '天文单位 AU', thetaTrue: 1.495978707e11, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.49e11, fitHi: 1.50e11,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '雷达测距与行星历表定 AU=1.495978707×10¹¹ m（2012 精确）', layer: 'L0(天文距离)→L4(雷达/历表)→L7(光行时→AU)', conservation: 'AU=c·τ（光行时）', defectsN: ['行星历表误差', '太阳质量参数'] }),
+    lightyear: S({ key: 'lightyear', title: '光行年 ly', thetaTrue: 9.4607304725808e15, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 9.3e15, fitHi: 9.6e15,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'ly=c·(365.25 d)≈9.46073×10¹⁵ m（距离单位）', layer: 'L0(距离尺度)→L4(测距链)→L7(视差→ly)', conservation: 'ly=c·year', defectsN: ['儒略年定义', '视差零点'] }),
+    solarmass: S({ key: 'solarmass', title: '太阳质量 M☉', thetaTrue: 1.98847e30, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.95e30, fitHi: 2.02e30,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '由开普勒第三定律与行星轨道定 M☉≈1.98847×10³⁰ kg', layer: 'L0(引力中心)→L4(天体测轨)→L7(轨道周期→M☉)', conservation: 'M☉=4π²a³/(G T²)', defectsN: ['行星质量修正', 'G 不确定度'] }),
+    massenergy: S({ key: 'massenergy', title: '质能当量 c²', thetaTrue: 8.987551787e16, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 8.9e16, fitHi: 9.05e16,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'E=mc² 中 c²≈8.987551787×10¹⁶ J/kg（质能转换系数）', layer: 'L0(质能)→L4(核反应/对撞)→L7(质量亏损→E)', conservation: 'E=mc²', defectsN: ['反应 Q 值标定', '质量亏损测量'] }),
     electronmass: S({ key: 'electronmass', title: '电子质量 m_e', thetaTrue: 9.10938e-31, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 8.8e-31, fitHi: 9.4e-31,
       forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
       paper: '电子质量 m_e：由 e/m（汤姆逊/质谱）与 e（密立根）反演 m_e≈9.10938×10⁻³¹ kg', layer: 'L0(粒子质量)→L4(e/m 管+油滴)→L7(曲率/电荷→m_e)', conservation: 'm_e = e/(e/m)', defectsN: ['e/m 标定', '油滴电荷离散'] }),
@@ -4442,6 +4584,22 @@
     bohrmagneton: { title: '玻尔磁子 μ_B', paper: 'Bohr 1913 / 磁矩量子化: μ_B=eℏ/(2m_e)≈9.274×10⁻²⁴ J/T', layer: 'L0(磁矩量子化)→L4(磁强计/ESR)→L7(能级分裂→μ_B)', conservation: 'μ_B=eℏ/(2m_e)', defects: ['磁场标定', 'g 因子修正'] },
     parity: { title: '宇称不守恒（吴健雄）', paper: 'Wu, Ambler et al. 1957: ⁶⁰Co β 不对称证明弱作用宇称不守恒，|A|≈0.4', layer: 'L0(宇称不守恒)→L4(极化核+探测器)→L7(角分布→A)', conservation: '宇称在弱作用下不守恒', defects: ['立体角修正', '极化度标定'] },
     nuclearmagneton: { title: '核磁子 μ_N', paper: '核磁子 μ_N=eℏ/(2m_p)≈5.05078×10⁻²⁷ J/T（NMR/质量磁强计定）', layer: 'L0(核磁矩量子化)→L4(磁强计/ENDOR)→L7(能级分裂→μ_N)', conservation: 'μ_N=eℏ/(2m_p)', defects: ['磁场标定', '质量比修正'] },
+    elementarycharge: { title: '基本电荷 e', paper: '由密立根油滴（1913）与 2019 SI 重定义 e=1.602176634×10⁻¹⁹ C（精确）', layer: 'L0(电荷量子化)→L4(油滴仪/电流天平)→L7(偏转/电荷→e)', conservation: 'e = I·t/N（单电子电流）', defects: ['油滴电荷离散', '斯托克斯修正'] },
+    newtong: { title: '引力常数 G', paper: '卡文迪许扭秤（1798）定 G≈6.67430×10⁻¹¹ m³/(kg·s²)（CODATA 2018）', layer: 'L0(万有引力)→L4(扭秤)→L7(扭角→G)', conservation: 'F=Gm₁m₂/r²', defects: ['扭丝滞回', '温度漂移'] },
+    lightspeed: { title: '真空光速 c', paper: '罗默/斐索/傅科与 1972 激光频梳定 c=299792458 m/s（SI 精确值）', layer: 'L0(电磁/相对论)→L4(干涉/腔)→L7(波长×频率→c)', conservation: 'c=λ·ν', defects: ['空气折射修正', '腔长标定'] },
+    neutronmass: { title: '中子质量 m_n', paper: '质谱/中子瓶与 m_n=m_p+m_e−Δ（β 衰变 Q 值）定 m_n≈1.674927×10⁻²⁷ kg', layer: 'L0(核质量)→L4(质谱/瓶)→L7(TOF/能谱→m_n)', conservation: 'm_n = m_p + m_e − Q_β/c²', defects: ['束缚能修正', '吸附损失'] },
+    deuteronmass: { title: '氘核质量 m_d', paper: '氘原子/分子质谱定 m_d≈3.34358377×10⁻²⁷ kg（=2.013553 u）', layer: 'L0(核质量)→L4(质谱)→L7(偏转半径→m_d)', conservation: 'm_d ≈ 2u − B_d/c²', defects: ['同位素纯度', '加速电压标定'] },
+    planckmass: { title: '普朗克质量 m_P', paper: '由 √(ℏc/G) 组合定 m_P≈2.176434×10⁻⁸ kg（理论尺度）', layer: 'L0(普朗克尺度)→L4(常数组合)→L7(量纲分析→m_P)', conservation: 'm_P=√(ℏc/G)', defects: ['常数不确定度传播', '量纲一致性'] },
+    vacuumpermittivity: { title: '真空介电常数 ε0', paper: '由 c²=1/(ε0μ0) 与 μ0 定 ε0≈8.8541878128×10⁻¹² F/m（SI 精确）', layer: 'L0(电磁)→L4(电容/腔)→L7(电容→ε0)', conservation: 'ε0=1/(μ0 c²)', defects: ['边缘场修正', '频率标定'] },
+    vacuumpermeability: { title: '真空磁导率 μ0', paper: 'μ0=4π×10⁻⁷ H/m（2019 前精确；现由 c 与 ε0 导出）', layer: 'L0(电磁)→L4(螺线管/腔)→L7(电感→μ0)', conservation: 'μ0=4π×10⁻⁷ (由 c,ε0 导出)', defects: ['几何因子', '温度系数'] },
+    vacuumimpedance: { title: '真空波阻抗 Z0', paper: 'Z0=√(μ0/ε0)≈376.730313668 Ω（自由空间波阻抗）', layer: 'L0(电磁)→L4(波导/腔)→L7(行波比→Z0)', conservation: 'Z0=√(μ0/ε0)', defects: ['连接器失配', '频率标定'] },
+    gravityg: { title: '标准重力加速度 g', paper: '绝对重力仪（落体/原子干涉）定标准重力 g=9.80665 m/s²', layer: 'L0(引力场)→L4(落体/干涉)→L7(自由落体→g)', conservation: 'g=GM⊕/R⊕²', defects: ['海拔/纬度修正', '振动隔离'] },
+    stdatm: { title: '标准大气压 P0', paper: '托里拆利/活塞式压力计定义 P0=101325 Pa（1 atm）', layer: 'L0(流体静力)→L4(水银柱/活塞)→L7(液柱高→P0)', conservation: 'P0=ρ_Hg·g·h', defects: ['汞密度标定', '温度修正'] },
+    earthradius: { title: '地球平均半径 R⊕', paper: '子午线弧长/卫星测地定 R⊕≈6.371×10⁶ m（均值）', layer: 'L0(几何/地球)→L4(测地/卫星)→L7(弧长→R⊕)', conservation: '周长=2πR⊕', defects: ['椭率修正', '潮汐形变'] },
+    astronomicalunit: { title: '天文单位 AU', paper: '雷达测距与行星历表定 AU=1.495978707×10¹¹ m（2012 精确）', layer: 'L0(天文距离)→L4(雷达/历表)→L7(光行时→AU)', conservation: 'AU=c·τ（光行时）', defects: ['行星历表误差', '太阳质量参数'] },
+    lightyear: { title: '光行年 ly', paper: 'ly=c·(365.25 d)≈9.46073×10¹⁵ m（距离单位）', layer: 'L0(距离尺度)→L4(测距链)→L7(视差→ly)', conservation: 'ly=c·year', defects: ['儒略年定义', '视差零点'] },
+    solarmass: { title: '太阳质量 M☉', paper: '由开普勒第三定律与行星轨道定 M☉≈1.98847×10³⁰ kg', layer: 'L0(引力中心)→L4(天体测轨)→L7(轨道周期→M☉)', conservation: 'M☉=4π²a³/(G T²)', defects: ['行星质量修正', 'G 不确定度'] },
+    massenergy: { title: '质能当量 c²', paper: 'E=mc² 中 c²≈8.987551787×10¹⁶ J/kg（质能转换系数）', layer: 'L0(质能)→L4(核反应/对撞)→L7(质量亏损→E)', conservation: 'E=mc²', defects: ['反应 Q 值标定', '质量亏损测量'] },
     electronmass: { title: '电子质量 m_e', paper: '电子质量 m_e：由 e/m（汤姆逊/质谱）与 e（密立根）反演 m_e≈9.10938×10⁻³¹ kg', layer: 'L0(粒子质量)→L4(e/m 管+油滴)→L7(曲率/电荷→m_e)', conservation: 'm_e = e/(e/m)', defects: ['e/m 标定', '油滴电荷离散'] },
     protonmass: { title: '质子质量 m_p', paper: '质子质量 m_p：质谱（Aston/Bainbridge）定 m_p≈1.67262×10⁻²⁷ kg', layer: 'L0(核质量)→L4(质谱仪)→L7(偏转半径→m_p)', conservation: 'm_p = 1.007276 u', defects: ['加速电压标定', '同位素纯度'] },
     gasconstant: { title: '理想气体常数 R', paper: '理想气体常数 R：pV=nRT 由低压气体实测 R≈8.31446 J/(mol·K)', layer: 'L0(气体状态)→L4(定容/定压量热)→L7(压强-体积-温度→R)', conservation: 'pV=nRT', defects: ['非理想修正', '温度计标定'] },
@@ -5028,6 +5186,54 @@ var META = {
   nuclearmagneton:{paper:"核磁子 μ_N=eℏ/(2m_p)≈5.05078×10⁻²⁷ J/T（NMR/质量磁强计定）",
     chain:"在磁场中测核自旋能级分裂，由 ΔE=μ_N·B 反推核磁子；质量磁强计把质子磁矩与质量比测量结合给出 μ_N。",
     defects:["磁场标定","质量比修正"]},
+  elementarycharge:{paper:"由密立根油滴（1913）与 2019 SI 重定义 e=1.602176634×10⁻¹⁹ C（精确）",
+    chain:"在油滴仪中测单个油滴在电场里的平衡与运动，由 mg=qE 反推元电荷 e。",
+    defects:["油滴电荷离散","斯托克斯修正"]},
+  newtong:{paper:"卡文迪许扭秤（1798）定 G≈6.67430×10⁻¹¹ m³/(kg·s²)（CODATA 2018）",
+    chain:"用扭秤测两小球对哑铃的引力扭矩，由扭转角标定 G。",
+    defects:["扭丝滞回","温度漂移"]},
+  lightspeed:{paper:"罗默/斐索/傅科与 1972 激光频梳定 c=299792458 m/s（SI 精确值）",
+    chain:"用稳频激光测腔模的波长与频率，乘积给出真空光速 c。",
+    defects:["空气折射修正","腔长标定"]},
+  neutronmass:{paper:"质谱/中子瓶与 m_n=m_p+m_e−Δ（β 衰变 Q 值）定 m_n≈1.674927×10⁻²⁷ kg",
+    chain:"在磁瓶或束流中测中子质量，或用 p→n β 衰变端点反推。",
+    defects:["束缚能修正","吸附损失"]},
+  deuteronmass:{paper:"氘原子/分子质谱定 m_d≈3.34358377×10⁻²⁷ kg（=2.013553 u）",
+    chain:"用质谱测氘离子在磁场里的偏转半径，反推氘核质量。",
+    defects:["同位素纯度","加速电压标定"]},
+  planckmass:{paper:"由 √(ℏc/G) 组合定 m_P≈2.176434×10⁻⁸ kg（理论尺度）",
+    chain:"把 ℏ、c、G 组合成质量量纲，给出普朗克质量。",
+    defects:["常数不确定度传播","量纲一致性"]},
+  vacuumpermittivity:{paper:"由 c²=1/(ε0μ0) 与 μ0 定 ε0≈8.8541878128×10⁻¹² F/m（SI 精确）",
+    chain:"测平行板电容或谐振腔频率，反推真空介电常数 ε0。",
+    defects:["边缘场修正","频率标定"]},
+  vacuumpermeability:{paper:"μ0=4π×10⁻⁷ H/m（2019 前精确；现由 c 与 ε0 导出）",
+    chain:"测标准螺线管的电感或受力，给出真空磁导率 μ0。",
+    defects:["几何因子","温度系数"]},
+  vacuumimpedance:{paper:"Z0=√(μ0/ε0)≈376.730313668 Ω（自由空间波阻抗）",
+    chain:"在波导里测自由空间波阻抗，由 μ0/ε0 组合给出 Z0。",
+    defects:["连接器失配","频率标定"]},
+  gravityg:{paper:"绝对重力仪（落体/原子干涉）定标准重力 g=9.80665 m/s²",
+    chain:"用激光干涉测自由落体或原子干涉相位，给出当地重力加速度 g。",
+    defects:["海拔/纬度修正","振动隔离"]},
+  stdatm:{paper:"托里拆利/活塞式压力计定义 P0=101325 Pa（1 atm）",
+    chain:"用水银柱高度与汞密度反推标准大气压 P0。",
+    defects:["汞密度标定","温度修正"]},
+  earthradius:{paper:"子午线弧长/卫星测地定 R⊕≈6.371×10⁶ m（均值）",
+    chain:"由子午线弧长或卫星轨道反演地球平均半径 R⊕。",
+    defects:["椭率修正","潮汐形变"]},
+  astronomicalunit:{paper:"雷达测距与行星历表定 AU=1.495978707×10¹¹ m（2012 精确）",
+    chain:"用行星雷达回波光行时与开普勒历表反推天文单位 AU。",
+    defects:["行星历表误差","太阳质量参数"]},
+  lightyear:{paper:"ly=c·(365.25 d)≈9.46073×10¹⁵ m（距离单位）",
+    chain:"由周年视差与 c 组合给出光行年距离 ly。",
+    defects:["儒略年定义","视差零点"]},
+  solarmass:{paper:"由开普勒第三定律与行星轨道定 M☉≈1.98847×10³⁰ kg",
+    chain:"用地球轨道半长轴与周期，由开普勒第三定律反推太阳质量 M☉。",
+    defects:["行星质量修正","G 不确定度"]},
+  massenergy:{paper:"E=mc² 中 c²≈8.987551787×10¹⁶ J/kg（质能转换系数）",
+    chain:"用核反应的质量亏损与释放能量，校验质能当量 c²。",
+    defects:["反应 Q 值标定","质量亏损测量"]},
   electronmass:{paper:"电子质量 m_e：由 e/m（汤姆逊/质谱）与 e（密立根）反演 m_e≈9.10938×10⁻³¹ kg",
     chain:"电子束在已知 E、B 场中偏转测 e/m，再与油滴法所测 e 联立反演 m_e。",
     defects:["e/m 标定","油滴电荷离散"]},
