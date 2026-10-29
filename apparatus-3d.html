@@ -651,6 +651,8 @@
 <div class="layout">
   <div class="main">
     <div class="toolbar">
+      <select class="btn" id="domainSel" title="领域（一级菜单）"></select>
+      <select class="btn" id="subSel" title="装置（二级菜单）"></select>
       <select class="btn" id="devSel" title="装置切换（顶部菜单）"></select>
       <span class="btn" id="devPos">— / —</span>
       <button class="btn" id="prev">‹ 上一个</button>
@@ -5502,6 +5504,249 @@ var META = {
   var eng = null, idx = 0;
   var SIM = window.P2V_SIM;                 // 与主语料库页面的 25 个可运行装置同源
   var currentKey = keys[0];
+  // ── 顶部一二级菜单数据（由 _gen_menu.py 生成，学科领域→装置键，顺序同 D3.list）──
+  var DOMAIN_TREE = {
+    "基本物理常数": ["planck","avogadro","boltzmann","bohrmagneton","nuclearmagneton","elementarycharge","newtong","lightspeed","neutronmass","deuteronmass","planckmass","vacuumpermittivity","vacuumpermeability","vacuumimpedance","gravityg","stdatm","earthradius","astronomicalunit","lightyear","solarmass","massenergy","electronmass","protonmass","gasconstant","atomicmass","hyperfine","finestructure","gyromagnetic"],
+    "力学与引力": ["alphag","micro","poundrebka","eotvos","foucaultpendulum","gravlens","cavendish","galileopendulum","torricelli","coulomb","stokes","mach","reynolds","bernoulli","escapevelocity","keplerthird","titiusbode","shapiro"],
+    "电磁学": ["radius","qsh","bragg","millikan","qhe","moseley","thomsoncrt","roentgen","faradayrot","hall","nmr","wheatstone","hertz","oersted","faraday","ampere","faradayconstant","ohm","thomsone","laue","protonradius","copperresistivity"],
+    "光学与波": ["g2","olc","alphaconst","qed","transit","rydberg","debroglie","photoelectric","michelson","laser","davisson","fiber","debye","youngslit","fraunhofer","squid","cepheid","fabryperot","pockels","photomultiplier","fizeau","roemer","newtonprism","malus","newtonring","michelsonmorley","brewster","eddington","doppler","bradley","balmer","snell","rayleigh","kerr","solarluminosity","soundspeed"],
+    "热学与统计物理": ["perrin","brownian","joule","boyle","loschmidt","charles","stefanboltzmann","kelvin","weinberg","seebeck","debyetemp","criticalpoint","carnot","clausiusclapeyron","vanderwaals","specificheat","triplepoint","curietemp","thermalcond"],
+    "量子与原子分子": ["willow","katrin","colorcode","wboson","lhcb","rcs","bec","alphafold","prime","dna","compton","wien","rutherford","franckhertz","sterngerlach","raman","massspec","stark","josephson","aspect","zeeman","andersonpositron","sem","afm","teleport","maser","betatron","lamb","casimir","bohrradius","schrodinger","heisenberg"],
+    "核与粒子物理": ["nif","collider","borexino","kamlandzen","neutronbottle","th229","higgsself","gw170817","pre","fermi","osc","cyclotron","cherenkov","chadwick","mossbauer","gm","cloud","bubble","neutrino","solarnu","geigermarsden","cockcroftwalton","curie","becquerel","sparkchamber","dirac","sn1987a","parity"],
+    "天文与宇宙学": ["lz","desi","jwst","hubble","sgra","gw150914","wasp","nano","chirp","muon","hulsetaylor","cmb","bessel","chandrasekhar","bellpulsar","leavitt","schwarzschild","hawking","penzias","solarconstant"],
+    "材料与凝聚态": ["perovskite","battery","magic","stm","supercon","transistor","gmr","superfluid","meissner","youngmodulus","onnes","bandgap","piezoelectric","thermalexpansion","shearmodulus","bulkmodulus","poissonratio","magneticsusceptibility","meltingpoint","surfacetension","dielectricwater"],
+    "地球与行星科学": ["geomagnetic","richter"]
+  };
+  var KEY2DOMAIN = {
+    "nif": "核与粒子物理",
+    "perovskite": "材料与凝聚态",
+    "g2": "光学与波",
+    "willow": "量子与原子分子",
+    "katrin": "量子与原子分子",
+    "lz": "天文与宇宙学",
+    "collider": "核与粒子物理",
+    "borexino": "核与粒子物理",
+    "alphag": "力学与引力",
+    "colorcode": "量子与原子分子",
+    "desi": "天文与宇宙学",
+    "kamlandzen": "核与粒子物理",
+    "battery": "材料与凝聚态",
+    "neutronbottle": "核与粒子物理",
+    "olc": "光学与波",
+    "jwst": "天文与宇宙学",
+    "th229": "核与粒子物理",
+    "wboson": "量子与原子分子",
+    "alphaconst": "光学与波",
+    "lhcb": "量子与原子分子",
+    "qed": "光学与波",
+    "radius": "电磁学",
+    "higgsself": "核与粒子物理",
+    "rcs": "量子与原子分子",
+    "hubble": "天文与宇宙学",
+    "sgra": "天文与宇宙学",
+    "gw150914": "天文与宇宙学",
+    "gw170817": "核与粒子物理",
+    "wasp": "天文与宇宙学",
+    "bec": "量子与原子分子",
+    "magic": "材料与凝聚态",
+    "nano": "天文与宇宙学",
+    "micro": "力学与引力",
+    "pre": "核与粒子物理",
+    "alphafold": "量子与原子分子",
+    "prime": "量子与原子分子",
+    "dna": "量子与原子分子",
+    "qsh": "电磁学",
+    "chirp": "天文与宇宙学",
+    "transit": "光学与波",
+    "rydberg": "光学与波",
+    "bragg": "电磁学",
+    "compton": "量子与原子分子",
+    "fermi": "核与粒子物理",
+    "debroglie": "光学与波",
+    "wien": "量子与原子分子",
+    "muon": "天文与宇宙学",
+    "osc": "核与粒子物理",
+    "millikan": "电磁学",
+    "rutherford": "量子与原子分子",
+    "franckhertz": "量子与原子分子",
+    "sterngerlach": "量子与原子分子",
+    "perrin": "热学与统计物理",
+    "cyclotron": "核与粒子物理",
+    "stm": "材料与凝聚态",
+    "qhe": "电磁学",
+    "supercon": "材料与凝聚态",
+    "photoelectric": "光学与波",
+    "cherenkov": "核与粒子物理",
+    "raman": "量子与原子分子",
+    "chadwick": "核与粒子物理",
+    "michelson": "光学与波",
+    "massspec": "量子与原子分子",
+    "mossbauer": "核与粒子物理",
+    "laser": "光学与波",
+    "hulsetaylor": "天文与宇宙学",
+    "davisson": "光学与波",
+    "moseley": "电磁学",
+    "stark": "量子与原子分子",
+    "gm": "核与粒子物理",
+    "cloud": "核与粒子物理",
+    "bubble": "核与粒子物理",
+    "transistor": "材料与凝聚态",
+    "gmr": "材料与凝聚态",
+    "josephson": "量子与原子分子",
+    "superfluid": "材料与凝聚态",
+    "aspect": "量子与原子分子",
+    "neutrino": "核与粒子物理",
+    "solarnu": "核与粒子物理",
+    "cmb": "天文与宇宙学",
+    "fiber": "光学与波",
+    "poundrebka": "力学与引力",
+    "zeeman": "量子与原子分子",
+    "thomsoncrt": "电磁学",
+    "brownian": "热学与统计物理",
+    "roentgen": "电磁学",
+    "eotvos": "力学与引力",
+    "debye": "光学与波",
+    "planck": "基本物理常数",
+    "geigermarsden": "核与粒子物理",
+    "cockcroftwalton": "核与粒子物理",
+    "andersonpositron": "量子与原子分子",
+    "curie": "核与粒子物理",
+    "becquerel": "核与粒子物理",
+    "youngslit": "光学与波",
+    "fraunhofer": "光学与波",
+    "faradayrot": "电磁学",
+    "foucaultpendulum": "力学与引力",
+    "squid": "光学与波",
+    "sem": "量子与原子分子",
+    "afm": "量子与原子分子",
+    "teleport": "量子与原子分子",
+    "gravlens": "力学与引力",
+    "cepheid": "光学与波",
+    "hall": "电磁学",
+    "meissner": "材料与凝聚态",
+    "maser": "量子与原子分子",
+    "nmr": "电磁学",
+    "betatron": "量子与原子分子",
+    "sparkchamber": "核与粒子物理",
+    "fabryperot": "光学与波",
+    "pockels": "光学与波",
+    "wheatstone": "电磁学",
+    "photomultiplier": "光学与波",
+    "cavendish": "力学与引力",
+    "fizeau": "光学与波",
+    "roemer": "光学与波",
+    "hertz": "电磁学",
+    "oersted": "电磁学",
+    "faraday": "电磁学",
+    "joule": "热学与统计物理",
+    "galileopendulum": "力学与引力",
+    "torricelli": "力学与引力",
+    "newtonprism": "光学与波",
+    "malus": "光学与波",
+    "boyle": "热学与统计物理",
+    "ampere": "电磁学",
+    "youngmodulus": "材料与凝聚态",
+    "loschmidt": "热学与统计物理",
+    "newtonring": "光学与波",
+    "michelsonmorley": "光学与波",
+    "coulomb": "力学与引力",
+    "avogadro": "基本物理常数",
+    "charles": "热学与统计物理",
+    "faradayconstant": "电磁学",
+    "stefanboltzmann": "热学与统计物理",
+    "ohm": "电磁学",
+    "brewster": "光学与波",
+    "eddington": "光学与波",
+    "lamb": "量子与原子分子",
+    "casimir": "量子与原子分子",
+    "doppler": "光学与波",
+    "bessel": "天文与宇宙学",
+    "bradley": "光学与波",
+    "chandrasekhar": "天文与宇宙学",
+    "bellpulsar": "天文与宇宙学",
+    "thomsone": "电磁学",
+    "bohrradius": "量子与原子分子",
+    "onnes": "材料与凝聚态",
+    "laue": "电磁学",
+    "boltzmann": "基本物理常数",
+    "kelvin": "热学与统计物理",
+    "dirac": "核与粒子物理",
+    "schrodinger": "量子与原子分子",
+    "heisenberg": "量子与原子分子",
+    "balmer": "光学与波",
+    "sn1987a": "核与粒子物理",
+    "leavitt": "天文与宇宙学",
+    "schwarzschild": "天文与宇宙学",
+    "hawking": "天文与宇宙学",
+    "penzias": "天文与宇宙学",
+    "weinberg": "热学与统计物理",
+    "snell": "光学与波",
+    "stokes": "力学与引力",
+    "mach": "力学与引力",
+    "rayleigh": "光学与波",
+    "seebeck": "热学与统计物理",
+    "kerr": "光学与波",
+    "bandgap": "材料与凝聚态",
+    "debyetemp": "热学与统计物理",
+    "criticalpoint": "热学与统计物理",
+    "reynolds": "力学与引力",
+    "bernoulli": "力学与引力",
+    "carnot": "热学与统计物理",
+    "clausiusclapeyron": "热学与统计物理",
+    "vanderwaals": "热学与统计物理",
+    "bohrmagneton": "基本物理常数",
+    "parity": "核与粒子物理",
+    "nuclearmagneton": "基本物理常数",
+    "piezoelectric": "材料与凝聚态",
+    "thermalexpansion": "材料与凝聚态",
+    "solarconstant": "天文与宇宙学",
+    "protonradius": "电磁学",
+    "geomagnetic": "地球与行星科学",
+    "escapevelocity": "力学与引力",
+    "solarluminosity": "光学与波",
+    "keplerthird": "力学与引力",
+    "titiusbode": "力学与引力",
+    "richter": "地球与行星科学",
+    "shearmodulus": "材料与凝聚态",
+    "bulkmodulus": "材料与凝聚态",
+    "poissonratio": "材料与凝聚态",
+    "magneticsusceptibility": "材料与凝聚态",
+    "shapiro": "力学与引力",
+    "meltingpoint": "材料与凝聚态",
+    "elementarycharge": "基本物理常数",
+    "newtong": "基本物理常数",
+    "lightspeed": "基本物理常数",
+    "neutronmass": "基本物理常数",
+    "deuteronmass": "基本物理常数",
+    "planckmass": "基本物理常数",
+    "vacuumpermittivity": "基本物理常数",
+    "vacuumpermeability": "基本物理常数",
+    "vacuumimpedance": "基本物理常数",
+    "gravityg": "基本物理常数",
+    "stdatm": "基本物理常数",
+    "earthradius": "基本物理常数",
+    "astronomicalunit": "基本物理常数",
+    "lightyear": "基本物理常数",
+    "solarmass": "基本物理常数",
+    "massenergy": "基本物理常数",
+    "electronmass": "基本物理常数",
+    "protonmass": "基本物理常数",
+    "gasconstant": "基本物理常数",
+    "atomicmass": "基本物理常数",
+    "soundspeed": "光学与波",
+    "surfacetension": "材料与凝聚态",
+    "specificheat": "热学与统计物理",
+    "triplepoint": "热学与统计物理",
+    "curietemp": "热学与统计物理",
+    "thermalcond": "热学与统计物理",
+    "copperresistivity": "电磁学",
+    "hyperfine": "基本物理常数",
+    "finestructure": "基本物理常数",
+    "dielectricwater": "材料与凝聚态",
+    "gyromagnetic": "基本物理常数"
+  };
+  var DOMAIN_ORDER = ["基本物理常数","力学与引力","电磁学","光学与波","热学与统计物理","量子与原子分子","核与粒子物理","天文与宇宙学","材料与凝聚态","地球与行星科学"];
+
   var simCanvas = document.getElementById("simCanvas");
   var simOut = document.getElementById("simOut");
   var runBtn = document.getElementById("runSim");
@@ -5515,6 +5760,42 @@ var META = {
   });
   devSel.addEventListener("change", function(){ load(parseInt(devSel.value, 10)); });
 
+  // ── 顶部一二级菜单（领域→装置）──
+  var domainSel = document.getElementById("domainSel");
+  var subSel = document.getElementById("subSel");
+  DOMAIN_ORDER.forEach(function(d){
+    var o = document.createElement("option");
+    o.value = d; o.textContent = d + "（" + DOMAIN_TREE[d].length + "）";
+    domainSel.appendChild(o);
+  });
+  function populateSub(domain){
+    subSel.innerHTML = "";
+    var list = (domain === "__all__") ? keys : DOMAIN_TREE[domain];
+    list.forEach(function(k){
+      var i = keys.indexOf(k);
+      var o = document.createElement("option");
+      o.value = String(i);
+      o.textContent = D3.models[k].title;
+      subSel.appendChild(o);
+    });
+  }
+  // 初始：全部装置（扁平）+ 选首台
+  domainSel.value = "__all__";
+  populateSub("__all__");
+  subSel.value = "0";
+  domainSel.addEventListener("change", function(){
+    var d = domainSel.value;
+    populateSub(d);
+    // 若当前装置落在所选领域则只同步高亮，否则跳到该领域首台
+    if (d !== "__all__" && KEY2DOMAIN[currentKey] !== d) {
+      load(keys.indexOf(DOMAIN_TREE[d][0]));
+    } else {
+      subSel.value = String(idx);
+    }
+  });
+  subSel.addEventListener("change", function(){ load(parseInt(subSel.value, 10)); });
+
+
   function showError(msg){ errBox.style.display="flex"; errBox.textContent=msg; }
 
   function updateInfo(key){
@@ -5525,6 +5806,15 @@ var META = {
     var ul = document.getElementById("defects"); ul.innerHTML = "";
     if (md) md.defects.forEach(function(x){ var li=document.createElement("li"); li.textContent=x; ul.appendChild(li); });
     // 回写顶部菜单（当前装置与位置）
+    // 同步顶部一二级菜单（devSel 仍作为扁平兜底）
+    var cd = KEY2DOMAIN[currentKey];
+    if (domainSel.value === "__all__") {
+      subSel.value = String(idx);
+    } else if (domainSel.value !== cd) {
+      domainSel.value = cd; populateSub(cd); subSel.value = String(idx);
+    } else {
+      subSel.value = String(idx);
+    }
     devSel.value = String(idx);
     devPos.textContent = (idx + 1) + " / " + keys.length;
   }
