@@ -2330,7 +2330,55 @@
       paper: 'Penzias & Wilson 1965: 意外测得各向同性微波背景温度 T_cmb≈2.725 K', layer: 'L0(黑体辐射)→L4(号角天线+辐射计)→L7(天线温度→T_cmb)', conservation: '黑体谱 B_ν(T)', defectsN: ['大气/地面贡献', '天线效率'] }),
     weinberg: S({ key: 'weinberg', title: '温伯格弱电统一', thetaTrue: 0.231, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 0.20, fitHi: 0.27,
       forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
-      paper: 'Weinberg 1967（Glashow/Salam）: 电弱统一，弱混合角 sin²θ_W≈0.231（PDG 2024）', layer: 'L0(规范对称性)→L4(对撞机散射)→L7(不对称性→sin²θ_W)', conservation: 'SU(2)×U(1)→U(1)_em', defectsN: ['探测器接收度', '辐射修正'] })
+      paper: 'Weinberg 1967（Glashow/Salam）: 电弱统一，弱混合角 sin²θ_W≈0.231（PDG 2024）', layer: 'L0(规范对称性)→L4(对撞机散射)→L7(不对称性→sin²θ_W)',       conservation: 'SU(2)×U(1)→U(1)_em', defectsN: ['探测器接收度', '辐射修正'] }),
+    snell: S({ key: 'snell', title: '斯涅尔折射定律', thetaTrue: 1.333, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.2, fitHi: 1.5,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'Snell 1621/1637: 折射定律 n₁sinθ₁=n₂sinθ₂；水对空气 n≈1.333，玻璃 n≈1.51', layer: 'L0(折射)→L4(水槽+激光+量角器)→L7(入射/折射角→n)', conservation: 'n₁sinθ₁=n₂sinθ₂', defectsN: ['角度读数噪声', '液面扰动'] }),
+    stokes: S({ key: 'stokes', title: '斯托克斯黏滞阻力', thetaTrue: 1.0e-3, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 0.8e-3, fitHi: 1.3e-3,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'Stokes 1851: 黏滞阻力 F=6πηrv；水 20°C η≈1.0×10⁻³ Pa·s，终端 v=2r²Δρg/(9η)', layer: 'L0(黏滞阻力)→L4(落球+液柱)→L7(终端速度→η)', conservation: 'F=6πηrv (v_term=2r²Δρg/(9η))', defectsN: ['球径标定', '壁效应'] }),
+    mach: S({ key: 'mach', title: '马赫锥', thetaTrue: 2.0, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.5, fitHi: 2.5,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'Mach 1887 / 1940s: 超声速马赫锥 sin μ=1/M，M=2 时 μ=30°', layer: 'L0(马赫锥)→L4(风洞+纹影)→L7(锥角→M)', conservation: 'sinμ=1/M', defectsN: ['锥角测量', '来流扰动'] }),
+    rayleigh: S({ key: 'rayleigh', title: '瑞利散射', thetaTrue: 5.9, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 4.0, fitHi: 8.0,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'Rayleigh 1871: 散射强度 ∝1/λ⁴；天空蓝(450nm)对红(700nm)约强 (700/450)⁴≈5.9 倍', layer: 'L0(散射)→L4(分光+探测)→L7(蓝/红强度比→1/λ⁴)', conservation: 'I∝λ⁻⁴', defectsN: ['光谱纯度', '探测器响应'] }),
+    seebeck: S({ key: 'seebeck', title: '塞贝克热电效应', thetaTrue: 41e-6, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 30e-6, fitHi: 55e-6,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'Seebeck 1821/1823: 温差电动势 ΔV=S·ΔT，Cu-Constantan 约 41 µV/K', layer: 'L0(温差电)→L4(热电偶+温差)→L7(电压→S)', conservation: 'ΔV=SΔT', defectsN: ['温差标定', '接触电势'] }),
+    kerr: S({ key: 'kerr', title: '克尔二次电光效应', thetaTrue: 4.8e-12, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 3e-12, fitHi: 7e-12,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'Kerr 1875: 二次电光效应 Δn=λ·B·E²，硝基苯 B≈4.8×10⁻¹² m/V²', layer: 'L0(二次电光)→L4(克尔盒+电场)→L7(相位延迟→B)', conservation: 'Δn∝E²', defectsN: ['电压标定', '双折射温度系数'] }),
+    bandgap: S({ key: 'bandgap', title: '半导体带隙', thetaTrue: 1.12, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.0, fitHi: 1.3,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '半导体带隙：Si 室温间接带隙 E_g≈1.12 eV（吸收边测定）', layer: 'L0(带隙)→L4(光谱+探测)→L7(吸收边→E_g)', conservation: 'E_g 决定吸收边 hν_th', defectsN: ['吸收边展宽', '温度系数'] }),
+    debyetemp: S({ key: 'debyetemp', title: '德拜温度', thetaTrue: 343, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 300, fitHi: 380,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'Debye 1912: 德拜温度 Θ_D 由低温比热定，Cu≈343 K', layer: 'L0(晶格热容)→L4(低温量热)→L7(低温比热→Θ_D)', conservation: '低温 C∝T³ (Debye T³律)', defectsN: ['比热标定', '杂质'] }),
+    criticalpoint: S({ key: 'criticalpoint', title: '水的临界点', thetaTrue: 647.1, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 600, fitHi: 690,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'Andrews 1869 / 实测: 水的临界点 T_c≈647.1 K（374°C），P_c≈22.06 MPa', layer: 'L0(相变)→L4(高压釜+测P/T)→L7(临界现象→T_c)', conservation: '临界指数标度', defectsN: ['温度标定', '相分离判定'] }),
+    reynolds: S({ key: 'reynolds', title: '雷诺数层流-湍流转变', thetaTrue: 2300, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1500, fitHi: 3000,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'Reynolds 1883: 管流层流-湍流转变临界 Re≈2300（Re=ρvD/η）', layer: 'L0(流动)→L4(示踪+管流)→L7(转变→Re)', conservation: 'Re=ρvD/η', defectsN: ['流速分布', '管径标定'] }),
+    bernoulli: S({ key: 'bernoulli', title: '伯努利 / 文丘里', thetaTrue: 1000, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 950, fitHi: 1050,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'Bernoulli 1738 / Venturi 1797: 文丘里 ΔP 反演水密度 ρ≈1000 kg/m³', layer: 'L0(能量守恒)→L4(文丘里+差压)→L7(差压→ρ)', conservation: '½ρv₁²+P₁=½ρv₂²+P₂', defectsN: ['差压标定', '管壁摩擦'] }),
+    carnot: S({ key: 'carnot', title: '卡诺热机效率', thetaTrue: 0.25, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 0.15, fitHi: 0.35,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'Carnot 1824: 热机效率上限 η=1−T_c/T_h；400K/300K 理想 η=25%', layer: 'L0(热力循环)→L4(热机+温度计)→L7(效率→η)', conservation: 'η≤1−T_c/T_h', defectsN: ['热漏', '温度计标定'] }),
+    clausiusclapeyron: S({ key: 'clausiusclapeyron', title: '克劳修斯-克拉珀龙', thetaTrue: 2.26e6, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 2.0e6, fitHi: 2.5e6,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'Clausius 1832 / Clapeyron 1834: dP/dT=L·P/(R_v T²)；水 L_v≈2.26×10⁶ J/kg', layer: 'L0(相平衡)→L4(饱和蒸汽压+温度)→L7(斜率→L)', conservation: 'L=−(dP/dT)·TΔv', defectsN: ['饱和蒸汽压标定', '温度梯度'] }),
+    vanderwaals: S({ key: 'vanderwaals', title: '范德瓦尔斯方程', thetaTrue: 0.137, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 0.10, fitHi: 0.18,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'van der Waals 1873: 真实气体 (P+a/Vm²)(Vm−b)=RT；N₂ a≈0.137 Pa·m⁶/mol², b≈3.87×10⁻⁵ m³/mol', layer: 'L0(实际气体)→L4(P-V 测量)→L7(等温线→a,b)', conservation: '范德瓦尔斯状态方程', defectsN: ['气体纯度', '体积标定'] }),
+    bohrmagneton: S({ key: 'bohrmagneton', title: '玻尔磁子 μ_B', thetaTrue: 9.274e-24, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 8.5e-24, fitHi: 1.0e-23,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'Bohr 1913 / 磁矩量子化: 玻尔磁子 μ_B=eℏ/(2m_e)≈9.274×10⁻²⁴ J/T', layer: 'L0(磁矩量子化)→L4(磁强计/ESR)→L7(能级分裂→μ_B)', conservation: 'μ_B=eℏ/(2m_e)', defectsN: ['磁场标定', 'g 因子修正'] }),
+    parity: S({ key: 'parity', title: '宇称不守恒（吴健雄）', thetaTrue: -0.4, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: -0.6, fitHi: -0.2,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: 'Wu, Ambler et al. 1957: ⁶⁰Co β 衰变角分布不对称，证明弱相互作用宇称不守恒，|A|≈0.4', layer: 'L0(宇称不守恒)→L4(极化核+探测器)→L7(角分布→A)', conservation: '宇称在弱作用下不守恒', defectsN: ['立体角修正', '极化度标定'] })
   };
   // lz 是上限型，hubble 要单独标注张力
   SPECS.lz.fmt = function (inf) {
@@ -2543,7 +2591,23 @@
     schwarzschild: { title: '史瓦西半径', paper: 'Schwarzschild 1916: 太阳质量黑洞的事件视界半径 R_s=2GM/c²≈2953 m', layer: 'L0(时空度规)→L4(恒星演化+观测)→L7(质量→R_s)', conservation: 'R_s=2GM/c²', defects: ['质量测定', '吸积模型'] },
     hawking: { title: '霍金辐射', paper: 'Hawking 1974: 太阳质量黑洞的霍金温度 T=ℏc³/(8πGM)≈6.17×10⁻⁸ K', layer: 'L0(量子场论)→L4(黑洞热力学)→L7(质量→T)', conservation: 'T=ℏc³/(8πGM)', defects: ['理论外推', '探测下限'] },
     penzias: { title: '彭齐亚斯-威尔逊 CMB', paper: 'Penzias & Wilson 1965: 意外测得各向同性微波背景温度 T_cmb≈2.725 K', layer: 'L0(黑体辐射)→L4(号角天线+辐射计)→L7(天线温度→T_cmb)', conservation: '黑体谱 B_ν(T)', defects: ['大气/地面贡献', '天线效率'] },
-    weinberg: { title: '温伯格弱电统一', paper: 'Weinberg 1967（Glashow/Salam）: 电弱统一，弱混合角 sin²θ_W≈0.231（PDG 2024）', layer: 'L0(规范对称性)→L4(对撞机散射)→L7(不对称性→sin²θ_W)', conservation: 'SU(2)×U(1)→U(1)_em', defects: ['探测器接收度', '辐射修正'] }
+    weinberg: { title: '温伯格弱电统一', paper: 'Weinberg 1967（Glashow/Salam）: 电弱统一，弱混合角 sin²θ_W≈0.231（PDG 2024）', layer: 'L0(规范对称性)→L4(对撞机散射)→L7(不对称性→sin²θ_W)', conservation: 'SU(2)×U(1)→U(1)_em', defects: ['探测器接收度', '辐射修正'] },
+    snell: { title: '斯涅尔折射定律', paper: 'Snell 1621/1637: n_水≈1.333，n_玻璃≈1.51', layer: 'L0(折射)→L4(水槽+激光+量角器)→L7(入射/折射角→n)', conservation: 'n₁sinθ₁=n₂sinθ₂', defects: ['角度读数噪声', '液面扰动'] },
+    stokes: { title: '斯托克斯黏滞阻力', paper: 'Stokes 1851: F=6πηrv，水 20°C η≈1.0×10⁻³ Pa·s', layer: 'L0(黏滞阻力)→L4(落球+液柱)→L7(终端速度→η)', conservation: 'F=6πηrv (v_term=2r²Δρg/(9η))', defects: ['球径标定', '壁效应'] },
+    mach: { title: '马赫锥', paper: 'Mach 1887 / 1940s: sin μ=1/M，M=2 时 μ=30°', layer: 'L0(马赫锥)→L4(风洞+纹影)→L7(锥角→M)', conservation: 'sinμ=1/M', defects: ['锥角测量', '来流扰动'] },
+    rayleigh: { title: '瑞利散射', paper: 'Rayleigh 1871: I∝1/λ⁴，天空蓝对红约强 5.9 倍', layer: 'L0(散射)→L4(分光+探测)→L7(蓝/红强度比→1/λ⁴)', conservation: 'I∝λ⁻⁴', defects: ['光谱纯度', '探测器响应'] },
+    seebeck: { title: '塞贝克热电效应', paper: 'Seebeck 1821/1823: ΔV=S·ΔT，Cu-Constantan 约 41 µV/K', layer: 'L0(温差电)→L4(热电偶+温差)→L7(电压→S)', conservation: 'ΔV=SΔT', defects: ['温差标定', '接触电势'] },
+    kerr: { title: '克尔二次电光效应', paper: 'Kerr 1875: Δn=λ·B·E²，硝基苯 B≈4.8×10⁻¹² m/V²', layer: 'L0(二次电光)→L4(克尔盒+电场)→L7(相位延迟→B)', conservation: 'Δn∝E²', defects: ['电压标定', '双折射温度系数'] },
+    bandgap: { title: '半导体带隙', paper: 'Si 室温间接带隙 E_g≈1.12 eV（吸收边测定）', layer: 'L0(带隙)→L4(光谱+探测)→L7(吸收边→E_g)', conservation: 'E_g 决定吸收边 hν_th', defects: ['吸收边展宽', '温度系数'] },
+    debyetemp: { title: '德拜温度', paper: 'Debye 1912: Θ_D 由低温比热定，Cu≈343 K', layer: 'L0(晶格热容)→L4(低温量热)→L7(低温比热→Θ_D)', conservation: '低温 C∝T³ (Debye T³律)', defects: ['比热标定', '杂质'] },
+    criticalpoint: { title: '水的临界点', paper: 'Andrews 1869 / 实测: T_c≈647.1 K，P_c≈22.06 MPa', layer: 'L0(相变)→L4(高压釜+测P/T)→L7(临界现象→T_c)', conservation: '临界指数标度', defects: ['温度标定', '相分离判定'] },
+    reynolds: { title: '雷诺数层流-湍流转变', paper: 'Reynolds 1883: 管流临界 Re≈2300（Re=ρvD/η）', layer: 'L0(流动)→L4(示踪+管流)→L7(转变→Re)', conservation: 'Re=ρvD/η', defects: ['流速分布', '管径标定'] },
+    bernoulli: { title: '伯努利 / 文丘里', paper: 'Bernoulli 1738 / Venturi 1797: 文丘里 ΔP 反演水 ρ≈1000 kg/m³', layer: 'L0(能量守恒)→L4(文丘里+差压)→L7(差压→ρ)', conservation: '½ρv₁²+P₁=½ρv₂²+P₂', defects: ['差压标定', '管壁摩擦'] },
+    carnot: { title: '卡诺热机效率', paper: 'Carnot 1824: η=1−T_c/T_h；400K/300K 理想 η=25%', layer: 'L0(热力循环)→L4(热机+温度计)→L7(效率→η)', conservation: 'η≤1−T_c/T_h', defects: ['热漏', '温度计标定'] },
+    clausiusclapeyron: { title: '克劳修斯-克拉珀龙', paper: 'Clausius 1832 / Clapeyron 1834: dP/dT=L·P/(R_v T²)；水 L_v≈2.26×10⁶ J/kg', layer: 'L0(相平衡)→L4(饱和蒸汽压+温度)→L7(斜率→L)', conservation: 'L=−(dP/dT)·TΔv', defects: ['饱和蒸汽压标定', '温度梯度'] },
+    vanderwaals: { title: '范德瓦尔斯方程', paper: 'van der Waals 1873: (P+a/Vm²)(Vm−b)=RT；N₂ a≈0.137, b≈3.87×10⁻⁵', layer: 'L0(实际气体)→L4(P-V 测量)→L7(等温线→a,b)', conservation: '范德瓦尔斯状态方程', defects: ['气体纯度', '体积标定'] },
+    bohrmagneton: { title: '玻尔磁子 μ_B', paper: 'Bohr 1913 / 磁矩量子化: μ_B=eℏ/(2m_e)≈9.274×10⁻²⁴ J/T', layer: 'L0(磁矩量子化)→L4(磁强计/ESR)→L7(能级分裂→μ_B)', conservation: 'μ_B=eℏ/(2m_e)', defects: ['磁场标定', 'g 因子修正'] },
+    parity: { title: '宇称不守恒（吴健雄）', paper: 'Wu, Ambler et al. 1957: ⁶⁰Co β 不对称证明弱作用宇称不守恒，|A|≈0.4', layer: 'L0(宇称不守恒)→L4(极化核+探测器)→L7(角分布→A)', conservation: '宇称在弱作用下不守恒', defects: ['立体角修正', '极化度标定'] }
   };
   Object.keys(CLASSIC_META).forEach(function (k) { api.meta[k] = CLASSIC_META[k]; });
   // 变体农场：把 25 套模板做参数化扫描，可惰性产出至多 999,999 个可运行配置
@@ -3864,6 +3928,99 @@
     addSphere(scene, [2.8, -1.4, 0], 0.12, [0.4, 0.9, 0.5], 1, 10, true);
   }
 
+  function mSnell(scene) {         // 斯涅尔折射定律（水 n≈1.333）
+    addBox(scene, [0, -0.6, 0], [3.0, 0.12, 1.4], [0.4, 0.6, 0.85], 0.22);
+    var in_l = scene.addLine([1.0, 0.6, 0.3], 1); scene.lineSeg(in_l, [-2.4, 1.2, 0], [-0.3, 0.1, 0]);
+    var re_l = scene.addLine([0.9, 0.5, 0.3], 1); scene.lineSeg(re_l, [-0.3, 0.1, 0], [0.4, -1.3, 0]);
+    var re_l2 = scene.addLine([0.9, 0.5, 0.3], 1); scene.lineSeg(re_l2, [-0.3, 0.1, 0], [-1.6, 0.9, 0]);
+    addSphere(scene, [-0.3, 0.1, 0], 0.1, [0.9, 0.7, 0.3], 1, 10, true);
+  }
+  function mStokes(scene) {        // 斯托克斯黏滞阻力（终端速度）
+    addCylinder(scene, [0, -1.6, 0], [0, 1.8, 0], 0.7, [0.4, 0.6, 0.85], 0.18, 20, false);
+    addSphere(scene, [0, 0.9, 0], 0.25, [0.9, 0.7, 0.3], 1, 12, true);
+    var st = scene.addLine([1.0, 0.5, 0.3], 1); scene.lineSeg(st, [0, 0.65, 0], [0, -1.2, 0]);
+  }
+  function mMach(scene) {          // 马赫锥（超声速）
+    addCone(scene, [0, 0, 0], [1.4, 0.5, 0], 0.28, [0.6, 0.62, 0.66], 1, 16, false);
+    var mc = scene.addLine([0.95, 0.45, 0.3], 0.7); scene.lineSeg(mc, [1.4, 0.5, 0], [2.6, -1.4, 0]);
+    var mc2 = scene.addLine([0.95, 0.45, 0.3], 0.7); scene.lineSeg(mc2, [1.4, 0.5, 0], [2.6, 2.4, 0]);
+  }
+  function mRayleigh(scene) {      // 瑞利散射（天空蓝 ∝1/λ⁴）
+    addSphere(scene, [-2.2, 0, 0], 0.5, [0.95, 0.7, 0.3], 1, 16, true);
+    var rl = scene.addLine([1.0, 0.8, 0.3], 1); scene.lineSeg(rl, [-1.7, 0, 0], [2.4, 0, 0]);
+    addSphere(scene, [0.9, 0.35, 0], 0.16, [0.3, 0.5, 0.95], 1, 10, true);
+    addSphere(scene, [0.9, -0.45, 0], 0.16, [0.95, 0.5, 0.3], 1, 10, true);
+  }
+  function mSeebeck(scene) {       // 塞贝克热电效应
+    addBox(scene, [-1.4, 0, 0], [1.0, 0.1, 0.1], [0.7, 0.5, 0.3], 1);
+    addBox(scene, [0, 0, 0], [0.1, 0.1, 1.2], [0.5, 0.6, 0.7], 1);
+    addBox(scene, [1.4, 0, 0], [1.0, 0.1, 0.1], [0.7, 0.5, 0.3], 1);
+    addBox(scene, [0, 0.7, 0], [0.5, 0.35, 0.5], [0.95, 0.3, 0.2], 1);
+  }
+  function mKerr(scene) {          // 克尔二次电光效应
+    addBox(scene, [0, 0, 0], [0.6, 0.7, 1.5], [0.4, 0.6, 0.85], 0.2);
+    addBox(scene, [-0.75, 0, 0], [0.06, 0.7, 1.5], [0.6, 0.62, 0.66], 1);
+    addBox(scene, [0.75, 0, 0], [0.06, 0.7, 1.5], [0.6, 0.62, 0.66], 1);
+    var kl = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(kl, [-1.5, 0, 0], [1.5, 0, 0]);
+  }
+  function mBandgap(scene) {       // 半导体带隙
+    addBox(scene, [0, 0, 0], [1.1, 1.1, 0.3], [0.5, 0.55, 0.62], 1);
+    var bg = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(bg, [-2.2, 1.1, 0], [0, 0, 0]);
+    addSphere(scene, [0, 0, 0], 0.28, [0.3, 0.6, 0.9], 1, 12, true);
+  }
+  function mDebyetemp(scene) {     // 德拜温度（晶格热容）
+    addSphere(scene, [0, 0, 0], 0.32, [0.6, 0.62, 0.66], 1, 14, true);
+    for (var d_i = 0; d_i < 6; d_i++) { var d_a = d_i / 6 * 2 * Math.PI; addSphere(scene, [1.6 * Math.cos(d_a), 1.6 * Math.sin(d_a), 0], 0.16, [0.9, 0.7, 0.3], 1, 10, true); }
+  }
+  function mCriticalpoint(scene) { // 水的临界点
+    addCylinder(scene, [0, -1.4, 0], [0, 1.4, 0], 0.85, [0.4, 0.6, 0.85], 0.16, 20, false);
+    addSphere(scene, [0, 0.5, 0], 0.45, [0.9, 0.7, 0.3], 0.5, 14, true);
+    addSphere(scene, [0, -0.8, 0], 0.38, [0.5, 0.55, 0.62], 0.7, 12, true);
+  }
+  function mReynolds(scene) {      // 雷诺数 层流-湍流转变
+    addCylinder(scene, [-2.2, 0, 0], [2.2, 0, 0], 0.5, [0.4, 0.6, 0.85], 0.2, 20, false);
+    var ry = scene.addLine([0.95, 0.45, 0.3], 1); scene.lineSeg(ry, [-2.0, 0, 0], [2.0, 0.15, 0]);
+    addSphere(scene, [1.7, 0.15, 0], 0.15, [0.9, 0.5, 0.3], 1, 10, true);
+  }
+  function mBernoulli(scene) {     // 伯努利 / 文丘里
+    addCylinder(scene, [-1.6, 0, 0], [-0.4, 0, 0], 0.5, [0.6, 0.62, 0.66], 1, 16, false);
+    addCylinder(scene, [-0.4, 0, 0], [0.4, 0, 0], 0.24, [0.6, 0.62, 0.66], 1, 16, false);
+    addCylinder(scene, [0.4, 0, 0], [1.6, 0, 0], 0.5, [0.6, 0.62, 0.66], 1, 16, false);
+    var bn = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(bn, [-1.8, 0.6, 0], [1.8, 0.3, 0]);
+  }
+  function mCarnot(scene) {        // 卡诺热机
+    addBox(scene, [0, 0, 0], [0.65, 1.3, 0.65], [0.6, 0.62, 0.66], 0.5);
+    addBox(scene, [0, 0.95, 0], [0.6, 0.08, 0.6], [0.9, 0.7, 0.3], 1);
+    addBox(scene, [-1.3, -0.5, 0], [0.45, 0.45, 0.45], [0.95, 0.4, 0.2], 1);
+    addBox(scene, [1.3, -0.5, 0], [0.45, 0.45, 0.45], [0.2, 0.5, 0.95], 1);
+  }
+  function mClausiusclapeyron(scene) { // 克劳修斯-克拉珀龙
+    addCylinder(scene, [0, -0.6, 0], [0, 1.2, 0], 0.75, [0.4, 0.6, 0.85], 0.18, 20, false);
+    addSphere(scene, [0, 0.2, 0], 0.32, [0.9, 0.7, 0.3], 0.6, 12, true);
+    addCylinder(scene, [0, 1.2, 0], [0.3, 1.9, 0], 0.12, [0.6, 0.62, 0.66], 1, 12, false);
+  }
+  function mVanderwaals(scene) {   // 范德瓦尔斯等温线
+    var vw = scene.addLine([1.0, 0.85, 0.3], 1);
+    var prev = null;
+    for (var v_i = 0; v_i <= 20; v_i++) {
+      var v = 0.2 + v_i * 0.11; var p = 0.9 / (v - 0.04) - 0.07 / (v * v);
+      var x = -2.4 + v_i * 0.22; var y = (p - 4) * 0.45 + 1.3;
+      var cur = [x, y, 0];
+      if (prev) scene.lineSeg(vw, prev, cur);
+      prev = cur;
+    }
+  }
+  function mBohrmagneton(scene) {  // 玻尔磁子（自旋进动）
+    addSphere(scene, [0, 0, 0], 0.3, [0.9, 0.7, 0.3], 1, 14, true);
+    var bm = scene.addLine([1.0, 0.85, 0.3], 1);
+    var prevb = null;
+    for (var b_i = 0; b_i <= 18; b_i++) { var b_a = b_i / 18 * 2 * Math.PI; var cur = [1.7 * Math.cos(b_a), 1.7 * Math.sin(b_a), 0]; if (prevb) scene.lineSeg(bm, prevb, cur); prevb = cur; }
+  }
+  function mParity(scene) {        // 宇称不守恒（吴健雄 Co-60）
+    addSphere(scene, [0, 0, 0], 0.4, [0.9, 0.7, 0.3], 1, 16, true);
+    for (var p_i = 0; p_i < 8; p_i++) { var p_a = p_i / 8 * 2 * Math.PI; addCylinder(scene, [0, 0, 0], [0.7 * Math.cos(p_a), 1.4 + 0.5 * Math.sin(p_a), 0], 0.05, [0.3, 0.6, 0.9], 1, 8, false); }
+    addCylinder(scene, [0, 0, 0], [0, -0.9, 0], 0.05, [0.9, 0.4, 0.3], 1, 8, false);
+  }
   function mThomsone(scene) {         // J.J. 汤姆逊阴极射线测 e/m（1897）
     addCylinder(scene, [-2.5, 0, 0], [2.5, 0, 0], 0.15, [0.4, 0.6, 0.85], 0.18, 16, false);        // 玻璃管（半透明）
     addBox(scene, [-2.7, 0, 0], [0.2, 0.45, 0.45], [0.6, 0.62, 0.66], 1);                          // 阴极
@@ -4109,7 +4266,23 @@
     schwarzschild: { title: "史瓦西半径（1916）", radius: 6, build: mSchwarzschild },
     hawking: { title: "霍金辐射（1974）", radius: 6, build: mHawking },
     penzias: { title: "彭齐亚斯-威尔逊 CMB（1965）", radius: 6, build: mPenzias },
-    weinberg: { title: "温伯格弱电统一（1967）", radius: 6, build: mWeinberg }
+    weinberg: { title: "温伯格弱电统一（1967）", radius: 6, build: mWeinberg },
+    snell: { title: "斯涅尔折射定律（1621）", radius: 6, build: mSnell },
+    stokes: { title: "斯托克斯黏滞阻力（1851）", radius: 6, build: mStokes },
+    mach: { title: "马赫锥（1887）", radius: 6, build: mMach },
+    rayleigh: { title: "瑞利散射（1871）", radius: 6, build: mRayleigh },
+    seebeck: { title: "塞贝克热电效应（1821）", radius: 6, build: mSeebeck },
+    kerr: { title: "克尔二次电光效应（1875）", radius: 6, build: mKerr },
+    bandgap: { title: "半导体带隙 Si（1.12 eV）", radius: 6, build: mBandgap },
+    debyetemp: { title: "德拜温度 Cu（343 K）", radius: 6, build: mDebyetemp },
+    criticalpoint: { title: "水的临界点（647 K）", radius: 6, build: mCriticalpoint },
+    reynolds: { title: "雷诺数层流-湍流转变（1883）", radius: 6, build: mReynolds },
+    bernoulli: { title: "伯努利 / 文丘里（1738）", radius: 6, build: mBernoulli },
+    carnot: { title: "卡诺热机效率（1824）", radius: 6, build: mCarnot },
+    clausiusclapeyron: { title: "克劳修斯-克拉珀龙（1834）", radius: 6, build: mClausiusclapeyron },
+    vanderwaals: { title: "范德瓦尔斯方程（1873）", radius: 6, build: mVanderwaals },
+    bohrmagneton: { title: "玻尔磁子 μ_B（1913）", radius: 6, build: mBohrmagneton },
+    parity: { title: "宇称不守恒（吴健雄, 1957）", radius: 6, build: mParity }
   };
 
   /* ── WebGL 引擎（仅在浏览器、有 GL 时启用） ── */
