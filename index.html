@@ -2397,6 +2397,55 @@
     nuclearmagneton: S({ key: 'nuclearmagneton', title: '核磁子 μ_N', thetaTrue: 5.05078e-27, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 4.8e-27, fitHi: 5.3e-27,
       forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
       paper: '核磁子 μ_N=eℏ/(2m_p)≈5.05078×10⁻²⁷ J/T（NMR/质量磁强计定）', layer: 'L0(核磁矩量子化)→L4(磁强计/ENDOR)→L7(能级分裂→μ_N)', conservation: 'μ_N=eℏ/(2m_p)', defectsN: ['磁场标定', '质量比修正'] }),
+    piezoelectric: S({ key: 'piezoelectric', title: '压电系数 d₃₃', thetaTrue: 2.3e-12, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 2e-12, fitHi: 2.6e-12,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '石英压电系数 d₃₃≈2.3 pC/N（IEEE 压电标准与谐振法标定）', layer: 'L0(压电耦合)→L4(谐振/力电换能)→L7(应变→电荷→d₃₃)', conservation: 'd₃₃=Q/(F·n)（单位应变电荷）', defectsN: ['电极接触', '夹持边界'] }),
+    thermalexpansion: S({ key: 'thermalexpansion', title: '线膨胀系数 α', thetaTrue: 1.2e-05, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1e-05, fitHi: 1.4e-05,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '钢线膨胀系数 α≈1.2×10⁻⁵ K⁻¹（干涉/光杠杆法，温度标定）', layer: 'L0(热膨胀)→L4(光杠杆/干涉)→L7(ΔL/L→α)', conservation: 'ΔL=α·L₀·ΔT', defectsN: ['温度梯度', '标尺热漂移'] }),
+    solarconstant: S({ key: 'solarconstant', title: '太阳常数 S☉', thetaTrue: 1361, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1320, fitHi: 1400,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '太阳常数 S☉≈1361 W/m²（卫星辐射计，如 SORCE/TIM）', layer: 'L0(辐射通量)→L4(辐射计/腔体)→L7(功率/面积→S☉)', conservation: 'S☉=L☉/(4π·AU²)', defectsN: ['大气吸收修正', '仪器标定'] }),
+    protonradius: S({ key: 'protonradius', title: '质子电荷半径 r_p', thetaTrue: 8.4087e-16, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 8e-16, fitHi: 8.8e-16,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '质子电荷半径 r_p≈0.84087 fm（μ 氢原子 Lamb 位移，2010/2017 之谜）', layer: 'L0(核电荷分布)→L4(μ 氢光谱)→L7(能级位移→r_p)', conservation: 'ΔE_Lamb∝⟨r_p²⟩', defectsN: ['真空极化', '核极化修正'] }),
+    geomagnetic: S({ key: 'geomagnetic', title: '地磁场 B', thetaTrue: 5e-05, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 4e-05, fitHi: 6e-05,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '地磁场 B≈50 μT（中纬，IGRF 模型；罗盘/磁通门标定）', layer: 'L0(地磁偶极)→L4(磁通门/罗盘)→L7(偏转/感应→B)', conservation: 'B=∇×(A_磁偶极)', defectsN: ['磁偏角', '城市磁干扰'] }),
+    escapevelocity: S({ key: 'escapevelocity', title: '地球逃逸速度 v_esc', thetaTrue: 11186, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 11000, fitHi: 11300,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '地球逃逸速度 v_esc=√(2GM⊕/R⊕)≈11.186 km/s', layer: 'L0(引力势)→L4(轨道/弹道)→L7(能量守恒→v_esc)', conservation: '½v_esc²=GM⊕/R⊕', defectsN: ['大气阻力', '自转修正'] }),
+    solarluminosity: S({ key: 'solarluminosity', title: '太阳光度 L☉', thetaTrue: 3.828e+26, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 3.7e+26, fitHi: 3.95e+26,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '太阳光度 L☉≈3.828×10²⁶ W（由 S☉×4π·AU²）', layer: 'L0(辐射功率)→L4(辐射计)→L7(通量×球面→L☉)', conservation: 'L☉=4π·AU²·S☉', defectsN: ['反照率', '距离标定'] }),
+    keplerthird: S({ key: 'keplerthird', title: '开普勒第三定律', thetaTrue: 2.97e-19, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 2.9e-19, fitHi: 3.05e-19,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '开普勒第三定律 T²/a³=4π²/(GM☉)≈2.97×10⁻¹⁹ s²/m³（布拉赫→开普勒 1609/1619）', layer: 'L0(万有引力)→L4(天文测轨)→L7(周期/半长轴→GM☉)', conservation: 'T²=(4π²/(GM☉))·a³', defectsN: ['轨道偏心率', '行星扰动'] }),
+    titiusbode: S({ key: 'titiusbode', title: '提丢斯-波得定则', thetaTrue: 2.8, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 2.5, fitHi: 3.1,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '提丢斯-波得定则 a=0.4+0.3·2ⁿ AU，预言小行星带 2.8 AU（谷神星 1801 实测 2.77 AU）', layer: 'L0(经验序列)→L4(天测定轨)→L7(间距规律→2.8 AU)', conservation: '经验式（非守恒律）', defectsN: ['海王星偏离', '经验性'] }),
+    richter: S({ key: 'richter', title: '里氏震级 M_L', thetaTrue: 10, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 9, fitHi: 11,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '里氏震级 M_L：振幅每 ×10 增 1 级（Wood-Anderson 地震仪 1935）', layer: 'L0(对数标度)→L4(地震仪)→L7(振幅→M_L)', conservation: 'M_L=log₁₀(A)+corr(Δ)', defectsN: ['台站校正', '近场饱和'] }),
+    shearmodulus: S({ key: 'shearmodulus', title: '剪切模量 G', thetaTrue: 79000000000.0, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 75000000000.0, fitHi: 83000000000.0,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '钢剪切模量 G≈7.9×10¹⁰ Pa（扭转振动/共振柱法）', layer: 'L0(弹性)→L4(扭转共振)→L7(频率→G)', conservation: 'G=E/(2(1+ν))', defectsN: ['夹持损耗', '温度'] }),
+    bulkmodulus: S({ key: 'bulkmodulus', title: '体积模量 K', thetaTrue: 160000000000.0, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 150000000000.0, fitHi: 170000000000.0,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '钢体积模量 K≈1.6×10¹¹ Pa（超声纵波/静水压）', layer: 'L0(弹性)→L4(超声/液压)→L7(波速/压变→K)', conservation: 'K=E/(3(1−2ν))', defectsN: ['孔隙率', '标定'] }),
+    poissonratio: S({ key: 'poissonratio', title: '泊松比 ν', thetaTrue: 0.3, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 0.27, fitHi: 0.33,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '钢泊松比 ν≈0.30（轴向拉伸配横向应变测量）', layer: 'L0(弹性耦合)→L4(应变片)→L7(横向/轴向应变→ν)', conservation: 'ν=−ε_trans/ε_axial', defectsN: ['应变片粘贴', '端部效应'] }),
+    magneticsusceptibility: S({ key: 'magneticsusceptibility', title: '体积磁化率 χ_v', thetaTrue: -9e-06, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: -1.1e-05, fitHi: -7e-06,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '水体积磁化率 χ_v≈−9.0×10⁻⁶（抗磁，Faraday 天平法）', layer: 'L0(磁化率)→L4(磁天平)→L7(受力→χ)', conservation: 'M=χ·H', defectsN: ['温度', '杂质'] }),
+    shapiro: S({ key: 'shapiro', title: '夏皮罗时延 Δt', thetaTrue: 0.00025, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 0.0002, fitHi: 0.0003,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '夏皮罗时延 Δt≈2.5×10⁻⁴ s（水星凌日雷达 1976 实测，广义相对论）', layer: 'L0(时空弯曲)→L4(雷达测距)→L7(时延→GM☉/c³)', conservation: 'Δt=(2GM☉/c³)·ln(...)', defectsN: ['太阳大气折射', '轨道要素'] }),
+    meltingpoint: S({ key: 'meltingpoint', title: '铁熔点 T_m', thetaTrue: 1811, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1780, fitHi: 1840,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '铁熔点 T_m≈1811 K（高温热电偶/光学高温计）', layer: 'L0(相变)→L4(加热/测温)→L7(相变温度→T_m)', conservation: '相平衡（熔化潜热）', defectsN: ['氧化', '纯度'] }),
+
     elementarycharge: S({ key: 'elementarycharge', title: '基本电荷 e', thetaTrue: 1.602176634e-19, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.55e-19, fitHi: 1.65e-19,
       forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
       paper: '由密立根油滴（1913）与 2019 SI 重定义 e=1.602176634×10⁻¹⁹ C（精确）', layer: 'L0(电荷量子化)→L4(油滴仪/电流天平)→L7(偏转/电荷→e)', conservation: 'e = I·t/N（单电子电流）', defectsN: ['油滴电荷离散', '斯托克斯修正'] }),
@@ -2720,6 +2769,23 @@
     bohrmagneton: { title: '玻尔磁子 μ_B', paper: 'Bohr 1913 / 磁矩量子化: μ_B=eℏ/(2m_e)≈9.274×10⁻²⁴ J/T', layer: 'L0(磁矩量子化)→L4(磁强计/ESR)→L7(能级分裂→μ_B)', conservation: 'μ_B=eℏ/(2m_e)', defects: ['磁场标定', 'g 因子修正'] },
     parity: { title: '宇称不守恒（吴健雄）', paper: 'Wu, Ambler et al. 1957: ⁶⁰Co β 不对称证明弱作用宇称不守恒，|A|≈0.4', layer: 'L0(宇称不守恒)→L4(极化核+探测器)→L7(角分布→A)', conservation: '宇称在弱作用下不守恒', defects: ['立体角修正', '极化度标定'] },
     nuclearmagneton: { title: '核磁子 μ_N', paper: '核磁子 μ_N=eℏ/(2m_p)≈5.05078×10⁻²⁷ J/T（NMR/质量磁强计定）', layer: 'L0(核磁矩量子化)→L4(磁强计/ENDOR)→L7(能级分裂→μ_N)', conservation: 'μ_N=eℏ/(2m_p)', defects: ['磁场标定', '质量比修正'] },
+    piezoelectric: { title: '压电系数 d₃₃', paper: '石英压电系数 d₃₃≈2.3 pC/N（IEEE 压电标准与谐振法标定）', layer: 'L0(压电耦合)→L4(谐振/力电换能)→L7(应变→电荷→d₃₃)', conservation: 'd₃₃=Q/(F·n)（单位应变电荷）', defects: ['电极接触', '夹持边界'] },
+    thermalexpansion: { title: '线膨胀系数 α', paper: '钢线膨胀系数 α≈1.2×10⁻⁵ K⁻¹（干涉/光杠杆法，温度标定）', layer: 'L0(热膨胀)→L4(光杠杆/干涉)→L7(ΔL/L→α)', conservation: 'ΔL=α·L₀·ΔT', defects: ['温度梯度', '标尺热漂移'] },
+    solarconstant: { title: '太阳常数 S☉', paper: '太阳常数 S☉≈1361 W/m²（卫星辐射计，如 SORCE/TIM）', layer: 'L0(辐射通量)→L4(辐射计/腔体)→L7(功率/面积→S☉)', conservation: 'S☉=L☉/(4π·AU²)', defects: ['大气吸收修正', '仪器标定'] },
+    protonradius: { title: '质子电荷半径 r_p', paper: '质子电荷半径 r_p≈0.84087 fm（μ 氢原子 Lamb 位移，2010/2017 之谜）', layer: 'L0(核电荷分布)→L4(μ 氢光谱)→L7(能级位移→r_p)', conservation: 'ΔE_Lamb∝⟨r_p²⟩', defects: ['真空极化', '核极化修正'] },
+    geomagnetic: { title: '地磁场 B', paper: '地磁场 B≈50 μT（中纬，IGRF 模型；罗盘/磁通门标定）', layer: 'L0(地磁偶极)→L4(磁通门/罗盘)→L7(偏转/感应→B)', conservation: 'B=∇×(A_磁偶极)', defects: ['磁偏角', '城市磁干扰'] },
+    escapevelocity: { title: '地球逃逸速度 v_esc', paper: '地球逃逸速度 v_esc=√(2GM⊕/R⊕)≈11.186 km/s', layer: 'L0(引力势)→L4(轨道/弹道)→L7(能量守恒→v_esc)', conservation: '½v_esc²=GM⊕/R⊕', defects: ['大气阻力', '自转修正'] },
+    solarluminosity: { title: '太阳光度 L☉', paper: '太阳光度 L☉≈3.828×10²⁶ W（由 S☉×4π·AU²）', layer: 'L0(辐射功率)→L4(辐射计)→L7(通量×球面→L☉)', conservation: 'L☉=4π·AU²·S☉', defects: ['反照率', '距离标定'] },
+    keplerthird: { title: '开普勒第三定律', paper: '开普勒第三定律 T²/a³=4π²/(GM☉)≈2.97×10⁻¹⁹ s²/m³（布拉赫→开普勒 1609/1619）', layer: 'L0(万有引力)→L4(天文测轨)→L7(周期/半长轴→GM☉)', conservation: 'T²=(4π²/(GM☉))·a³', defects: ['轨道偏心率', '行星扰动'] },
+    titiusbode: { title: '提丢斯-波得定则', paper: '提丢斯-波得定则 a=0.4+0.3·2ⁿ AU，预言小行星带 2.8 AU（谷神星 1801 实测 2.77 AU）', layer: 'L0(经验序列)→L4(天测定轨)→L7(间距规律→2.8 AU)', conservation: '经验式（非守恒律）', defects: ['海王星偏离', '经验性'] },
+    richter: { title: '里氏震级 M_L', paper: '里氏震级 M_L：振幅每 ×10 增 1 级（Wood-Anderson 地震仪 1935）', layer: 'L0(对数标度)→L4(地震仪)→L7(振幅→M_L)', conservation: 'M_L=log₁₀(A)+corr(Δ)', defects: ['台站校正', '近场饱和'] },
+    shearmodulus: { title: '剪切模量 G', paper: '钢剪切模量 G≈7.9×10¹⁰ Pa（扭转振动/共振柱法）', layer: 'L0(弹性)→L4(扭转共振)→L7(频率→G)', conservation: 'G=E/(2(1+ν))', defects: ['夹持损耗', '温度'] },
+    bulkmodulus: { title: '体积模量 K', paper: '钢体积模量 K≈1.6×10¹¹ Pa（超声纵波/静水压）', layer: 'L0(弹性)→L4(超声/液压)→L7(波速/压变→K)', conservation: 'K=E/(3(1−2ν))', defects: ['孔隙率', '标定'] },
+    poissonratio: { title: '泊松比 ν', paper: '钢泊松比 ν≈0.30（轴向拉伸配横向应变测量）', layer: 'L0(弹性耦合)→L4(应变片)→L7(横向/轴向应变→ν)', conservation: 'ν=−ε_trans/ε_axial', defects: ['应变片粘贴', '端部效应'] },
+    magneticsusceptibility: { title: '体积磁化率 χ_v', paper: '水体积磁化率 χ_v≈−9.0×10⁻⁶（抗磁，Faraday 天平法）', layer: 'L0(磁化率)→L4(磁天平)→L7(受力→χ)', conservation: 'M=χ·H', defects: ['温度', '杂质'] },
+    shapiro: { title: '夏皮罗时延 Δt', paper: '夏皮罗时延 Δt≈2.5×10⁻⁴ s（水星凌日雷达 1976 实测，广义相对论）', layer: 'L0(时空弯曲)→L4(雷达测距)→L7(时延→GM☉/c³)', conservation: 'Δt=(2GM☉/c³)·ln(...)', defects: ['太阳大气折射', '轨道要素'] },
+    meltingpoint: { title: '铁熔点 T_m', paper: '铁熔点 T_m≈1811 K（高温热电偶/光学高温计）', layer: 'L0(相变)→L4(加热/测温)→L7(相变温度→T_m)', conservation: '相平衡（熔化潜热）', defects: ['氧化', '纯度'] },
+
     elementarycharge: { title: '基本电荷 e', paper: '由密立根油滴（1913）与 2019 SI 重定义 e=1.602176634×10⁻¹⁹ C（精确）', layer: 'L0(电荷量子化)→L4(油滴仪/电流天平)→L7(偏转/电荷→e)', conservation: 'e = I·t/N（单电子电流）', defects: ['油滴电荷离散', '斯托克斯修正'] },
     newtong: { title: '引力常数 G', paper: '卡文迪许扭秤（1798）定 G≈6.67430×10⁻¹¹ m³/(kg·s²)（CODATA 2018）', layer: 'L0(万有引力)→L4(扭秤)→L7(扭角→G)', conservation: 'F=Gm₁m₂/r²', defects: ['扭丝滞回', '温度漂移'] },
     lightspeed: { title: '真空光速 c', paper: '罗默/斐索/傅科与 1972 激光频梳定 c=299792458 m/s（SI 精确值）', layer: 'L0(电磁/相对论)→L4(干涉/腔)→L7(波长×频率→c)', conservation: 'c=λ·ν', defects: ['空气折射修正', '腔长标定'] },
@@ -4170,6 +4236,82 @@
     var nm = scene.addLine([1.0, 0.85, 0.3], 1); var pnm = null;
     for (var nmi = 0; nmi <= 18; nmi++) { var na = nmi / 18 * 2 * Math.PI; var cur = [1.7 * Math.cos(na), 1.7 * Math.sin(na), 0]; if (pnm) scene.lineSeg(nm, pnm, cur); pnm = cur; }
   }
+  function mPiezoelectric(scene) {  // 压电系数 d₃₃
+    addBox(scene, [-1.8, 0, 0], [0.2, 1.0, 1.0], [0.9,0.7,0.3], 1);
+    addBox(scene, [1.8, 0, 0], [0.2, 1.0, 1.0], [0.9,0.7,0.3], 1);
+    var cl = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(cl, [-1.8, 0.3, 0], [1.8, 0.3, 0]); scene.lineSeg(cl, [-1.8, -0.3, 0], [1.8, -0.3, 0]);
+  }
+  function mThermalexpansion(scene) {  // 线膨胀系数 α
+    addCylinder(scene, [0, -1.4, 0], [0, 2.0, 0], 0.5, [0.3,0.6,0.95], 0.18, 18, false);
+    addSphere(scene, [0, 1.0, 0], 0.35, [0.3, 0.6, 0.95], 0.6, 14, true);
+    addBox(scene, [0, -1.6, 0], [0.7, 0.1, 0.7], [0.6, 0.62, 0.66], 1);
+  }
+  function mSolarconstant(scene) {  // 太阳常数 S☉
+    addCylinder(scene, [-1.8, 0, 0], [1.8, 0, 0], 0.7, [0.6,0.62,0.66], 0.15, 20, false);
+    for (var vi = 0; vi < 8; vi++) { var va = vi / 8 * 2 * Math.PI; addSphere(scene, [0, 0.7 * Math.cos(va), 0.7 * Math.sin(va)], 0.06, [0.9, 0.5, 0.3], 0.7, 8, true); }
+  }
+  function mProtonradius(scene) {  // 质子电荷半径 r_p
+    addSphere(scene, [0, 0, 0], 0.4, [0.4,0.6,0.85], 1, 16, true);
+    addTorus(scene, [0, 0, 0], [0, 0, 1], 2.0, 0.06, [0.4,0.6,0.85], 1, 30, 2, false);
+  }
+  function mGeomagnetic(scene) {  // 地磁场 B
+    addSphere(scene, [-1.9, 0, 0], 0.3, [0.9,0.5,0.3], 1, 14, true);
+    addSphere(scene, [1.9, 0, 0], 0.3, [0.9,0.5,0.3], 1, 14, true);
+    var ln = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(ln, [-1.9, 0, 0], [1.9, 0, 0]);
+  }
+  function mEscapevelocity(scene) {  // 地球逃逸速度 v_esc
+    addSphere(scene, [0, -1.6, 0], 0.3, [0.5,0.55,0.62], 1, 14, true);
+    var dl = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(dl, [0, 1.4, 0], [0, -1.6, 0]);
+    addCylinder(scene, [0, 1.5, 0], [0, 1.9, 0], 0.06, [0.5, 0.55, 0.62], 1, 8, false);
+  }
+  function mSolarluminosity(scene) {  // 太阳光度 L☉
+    addSphere(scene, [0, 0, 0], 0.5, [0.85,0.4,0.7], 1, 16, true);
+    addTorus(scene, [0, 0, 0], [0, 0, 1], 2.4, 0.05, [0.6, 0.62, 0.66], 1, 32, 2, false);
+    addSphere(scene, [2.4, 0, 0], 0.18, [0.3, 0.6, 0.95], 1, 10, true);
+  }
+  function mKeplerthird(scene) {  // 开普勒第三定律
+    addSphere(scene, [0, 0, 0], 0.5, [0.4,0.85,0.6], 1, 16, true);
+    addTorus(scene, [0, 0, 0], [0, 0, 1], 2.4, 0.05, [0.6, 0.62, 0.66], 1, 32, 2, false);
+    addSphere(scene, [2.4, 0, 0], 0.18, [0.3, 0.6, 0.95], 1, 10, true);
+  }
+  function mTitiusbode(scene) {  // 提丢斯-波得定则
+    addSphere(scene, [0, 0, 0], 0.4, [0.9,0.7,0.3], 1, 16, true);
+    addTorus(scene, [0, 0, 0], [0, 0, 1], 2.0, 0.06, [0.9,0.7,0.3], 1, 30, 2, false);
+  }
+  function mRichter(scene) {  // 里氏震级 M_L
+    addSphere(scene, [-1.9, 0, 0], 0.3, [0.3,0.6,0.95], 1, 14, true);
+    addSphere(scene, [1.9, 0, 0], 0.3, [0.3,0.6,0.95], 1, 14, true);
+    var ln = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(ln, [-1.9, 0, 0], [1.9, 0, 0]);
+  }
+  function mShearmodulus(scene) {  // 剪切模量 G
+    addCylinder(scene, [0, -1.4, 0], [0, 2.0, 0], 0.5, [0.6,0.62,0.66], 0.18, 18, false);
+    addSphere(scene, [0, 1.0, 0], 0.35, [0.3, 0.6, 0.95], 0.6, 14, true);
+    addBox(scene, [0, -1.6, 0], [0.7, 0.1, 0.7], [0.6, 0.62, 0.66], 1);
+  }
+  function mBulkmodulus(scene) {  // 体积模量 K
+    addCylinder(scene, [-1.8, 0, 0], [1.8, 0, 0], 0.7, [0.4,0.6,0.85], 0.15, 20, false);
+    for (var vi = 0; vi < 8; vi++) { var va = vi / 8 * 2 * Math.PI; addSphere(scene, [0, 0.7 * Math.cos(va), 0.7 * Math.sin(va)], 0.06, [0.9, 0.5, 0.3], 0.7, 8, true); }
+  }
+  function mPoissonratio(scene) {  // 泊松比 ν
+    addBox(scene, [-1.8, 0, 0], [0.2, 1.0, 1.0], [0.9,0.5,0.3], 1);
+    addBox(scene, [1.8, 0, 0], [0.2, 1.0, 1.0], [0.9,0.5,0.3], 1);
+    var cl = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(cl, [-1.8, 0.3, 0], [1.8, 0.3, 0]); scene.lineSeg(cl, [-1.8, -0.3, 0], [1.8, -0.3, 0]);
+  }
+  function mMagneticsusceptibility(scene) {  // 体积磁化率 χ_v
+    addSphere(scene, [-1.9, 0, 0], 0.3, [0.5,0.55,0.62], 1, 14, true);
+    addSphere(scene, [1.9, 0, 0], 0.3, [0.5,0.55,0.62], 1, 14, true);
+    var ln = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(ln, [-1.9, 0, 0], [1.9, 0, 0]);
+  }
+  function mShapiro(scene) {  // 夏皮罗时延 Δt
+    addSphere(scene, [0, -1.6, 0], 0.3, [0.85,0.4,0.7], 1, 14, true);
+    var dl = scene.addLine([1.0, 0.85, 0.3], 1); scene.lineSeg(dl, [0, 1.4, 0], [0, -1.6, 0]);
+    addCylinder(scene, [0, 1.5, 0], [0, 1.9, 0], 0.06, [0.5, 0.55, 0.62], 1, 8, false);
+  }
+  function mMeltingpoint(scene) {  // 铁熔点 T_m
+    addCylinder(scene, [0, -1.4, 0], [0, 2.0, 0], 0.5, [0.4,0.85,0.6], 0.18, 18, false);
+    addSphere(scene, [0, 1.0, 0], 0.35, [0.3, 0.6, 0.95], 0.6, 14, true);
+    addBox(scene, [0, -1.6, 0], [0.7, 0.1, 0.7], [0.6, 0.62, 0.66], 1);
+  }
   function mElementarycharge(scene) { // 基本电荷 e（油滴仪）
     addBox(scene, [-1.9, 0, 0], [0.25, 0.9, 0.9], [0.6, 0.62, 0.66], 1);
     addBox(scene, [1.9, 0, 0], [0.25, 0.9, 0.9], [0.6, 0.62, 0.66], 1);
@@ -4592,6 +4734,23 @@
     bohrmagneton: { title: "玻尔磁子 μ_B（1913）", radius: 6, build: mBohrmagneton },
     parity: { title: "宇称不守恒（吴健雄, 1957）", radius: 6, build: mParity },
     nuclearmagneton: { title: "核磁子 μ_N（1930s）", radius: 6, build: mNuclearmagneton },
+    piezoelectric: { title: "压电系数 d₃₃", radius: 6, build: mPiezoelectric },
+    thermalexpansion: { title: "线膨胀系数 α", radius: 6, build: mThermalexpansion },
+    solarconstant: { title: "太阳常数 S☉", radius: 6, build: mSolarconstant },
+    protonradius: { title: "质子电荷半径 r_p", radius: 6, build: mProtonradius },
+    geomagnetic: { title: "地磁场 B", radius: 6, build: mGeomagnetic },
+    escapevelocity: { title: "地球逃逸速度 v_esc", radius: 6, build: mEscapevelocity },
+    solarluminosity: { title: "太阳光度 L☉", radius: 6, build: mSolarluminosity },
+    keplerthird: { title: "开普勒第三定律", radius: 6, build: mKeplerthird },
+    titiusbode: { title: "提丢斯-波得定则", radius: 6, build: mTitiusbode },
+    richter: { title: "里氏震级 M_L", radius: 6, build: mRichter },
+    shearmodulus: { title: "剪切模量 G", radius: 6, build: mShearmodulus },
+    bulkmodulus: { title: "体积模量 K", radius: 6, build: mBulkmodulus },
+    poissonratio: { title: "泊松比 ν", radius: 6, build: mPoissonratio },
+    magneticsusceptibility: { title: "体积磁化率 χ_v", radius: 6, build: mMagneticsusceptibility },
+    shapiro: { title: "夏皮罗时延 Δt", radius: 6, build: mShapiro },
+    meltingpoint: { title: "铁熔点 T_m", radius: 6, build: mMeltingpoint },
+
     elementarycharge: { title: "基本电荷 e（密立根, 1913）", radius: 6, build: mElementarycharge },
     newtong: { title: "引力常数 G（卡文迪许, 1798）", radius: 6, build: mNewtong },
     lightspeed: { title: "真空光速 c", radius: 6, build: mLightspeed },
