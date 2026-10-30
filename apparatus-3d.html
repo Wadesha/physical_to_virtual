@@ -2173,6 +2173,96 @@
     addSphere(scene, [0, 1.0, 0], 0.35, [0.3, 0.6, 0.95], 0.6, 14, true);
     addBox(scene, [0, -1.6, 0], [0.7, 0.1, 0.7], [0.6, 0.62, 0.66], 1);
   }
+  function mCapacitance(scene) {  // 平行板电容测 ε₀
+    addBox(scene,[-1.2,0,0],[0.15,1.0,1.0],[0.5,0.55,0.62],1);
+    addBox(scene,[1.2,0,0],[0.15,1.0,1.0],[0.5,0.55,0.62],1);
+    addBox(scene,[0,0,0],[0.05,0.35,0.35],[0.9,0.8,0.4],0.3);
+    var cp=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(cp,[-1.0,0,0],[1.0,0,0]);
+  }
+  function mInductance(scene) {  // 螺线管电感测 μ₀
+    addCylinder(scene,[-1.8,0,0],[1.8,0,0],0.45,[0.4,0.6,0.85],0.22,20,false);
+    addCylinder(scene,[-1.8,0,0],[1.8,0,0],0.18,[0.5,0.55,0.62],1,18,true);
+    var ind=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(ind,[-1.8,0.6,0],[1.8,0.6,0]);
+  }
+  function mFresnel(scene) {  // 菲涅耳双棱镜 λ
+    addBox(scene,[-1.4,0,0],[0.1,1.0,1.0],[0.6,0.62,0.66],1);
+    addBox(scene,[1.4,0,0],[0.1,1.0,1.0],[0.6,0.62,0.66],1);
+    addBox(scene,[0,0,0],[0.05,0.4,0.4],[0.9,0.8,0.4],0.3);
+    var fr=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(fr,[-1.4,0,0],[1.4,0,0]);
+  }
+  function mBirefringence(scene) {  // 石英双折射 Δn
+    addBox(scene,[-1.4,0,0],[0.1,0.9,0.9],[0.3,0.3,0.3],1);
+    addBox(scene,[0,0,0],[0.25,0.9,0.9],[0.9,0.8,0.4],0.3);
+    addBox(scene,[1.4,0,0],[0.1,0.9,0.9],[0.3,0.3,0.3],1);
+    var bi=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(bi,[-1.4,0,0],[1.4,0,0]);
+  }
+  function mOpticalrotation(scene) {  // 蔗糖比旋光度
+    addCylinder(scene,[-1.6,0,0],[1.6,0,0],0.4,[0.9,0.8,0.4],0.3,20,false);
+    addBox(scene,[-1.9,0,0],[0.1,0.9,0.9],[0.3,0.3,0.3],1);
+    addBox(scene,[1.9,0,0],[0.1,0.9,0.9],[0.3,0.3,0.3],1);
+    var op=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(op,[-1.9,0,0],[1.9,0,0]);
+  }
+  function mWiedemannfranz(scene) {  // 维德曼-弗朗茨
+    addCylinder(scene,[-1.8,0,0],[1.8,0,0],0.3,[0.5,0.55,0.62],1,18,false);
+    addBox(scene,[-2.0,0,0],[0.15,0.5,0.5],[0.9,0.4,0.4],1);
+    addBox(scene,[2.0,0,0],[0.15,0.5,0.5],[0.9,0.5,0.5],1);
+    var wf=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(wf,[-1.8,0.5,0],[1.8,0.5,0]);
+  }
+  function mPeltier(scene) {  // 珀尔帖系数
+    addBox(scene,[-1.2,0,0],[0.6,0.7,0.7],[0.5,0.55,0.62],1);
+    addBox(scene,[1.2,0,0],[0.6,0.7,0.7],[0.6,0.62,0.66],1);
+    addBox(scene,[0,0.9,0],[0.5,0.15,0.5],[0.9,0.4,0.4],0.3);
+    var pe=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(pe,[-1.2,0,0],[1.2,0,0]);
+  }
+  function mOsmoticpressure(scene) {  // 范特霍夫渗透压
+    addBox(scene,[0,0,0],[1.0,1.2,0.6],[0.4,0.6,0.85],0.3);
+    addBox(scene,[0,0,0],[0.08,1.2,0.6],[0.9,0.8,0.4],1);
+    var os=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(os,[-1.0,0,0],[1.0,0,0]);
+  }
+  function mDiffusion(scene) {  // 扩散系数
+    addBox(scene,[0,0,0],[1.4,0.6,0.6],[0.4,0.6,0.85],0.3);
+    addSphere(scene,[-0.6,0,0],0.18,[0.9,0.8,0.4],1,12,true);
+    addSphere(scene,[0.5,0,0],0.18,[0.9,0.8,0.4],1,12,true);
+    var df=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(df,[-1.4,0,0],[1.4,0,0]);
+  }
+  function mStokesdrag(scene) {  // 斯托克斯黏度
+    addCylinder(scene,[-0.4,-1.8,0],[0.4,1.8,0],0.5,[0.4,0.6,0.85],0.3,18,false);
+    addSphere(scene,[0,0,0],0.3,[0.9,0.8,0.4],1,12,true);
+    var st=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(st,[0,2.0,0],[0,-2.0,0]);
+  }
+  function mCapillaryrise(scene) {  // 毛细上升
+    addCylinder(scene,[0,-1.6,0],[0,1.4,0],0.18,[0.5,0.55,0.62],1,14,false);
+    addCylinder(scene,[0,-1.6,0],[0,0.6,0],0.1,[0.4,0.7,0.9],0.3,12,false);
+    addSphere(scene,[0,0.6,0],0.12,[0.9,0.8,0.4],1,12,true);
+    var ca=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(ca,[-0.3,1.6,0],[0.3,1.6,0]);
+  }
+  function mFreefall(scene) {  // 自由落体测 g
+    addSphere(scene,[0,0.6,0],0.35,[0.9,0.8,0.4],1,12,true);
+    addBox(scene,[0,-1.8,0],[1.2,0.15,1.2],[0.5,0.55,0.62],1);
+    var fl=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(fl,[-0.4,1.6,0],[0.4,1.6,0]);
+    var fl2=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(fl2,[0,1.6,0],[0,-1.6,0]);
+  }
+  function mLarmor(scene) {  // 拉莫尔进动
+    addSphere(scene,[0,0,0],0.4,[0.9,0.8,0.4],1,14,true);
+    addCylinder(scene,[-1.8,0,0],[1.8,0,0],0.12,[0.5,0.55,0.62],1,12,false);
+    var la=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(la,[-1.8,0.5,0],[1.8,0.5,0]);
+  }
+  function mRabiflopping(scene) {  // 拉比振荡
+    addSphere(scene,[0,0,0],0.3,[0.9,0.8,0.4],1,12,true);
+    addCylinder(scene,[-1.8,-0.5,0],[1.8,0.5,0],0.18,[0.4,0.7,0.9],0.3,16,false);
+    var rb=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(rb,[-1.8,0,0],[1.8,0,0]);
+  }
+  function mDecayrate(scene) {  // 放射性活度
+    addSphere(scene,[-1.2,0,0],0.35,[0.9,0.5,0.4],1,12,true);
+    addBox(scene,[1.4,0,0],[0.5,0.9,0.9],[0.5,0.55,0.62],1);
+    var dr=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(dr,[-0.85,0,0],[0.9,0,0]);
+  }
+  function mNuclearradius(scene) {  // 核半径系数
+    addSphere(scene,[0,0,0],0.5,[0.9,0.8,0.4],1,14,true);
+    addSphere(scene,[-1.5,0,0],0.12,[0.5,0.55,0.62],1,10,true);
+    addSphere(scene,[1.5,0,0],0.12,[0.5,0.55,0.62],1,10,true);
+    var nr=scene.addLine([1.0,0.85,0.3],1); scene.lineSeg(nr,[-1.6,0,0],[1.6,0,0]);
+  }
   function mJohnsonnoise(scene) {  // 约翰逊噪声 k_B（低噪测量链）
     addCylinder(scene, [-2.1, 0, 0], [-0.5, 0, 0], 0.05, [0.5,0.55,0.62], 1, 8, false);
     addCylinder(scene, [0.5, 0, 0], [2.1, 0, 0], 0.05, [0.5,0.55,0.62], 1, 8, false);
@@ -2737,6 +2827,23 @@
     magneticsusceptibility: { title: "体积磁化率 χ_v", radius: 6, build: mMagneticsusceptibility },
     shapiro: { title: "夏皮罗时延 Δt", radius: 6, build: mShapiro },
     johnsonnoise: { title: "约翰逊噪声 k_B", radius: 6, build: mJohnsonnoise },
+    capacitance: { title: "平行板电容测 ε₀", radius: 6, build: mCapacitance },
+    inductance: { title: "螺线管电感测 μ₀", radius: 6, build: mInductance },
+    fresnel: { title: "菲涅耳双棱镜 λ", radius: 6, build: mFresnel },
+    birefringence: { title: "石英双折射 Δn", radius: 6, build: mBirefringence },
+    opticalrotation: { title: "蔗糖比旋光度 [α]", radius: 6, build: mOpticalrotation },
+    wiedemannfranz: { title: "维德曼-弗朗茨 Lorenz 数", radius: 6, build: mWiedemannfranz },
+    peltier: { title: "珀尔帖系数 Π", radius: 6, build: mPeltier },
+    osmoticpressure: { title: "范特霍夫渗透压 RT", radius: 6, build: mOsmoticpressure },
+    diffusion: { title: "扩散系数 D（布朗位移）", radius: 6, build: mDiffusion },
+    stokesdrag: { title: "斯托克斯黏度 η（沉速法）", radius: 6, build: mStokesdrag },
+    capillaryrise: { title: "毛细上升测表面张力 γ", radius: 6, build: mCapillaryrise },
+    freefall: { title: "自由落体测 g", radius: 6, build: mFreefall },
+    larmor: { title: "拉莫尔进动 γ (e/2m)", radius: 6, build: mLarmor },
+    rabiflopping: { title: "拉比振荡偶极矩 d", radius: 6, build: mRabiflopping },
+    decayrate: { title: "放射性活度 λ（Cs-137）", radius: 6, build: mDecayrate },
+    nuclearradius: { title: "核半径系数 r₀", radius: 6, build: mNuclearradius },
+
     esr: { title: "电子自旋共振 g（DPPH）", radius: 6, build: mEsr },
     scintillator: { title: "NaI(Tl) 光产额", radius: 6, build: mScintillator },
     fourpointprobe: { title: "四探针硅片电阻率 ρ", radius: 6, build: mFourpointprobe },
@@ -4547,6 +4654,54 @@
       forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
       paper: '铁熔点 T_m≈1811 K（高温热电偶/光学高温计）', layer: 'L0(相变)→L4(加热/测温)→L7(相变温度→T_m)', conservation: '相平衡（熔化潜热）', defectsN: ['氧化', '纯度'] }),
 
+    capacitance: S({ key: 'capacitance', title: '平行板电容测 ε₀', thetaTrue: 8.854e-12, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 8.55e-12, fitHi: 9.16e-12,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '平行板电容器 C=ε₀A/d，由 C 对 A/d 的斜率定真空介电常数 ε₀=8.854×10⁻¹² F/m（麦克斯韦-罗莎方法）', layer: 'L0(电容)→L4(电容电桥/阻抗仪)→L7(C 对 A/d 斜率→ε₀)', conservation: 'C=ε₀A/d', defectsN: ['边缘场修正', '极板平行度'] }),
+    inductance: S({ key: 'inductance', title: '螺线管电感测 μ₀', thetaTrue: 1.2566e-06, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.213e-06, fitHi: 1.301e-06,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '单层螺线管 L=μ₀N²A/ℓ，由 L 对 N²A/ℓ 的斜率定真空磁导率 μ₀=4π×10⁻⁷ H/m', layer: 'L0(电磁感应)→L4(LCR 表)→L7(L 对 N²A/ℓ 斜率→μ₀)', conservation: 'L=μ₀N²A/ℓ', defectsN: ['漏磁', '绕组分布电容'] }),
+    fresnel: S({ key: 'fresnel', title: '菲涅耳双棱镜 λ', thetaTrue: 5.893e-07, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 5.687e-07, fitHi: 6.099e-07,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '菲涅耳双棱镜产生虚源干涉，条纹间距 β=λD/d，由 β 对 D/d 的斜率定钠 D 线 λ≈589.3 nm', layer: 'L0(双光束干涉)→L4(测距显微镜+平移台)→L7(β 对 D/d 斜率→λ)', conservation: 'β=λD/d', defectsN: ['虚源间距 d 标定', '成像离焦'] }),
+    birefringence: S({ key: 'birefringence', title: '石英双折射 Δn', thetaTrue: 0.00902, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 0.0087, fitHi: 0.00934,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '石英波片延迟量 δ=Δn·t，由延迟对厚度的斜率定双折射 Δn≈0.009（589 nm）', layer: 'L0(双折射)→L4(偏光干涉仪)→L7(δ 对 t 斜率→Δn)', conservation: 'δ=Δn·t', defectsN: ['光轴取向', '温度漂移'] }),
+    opticalrotation: S({ key: 'opticalrotation', title: '蔗糖比旋光度 [α]', thetaTrue: 66.5, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 64.2, fitHi: 68.8,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '旋光法测蔗糖比旋光度 [α]=α/(cℓ)≈66.5°·mL/(g·dm)（589 nm, 20°C）', layer: 'L0(旋光性)→L4(旋光仪+钠灯)→L7(α 对 cℓ 斜率→[α])', conservation: 'α=[α]·c·ℓ', defectsN: ['浓度标定', '糖纯度'] }),
+    wiedemannfranz: S({ key: 'wiedemannfranz', title: '维德曼-弗朗茨 Lorenz 数', thetaTrue: 2.44e-08, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 2.355e-08, fitHi: 2.525e-08,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '维德曼-弗朗茨定律 κ=LσT，由 κ 对 σT 的斜率定 Lorenz 数 L≈2.44×10⁻⁸ W·Ω·K⁻²', layer: 'L0(电子热/电输运)→L4(四探针+热流计)→L7(κ 对 σT 斜率→L)', conservation: 'κ=LσT', defectsN: ['声子贡献', '接触热阻'] }),
+    peltier: S({ key: 'peltier', title: '珀尔帖系数 Π', thetaTrue: 0.05, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 0.04825, fitHi: 0.05175,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '珀尔帖效应吸热率 dQ/dt=ΠI，由热流对电流的斜率定珀尔帖系数 Π≈0.05 V（Bi₂Te₃）', layer: 'L0(热电输运)→L4(恒流源+热流传感器)→L7(热流对 I 斜率→Π)', conservation: 'dQ/dt=ΠI', defectsN: ['焦耳热串扰', '热损失'] }),
+    osmoticpressure: S({ key: 'osmoticpressure', title: '范特霍夫渗透压 RT', thetaTrue: 2479.0, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 2392.0, fitHi: 2566.0,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '范特霍夫方程 Π=cRT，由渗透压对浓度的斜率定 RT≈2479 J/mol（25°C）', layer: 'L0(溶液依数性)→L4(渗透压计)→L7(Π 对 c 斜率→RT)', conservation: 'Π=cRT', defectsN: ['半透膜非理想', '温度控制'] }),
+    diffusion: S({ key: 'diffusion', title: '扩散系数 D（布朗位移）', thetaTrue: 3.2e-09, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 3.088e-09, fitHi: 3.312e-09,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '爱因斯坦关系 ⟨x²⟩=2Dt，由均方位移对时间的斜率定扩散系数 D≈1.6×10⁻⁹ m²/s（KMnO₄ 水溶液, 25°C）', layer: 'L0(布朗运动)→L4(显微镜追踪粒子)→L7(⟨x²⟩ 对 t 斜率→D)', conservation: '⟨x²⟩=2Dt', defectsN: ['对流扰动', '有限采样'] }),
+    stokesdrag: S({ key: 'stokesdrag', title: '斯托克斯黏度 η（沉速法）', thetaTrue: 0.001002, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 0.0009669, fitHi: 0.001037,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '斯托克斯定律 v_t=(2/9)(ρ_p−ρ_f)g r²/η，由终端沉速对 (ρ_p−ρ_f)g r² 的斜率定水的黏度 η≈1.002×10⁻³ Pa·s', layer: 'L0(黏滞阻力)→L4(沉降管+测速)→L7(v_t 对 (Δρ)g r² 斜率→η)', conservation: 'v_t=(2/9)(ρ_p−ρ_f)g r²/η', defectsN: ['管壁修正', '温度控制'] }),
+    capillaryrise: S({ key: 'capillaryrise', title: '毛细上升测表面张力 γ', thetaTrue: 0.0728, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 0.07025, fitHi: 0.07535,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '毛细上升 h=2γcosθ/(ρgr)，由上升高度对 1/r 的斜率定水的表面张力 γ≈0.0728 N/m（20°C）', layer: 'L0(表面张力)→L4(毛细管+测高)→L7(h 对 1/r 斜率→γ)', conservation: 'h=2γcosθ/(ρgr)', defectsN: ['接触角假设', '管径标定'] }),
+    freefall: S({ key: 'freefall', title: '自由落体测 g', thetaTrue: 9.80665, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 9.463, fitHi: 10.15,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '自由落体 2d=gt²，由落距对时间平方的斜率定重力加速度 g≈9.81 m/s²', layer: 'L0(匀加速)→L4(光栅计时/落塔)→L7(2d 对 t² 斜率→g)', conservation: '2d=gt²', defectsN: ['空气阻力', '触发延迟'] }),
+    larmor: S({ key: 'larmor', title: '拉莫尔进动 γ (e/2m)', thetaTrue: 176085900000.0, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 169900000000.0, fitHi: 182300000000.0,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '拉莫尔进动 ω_L=γB，γ=e/(2m_e)=1.760859×10¹¹ rad·s⁻¹·T⁻¹，由进动频率对磁场斜率定旋磁比', layer: 'L0(自旋进动)→L4(NMR/ESR 探头)→L7(ω_L 对 B 斜率→γ)', conservation: 'ω_L=γB', defectsN: ['退磁场', '非均匀场'] }),
+    rabiflopping: S({ key: 'rabiflopping', title: '拉比振荡偶极矩 d', thetaTrue: 1e-29, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 9.65e-30, fitHi: 1.035e-29,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '拉比振荡 Ω_R=dE/ħ，由共振拉比频率对 E/ħ 的斜率定跃迁偶极矩 d≈10⁻²⁹ C·m（如 Rb D1 线，Ramsey 2012 方法）', layer: 'L0(二能级共振)→L4(激光+原子束/囚禁离子)→L7(Ω_R 对 E/ħ 斜率→d)', conservation: 'Ω_R=dE/ħ', defectsN: ['激光强度标定', '失谐'] }),
+    decayrate: S({ key: 'decayrate', title: '放射性活度 λ（Cs-137）', thetaTrue: 7.27e-10, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 7.014e-10, fitHi: 7.526e-10,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '放射性活度 A=λN，由计数率对原子核数斜率定衰变常数 λ≈7.27×10⁻¹⁰ s⁻¹（Cs-137, T½=30.17 a）', layer: 'L0(指数衰变)→L4(探测器+定标器)→L7(A 对 N 斜率→λ)', conservation: 'A=λN', defectsN: ['探测器效率', '自吸收'] }),
+    nuclearradius: S({ key: 'nuclearradius', title: '核半径系数 r₀', thetaTrue: 1.2e-15, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.158e-15, fitHi: 1.242e-15,
+      forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
+      paper: '核半径 R=r₀A^{1/3}，r₀≈1.2 fm，由 R 对 A^{1/3} 的斜率定核半径系数', layer: 'L0(核密度近似常数)→L4(电子/μ子散射或镜像核)→L7(R 对 A^{1/3} 斜率→r₀)', conservation: 'R=r₀A^{1/3}', defectsN: ['表面弥散', '电荷分布展宽'] }),
     johnsonnoise: S({ key: 'johnsonnoise', title: '约翰逊噪声 k_B', thetaTrue: 1.380649e-23, xmin: 0, xmax: 1, nx: 12, nSample: 8, fitLo: 1.35e-23, fitHi: 1.42e-23,
       forward: function (t, x) { return t * x; }, defects: function (r) { return [rGauss(r, 0.015)]; },
       paper: '约翰逊-奈奎斯特噪声 ⟨V²⟩=4k_BTRΔf 用于 2019 SI 重定义玻尔兹曼常数 k_B=1.380649×10⁻²³ J/K（精确）', layer: 'L0(涨落-耗散)→L4(低噪放大+相关测量)→L7(噪声均方⟨V²⟩→k_B)', conservation: '⟨V²⟩=4k_BTRΔf', defectsN: ['放大器自身噪声', '带宽标定'] }),
@@ -4935,6 +5090,22 @@
     shapiro: { title: '夏皮罗时延 Δt', paper: '夏皮罗时延 Δt≈2.5×10⁻⁴ s（水星凌日雷达 1976 实测，广义相对论）', layer: 'L0(时空弯曲)→L4(雷达测距)→L7(时延→GM☉/c³)', conservation: 'Δt=(2GM☉/c³)·ln(...)', defects: ['太阳大气折射', '轨道要素'] },
     meltingpoint: { title: '铁熔点 T_m', paper: '铁熔点 T_m≈1811 K（高温热电偶/光学高温计）', layer: 'L0(相变)→L4(加热/测温)→L7(相变温度→T_m)', conservation: '相平衡（熔化潜热）', defects: ['氧化', '纯度'] },
 
+    capacitance: { title: '平行板电容测 ε₀', paper: '平行板电容器 C=ε₀A/d，由 C 对 A/d 的斜率定真空介电常数 ε₀=8.854×10⁻¹² F/m（麦克斯韦-罗莎方法）', layer: 'L0(电容)→L4(电容电桥/阻抗仪)→L7(C 对 A/d 斜率→ε₀)', conservation: 'C=ε₀A/d', defects: ['边缘场修正', '极板平行度'] },
+    inductance: { title: '螺线管电感测 μ₀', paper: '单层螺线管 L=μ₀N²A/ℓ，由 L 对 N²A/ℓ 的斜率定真空磁导率 μ₀=4π×10⁻⁷ H/m', layer: 'L0(电磁感应)→L4(LCR 表)→L7(L 对 N²A/ℓ 斜率→μ₀)', conservation: 'L=μ₀N²A/ℓ', defects: ['漏磁', '绕组分布电容'] },
+    fresnel: { title: '菲涅耳双棱镜 λ', paper: '菲涅耳双棱镜产生虚源干涉，条纹间距 β=λD/d，由 β 对 D/d 的斜率定钠 D 线 λ≈589.3 nm', layer: 'L0(双光束干涉)→L4(测距显微镜+平移台)→L7(β 对 D/d 斜率→λ)', conservation: 'β=λD/d', defects: ['虚源间距 d 标定', '成像离焦'] },
+    birefringence: { title: '石英双折射 Δn', paper: '石英波片延迟量 δ=Δn·t，由延迟对厚度的斜率定双折射 Δn≈0.009（589 nm）', layer: 'L0(双折射)→L4(偏光干涉仪)→L7(δ 对 t 斜率→Δn)', conservation: 'δ=Δn·t', defects: ['光轴取向', '温度漂移'] },
+    opticalrotation: { title: '蔗糖比旋光度 [α]', paper: '旋光法测蔗糖比旋光度 [α]=α/(cℓ)≈66.5°·mL/(g·dm)（589 nm, 20°C）', layer: 'L0(旋光性)→L4(旋光仪+钠灯)→L7(α 对 cℓ 斜率→[α])', conservation: 'α=[α]·c·ℓ', defects: ['浓度标定', '糖纯度'] },
+    wiedemannfranz: { title: '维德曼-弗朗茨 Lorenz 数', paper: '维德曼-弗朗茨定律 κ=LσT，由 κ 对 σT 的斜率定 Lorenz 数 L≈2.44×10⁻⁸ W·Ω·K⁻²', layer: 'L0(电子热/电输运)→L4(四探针+热流计)→L7(κ 对 σT 斜率→L)', conservation: 'κ=LσT', defects: ['声子贡献', '接触热阻'] },
+    peltier: { title: '珀尔帖系数 Π', paper: '珀尔帖效应吸热率 dQ/dt=ΠI，由热流对电流的斜率定珀尔帖系数 Π≈0.05 V（Bi₂Te₃）', layer: 'L0(热电输运)→L4(恒流源+热流传感器)→L7(热流对 I 斜率→Π)', conservation: 'dQ/dt=ΠI', defects: ['焦耳热串扰', '热损失'] },
+    osmoticpressure: { title: '范特霍夫渗透压 RT', paper: '范特霍夫方程 Π=cRT，由渗透压对浓度的斜率定 RT≈2479 J/mol（25°C）', layer: 'L0(溶液依数性)→L4(渗透压计)→L7(Π 对 c 斜率→RT)', conservation: 'Π=cRT', defects: ['半透膜非理想', '温度控制'] },
+    diffusion: { title: '扩散系数 D（布朗位移）', paper: '爱因斯坦关系 ⟨x²⟩=2Dt，由均方位移对时间的斜率定扩散系数 D≈1.6×10⁻⁹ m²/s（KMnO₄ 水溶液, 25°C）', layer: 'L0(布朗运动)→L4(显微镜追踪粒子)→L7(⟨x²⟩ 对 t 斜率→D)', conservation: '⟨x²⟩=2Dt', defects: ['对流扰动', '有限采样'] },
+    stokesdrag: { title: '斯托克斯黏度 η（沉速法）', paper: '斯托克斯定律 v_t=(2/9)(ρ_p−ρ_f)g r²/η，由终端沉速对 (ρ_p−ρ_f)g r² 的斜率定水的黏度 η≈1.002×10⁻³ Pa·s', layer: 'L0(黏滞阻力)→L4(沉降管+测速)→L7(v_t 对 (Δρ)g r² 斜率→η)', conservation: 'v_t=(2/9)(ρ_p−ρ_f)g r²/η', defects: ['管壁修正', '温度控制'] },
+    capillaryrise: { title: '毛细上升测表面张力 γ', paper: '毛细上升 h=2γcosθ/(ρgr)，由上升高度对 1/r 的斜率定水的表面张力 γ≈0.0728 N/m（20°C）', layer: 'L0(表面张力)→L4(毛细管+测高)→L7(h 对 1/r 斜率→γ)', conservation: 'h=2γcosθ/(ρgr)', defects: ['接触角假设', '管径标定'] },
+    freefall: { title: '自由落体测 g', paper: '自由落体 2d=gt²，由落距对时间平方的斜率定重力加速度 g≈9.81 m/s²', layer: 'L0(匀加速)→L4(光栅计时/落塔)→L7(2d 对 t² 斜率→g)', conservation: '2d=gt²', defects: ['空气阻力', '触发延迟'] },
+    larmor: { title: '拉莫尔进动 γ (e/2m)', paper: '拉莫尔进动 ω_L=γB，γ=e/(2m_e)=1.760859×10¹¹ rad·s⁻¹·T⁻¹，由进动频率对磁场斜率定旋磁比', layer: 'L0(自旋进动)→L4(NMR/ESR 探头)→L7(ω_L 对 B 斜率→γ)', conservation: 'ω_L=γB', defects: ['退磁场', '非均匀场'] },
+    rabiflopping: { title: '拉比振荡偶极矩 d', paper: '拉比振荡 Ω_R=dE/ħ，由共振拉比频率对 E/ħ 的斜率定跃迁偶极矩 d≈10⁻²⁹ C·m（如 Rb D1 线，Ramsey 2012 方法）', layer: 'L0(二能级共振)→L4(激光+原子束/囚禁离子)→L7(Ω_R 对 E/ħ 斜率→d)', conservation: 'Ω_R=dE/ħ', defects: ['激光强度标定', '失谐'] },
+    decayrate: { title: '放射性活度 λ（Cs-137）', paper: '放射性活度 A=λN，由计数率对原子核数斜率定衰变常数 λ≈7.27×10⁻¹⁰ s⁻¹（Cs-137, T½=30.17 a）', layer: 'L0(指数衰变)→L4(探测器+定标器)→L7(A 对 N 斜率→λ)', conservation: 'A=λN', defects: ['探测器效率', '自吸收'] },
+    nuclearradius: { title: '核半径系数 r₀', paper: '核半径 R=r₀A^{1/3}，r₀≈1.2 fm，由 R 对 A^{1/3} 的斜率定核半径系数', layer: 'L0(核密度近似常数)→L4(电子/μ子散射或镜像核)→L7(R 对 A^{1/3} 斜率→r₀)', conservation: 'R=r₀A^{1/3}', defects: ['表面弥散', '电荷分布展宽'] },
     johnsonnoise: { title: '约翰逊噪声 k_B', paper: '约翰逊-奈奎斯特噪声 ⟨V²⟩=4k_BTRΔf 用于 2019 SI 重定义玻尔兹曼常数 k_B=1.380649×10⁻²³ J/K（精确）', layer: 'L0(涨落-耗散)→L4(低噪放大+相关测量)→L7(噪声均方⟨V²⟩→k_B)', conservation: '⟨V²⟩=4k_BTRΔf', defects: ['放大器自身噪声', '带宽标定'] },
     esr: { title: '电子自旋共振 g（DPPH）', paper: 'X 波段 ESR 以 DPPH 为标样定 g≈2.0036（ISAC/EPR 常用标准物质）', layer: 'L0(自旋塞曼分裂)→L4(谐振腔+扫磁场 ESR 谱仪)→L7(共振频率∝磁场→g)', conservation: 'hν=gμ_B B', defects: ['磁场均匀性', '腔耦合失谐'] },
     scintillator: { title: 'NaI(Tl) 光产额', paper: 'NaI(Tl) 光产额约 3.8×10⁴ 光子/MeV（≈38 ph/keV，闪烁探测标准值）', layer: 'L0(电离→荧光)→L4(闪烁体+光电倍增管)→L7(光电子数∝沉积能量→产额)', conservation: 'N_γ = Y·E_dep', defects: ['非比例响应', '光收集效率'] },
@@ -5602,6 +5773,22 @@ var META = {
     chain:"高温加热铁并测相变温度，由潜热平衡定 T_m；氧化与纯度影响结果。",
     defects:["氧化","纯度"]},
 
+  capacitance:{paper:"平行板电容器 C=ε₀A/d，由 C 对 A/d 的斜率定真空介电常数 ε₀=8.854×10⁻¹² F/m（麦克斯韦-罗莎方法）", chain:"在不同正对面积 A、板间距 d 下测电容 C，由 C 对 A/d 的斜率反推 ε₀。", defects:["边缘场修正","极板平行度"]},
+  inductance:{paper:"单层螺线管 L=μ₀N²A/ℓ，由 L 对 N²A/ℓ 的斜率定真空磁导率 μ₀=4π×10⁻⁷ H/m", chain:"在不同匝数 N、截面积 A、长度 ℓ 下测电感 L，由 L 对 N²A/ℓ 的斜率反推 μ₀。", defects:["漏磁","绕组分布电容"]},
+  fresnel:{paper:"菲涅耳双棱镜产生虚源干涉，条纹间距 β=λD/d，由 β 对 D/d 的斜率定钠 D 线 λ≈589.3 nm", chain:"测不同屏距 D 下的条纹间距 β，由 β 对 D/d 的斜率反推钠 D 线波长 λ。", defects:["虚源间距 d 标定","成像离焦"]},
+  birefringence:{paper:"石英波片延迟量 δ=Δn·t，由延迟对厚度的斜率定双折射 Δn≈0.009（589 nm）", chain:"测不同厚度 t 石英片的相位延迟 δ，由 δ 对 t 的斜率反推双折射 Δn。", defects:["光轴取向","温度漂移"]},
+  opticalrotation:{paper:"旋光法测蔗糖比旋光度 [α]=α/(cℓ)≈66.5°·mL/(g·dm)（589 nm, 20°C）", chain:"测不同浓度 c、光程 ℓ 下的旋光角 α，由 α 对 cℓ 的斜率反推比旋光度 [α]。", defects:["浓度标定","糖纯度"]},
+  wiedemannfranz:{paper:"维德曼-弗朗茨定律 κ=LσT，由 κ 对 σT 的斜率定 Lorenz 数 L≈2.44×10⁻⁸ W·Ω·K⁻²", chain:"在同材料上测电导率 σ 与热导率 κ，由 κ 对 σT 的斜率反推 Lorenz 数 L。", defects:["声子贡献","接触热阻"]},
+  peltier:{paper:"珀尔帖效应吸热率 dQ/dt=ΠI，由热流对电流的斜率定珀尔帖系数 Π≈0.05 V（Bi₂Te₃）", chain:"在不同电流 I 下测接点吸热率 dQ/dt，由斜率反推珀尔帖系数 Π。", defects:["焦耳热串扰","热损失"]},
+  osmoticpressure:{paper:"范特霍夫方程 Π=cRT，由渗透压对浓度的斜率定 RT≈2479 J/mol（25°C）", chain:"测不同浓度 c 溶液的渗透压 Π，由 Π 对 c 的斜率反推 RT。", defects:["半透膜非理想","温度控制"]},
+  diffusion:{paper:"爱因斯坦关系 ⟨x²⟩=2Dt，由均方位移对时间的斜率定扩散系数 D≈1.6×10⁻⁹ m²/s（KMnO₄ 水溶液, 25°C）", chain:"追踪胶体粒子位移，取均方位移 ⟨x²⟩ 对观测时间 t 的斜率，反推 2D。", defects:["对流扰动","有限采样"]},
+  stokesdrag:{paper:"斯托克斯定律 v_t=(2/9)(ρ_p−ρ_f)g r²/η，由终端沉速对 (ρ_p−ρ_f)g r² 的斜率定水的黏度 η≈1.002×10⁻³ Pa·s", chain:"测不同半径 r、密度差 Δρ 小球的终端沉速 v_t，由斜率反推 η。", defects:["管壁修正","温度控制"]},
+  capillaryrise:{paper:"毛细上升 h=2γcosθ/(ρgr)，由上升高度对 1/r 的斜率定水的表面张力 γ≈0.0728 N/m（20°C）", chain:"测不同内径 r 毛细管中液面上升高度 h，由 h 对 1/r 的斜率反推 γ。", defects:["接触角假设","管径标定"]},
+  freefall:{paper:"自由落体 2d=gt²，由落距对时间平方的斜率定重力加速度 g≈9.81 m/s²", chain:"测不同释放时间 t 内的落距 d，由 2d 对 t² 的斜率反推 g。", defects:["空气阻力","触发延迟"]},
+  larmor:{paper:"拉莫尔进动 ω_L=γB，γ=e/(2m_e)=1.760859×10¹¹ rad·s⁻¹·T⁻¹，由进动频率对磁场斜率定旋磁比", chain:"在不同静磁场 B 下测自旋进动频率 ω_L，由斜率反推旋磁比 γ。", defects:["退磁场","非均匀场"]},
+  rabiflopping:{paper:"拉比振荡 Ω_R=dE/ħ，由共振拉比频率对 E/ħ 的斜率定跃迁偶极矩 d≈10⁻²⁹ C·m（如 Rb D1 线，Ramsey 2012 方法）", chain:"在不同驱动场强 E 下测二能级拉比频率 Ω_R，由 Ω_R 对 E/ħ 的斜率反推偶极矩 d。", defects:["激光强度标定","失谐"]},
+  decayrate:{paper:"放射性活度 A=λN，由计数率对原子核数斜率定衰变常数 λ≈7.27×10⁻¹⁰ s⁻¹（Cs-137, T½=30.17 a）", chain:"用已知活度的 Cs-137 源，由计数率 A 对原子核数 N 的斜率反推衰变常数 λ。", defects:["探测器效率","自吸收"]},
+  nuclearradius:{paper:"核半径 R=r₀A^{1/3}，r₀≈1.2 fm，由 R 对 A^{1/3} 的斜率定核半径系数", chain:"用不同核素测电荷半径 R 对质量数立方根 A^{1/3} 的斜率，反推 r₀。", defects:["表面弥散","电荷分布展宽"]},
   johnsonnoise:{paper:"约翰逊-奈奎斯特噪声 ⟨V²⟩=4k_BTRΔf 用于 2019 SI 重定义玻尔兹曼常数 k_B=1.380649×10⁻²³ J/K（精确）",
     chain:"在不同阻值 R 上测带宽 Δf 内的噪声电压均方 ⟨V²⟩，由 ⟨V²⟩=4k_BTRΔf 的比例系数反推 k_B。",
     defects:["放大器自身噪声","带宽标定"]},
@@ -5762,12 +5949,12 @@ var META = {
   // BEGIN DOMAIN DATA（由 _domain_update.py 生成；加装置后重跑即整体替换，勿手改本段）
   var DOMAIN_TREE = {
     "基本物理常数": ["planck","avogadro","boltzmann","bohrmagneton","nuclearmagneton","elementarycharge","newtong","lightspeed","neutronmass","deuteronmass","planckmass","vacuumpermittivity","vacuumpermeability","vacuumimpedance","gravityg","stdatm","earthradius","astronomicalunit","lightyear","solarmass","massenergy","electronmass","protonmass","gasconstant","atomicmass","hyperfine","finestructure","gyromagnetic"],
-    "力学与引力": ["alphag","micro","poundrebka","eotvos","foucaultpendulum","gravlens","cavendish","galileopendulum","torricelli","coulomb","stokes","mach","reynolds","bernoulli","escapevelocity","keplerthird","titiusbode","shapiro","gravityprobeb"],
-    "电磁学": ["radius","qsh","bragg","millikan","qhe","moseley","thomsoncrt","roentgen","faradayrot","hall","nmr","wheatstone","hertz","oersted","faraday","ampere","faradayconstant","ohm","thomsone","laue","protonradius","airbreakdown","copperresistivity"],
-    "光学与波": ["g2","olc","alphaconst","qed","transit","rydberg","debroglie","photoelectric","michelson","laser","davisson","fiber","debye","youngslit","fraunhofer","squid","cepheid","fabryperot","pockels","photomultiplier","fizeau","roemer","newtonprism","malus","newtonring","michelsonmorley","brewster","eddington","doppler","bradley","balmer","snell","rayleigh","kerr","solarluminosity","frequencycomb","brillouin","opticaltweezers","beerlambert","soundspeed"],
-    "热学与统计物理": ["perrin","brownian","joule","boyle","loschmidt","charles","stefanboltzmann","kelvin","weinberg","seebeck","debyetemp","criticalpoint","carnot","clausiusclapeyron","vanderwaals","johnsonnoise","specificheat","triplepoint","curietemp","thermalcond"],
-    "量子与原子分子": ["willow","katrin","colorcode","wboson","lhcb","rcs","bec","alphafold","prime","dna","compton","wien","rutherford","franckhertz","sterngerlach","raman","massspec","stark","josephson","aspect","zeeman","andersonpositron","sem","afm","teleport","maser","betatron","lamb","casimir","bohrradius","schrodinger","heisenberg","esr"],
-    "核与粒子物理": ["nif","collider","borexino","kamlandzen","neutronbottle","th229","higgsself","gw170817","pre","fermi","osc","cyclotron","cherenkov","chadwick","mossbauer","gm","cloud","bubble","neutrino","solarnu","geigermarsden","cockcroftwalton","curie","becquerel","sparkchamber","dirac","sn1987a","parity","scintillator","c14dating","neutronactivation"],
+    "力学与引力": ["alphag","micro","poundrebka","eotvos","foucaultpendulum","gravlens","cavendish","galileopendulum","torricelli","coulomb","stokes","mach","reynolds","bernoulli","escapevelocity","keplerthird","titiusbode","shapiro","stokesdrag","capillaryrise","freefall","gravityprobeb"],
+    "电磁学": ["radius","qsh","bragg","millikan","qhe","moseley","thomsoncrt","roentgen","faradayrot","hall","nmr","wheatstone","hertz","oersted","faraday","ampere","faradayconstant","ohm","thomsone","laue","protonradius","capacitance","inductance","airbreakdown","copperresistivity"],
+    "光学与波": ["g2","olc","alphaconst","qed","transit","rydberg","debroglie","photoelectric","michelson","laser","davisson","fiber","debye","youngslit","fraunhofer","squid","cepheid","fabryperot","pockels","photomultiplier","fizeau","roemer","newtonprism","malus","newtonring","michelsonmorley","brewster","eddington","doppler","bradley","balmer","snell","rayleigh","kerr","solarluminosity","fresnel","birefringence","opticalrotation","frequencycomb","brillouin","opticaltweezers","beerlambert","soundspeed"],
+    "热学与统计物理": ["perrin","brownian","joule","boyle","loschmidt","charles","stefanboltzmann","kelvin","weinberg","seebeck","debyetemp","criticalpoint","carnot","clausiusclapeyron","vanderwaals","johnsonnoise","wiedemannfranz","peltier","osmoticpressure","diffusion","specificheat","triplepoint","curietemp","thermalcond"],
+    "量子与原子分子": ["willow","katrin","colorcode","wboson","lhcb","rcs","bec","alphafold","prime","dna","compton","wien","rutherford","franckhertz","sterngerlach","raman","massspec","stark","josephson","aspect","zeeman","andersonpositron","sem","afm","teleport","maser","betatron","lamb","casimir","bohrradius","schrodinger","heisenberg","larmor","rabiflopping","esr"],
+    "核与粒子物理": ["nif","collider","borexino","kamlandzen","neutronbottle","th229","higgsself","gw170817","pre","fermi","osc","cyclotron","cherenkov","chadwick","mossbauer","gm","cloud","bubble","neutrino","solarnu","geigermarsden","cockcroftwalton","curie","becquerel","sparkchamber","dirac","sn1987a","parity","decayrate","nuclearradius","scintillator","c14dating","neutronactivation"],
     "天文与宇宙学": ["lz","desi","jwst","hubble","sgra","gw150914","wasp","nano","chirp","muon","hulsetaylor","cmb","bessel","chandrasekhar","bellpulsar","leavitt","schwarzschild","hawking","penzias","solarconstant"],
     "材料与凝聚态": ["perovskite","battery","magic","stm","supercon","transistor","gmr","superfluid","meissner","youngmodulus","onnes","bandgap","piezoelectric","thermalexpansion","shearmodulus","bulkmodulus","poissonratio","magneticsusceptibility","fourpointprobe","vickershardness","meltingpoint","surfacetension","dielectricwater"],
     "地球与行星科学": ["geomagnetic","richter","seismicrefraction","geothermalgradient","keeling"]
@@ -5968,6 +6155,22 @@ var META = {
     "magneticsusceptibility": "材料与凝聚态",
     "shapiro": "力学与引力",
     "johnsonnoise": "热学与统计物理",
+    "capacitance": "电磁学",
+    "inductance": "电磁学",
+    "fresnel": "光学与波",
+    "birefringence": "光学与波",
+    "opticalrotation": "光学与波",
+    "wiedemannfranz": "热学与统计物理",
+    "peltier": "热学与统计物理",
+    "osmoticpressure": "热学与统计物理",
+    "diffusion": "热学与统计物理",
+    "stokesdrag": "力学与引力",
+    "capillaryrise": "力学与引力",
+    "freefall": "力学与引力",
+    "larmor": "量子与原子分子",
+    "rabiflopping": "量子与原子分子",
+    "decayrate": "核与粒子物理",
+    "nuclearradius": "核与粒子物理",
     "esr": "量子与原子分子",
     "scintillator": "核与粒子物理",
     "fourpointprobe": "材料与凝聚态",
