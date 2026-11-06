@@ -9860,6 +9860,7 @@ var META = {
 /* p2v 装置图库 + 日间/夜间主题（自包含，注入于 </body> 前；index.html / apparatus-3d.html 共用）
    数据源：window.P2V_3D（装置表）+ window.META（出处/缺陷）+ window.P2V_SCHEMATICS（结构图 SVG）
    主题：两套完整配色与背景层次（光晕 + 网格），不只是换文字色；
+        默认日间（2026-11-06 用户反馈「还是黑的」后改），按钮或 ?theme=dark 可回夜间；
         516 张结构图 SVG 与 3D/图表 canvas 在日间模式统一翻成浅色图纸；
         图库顶栏与页面顶部各一个切换按钮，localStorage 持久化，?theme=light|dark 可直达。 */
 (function () {
@@ -9887,12 +9888,12 @@ var META = {
     "}",
     /* 日间：整套变量重定义 —— 底、面板、线条、文字、强调色、画板、遮罩全部换 */
     "html[data-p2v-theme=light]{",
-    "--bg:#eef3f9;--panel:#ffffff;--panel2:#e6edf6;--line:#c8d6e6;",
-    "--ink:#16222f;--dim:#5b6b80;--accent:#0b6fbd;--accent2:#0f8a5f;--good:#0f8a5f;",
+    "--bg:#f7f9fc;--panel:#ffffff;--panel2:#eef3f9;--line:#cbd8e8;",
+    "--ink:#0f1b2a;--dim:#55677d;--accent:#0b6fbd;--accent2:#0f8a5f;--good:#0f8a5f;",
     "--warn:#a8660a;--bad:#c0392b;",
-    "--p2v-g-bg:#f2f6fb;--p2v-g-bar:#ffffff;--p2v-g-panel:#ffffff;",
-    "--p2v-g-panel2:#e6edf6;--p2v-g-line:#c8d6e6;--p2v-g-ink:#16222f;",
-    "--p2v-g-dim:#5b6b80;--p2v-g-accent:#0b6fbd;--p2v-g-good:#0f8a5f;",
+    "--p2v-g-bg:#ffffff;--p2v-g-bar:#ffffff;--p2v-g-panel:#ffffff;",
+    "--p2v-g-panel2:#eef3f9;--p2v-g-line:#cbd8e8;--p2v-g-ink:#0f1b2a;",
+    "--p2v-g-dim:#55677d;--p2v-g-accent:#0b6fbd;--p2v-g-good:#0f8a5f;",
     "--p2v-g-canvas:#f7fafd;--p2v-g-overlay:rgba(24,38,56,.44);",
     "--p2v-glow1:rgba(11,111,189,.11);--p2v-glow2:rgba(15,138,95,.08);",
     "--p2v-grid:rgba(22,34,47,.04)",
@@ -9915,7 +9916,7 @@ var META = {
     "html[data-p2v-theme=light] .bar{background:#dfe8f3}",
     "html[data-p2v-theme=light] canvas{background:#0e1622}",
     "html[data-p2v-theme=light] .schWrap{background:#f7fafd}",
-    "html[data-p2v-theme=light] #p2vG .tile .im,html[data-p2v-theme=light] #p2vD .img{background:#f7fafd}",
+    "html[data-p2v-theme=light] #p2vG .tile .im,html[data-p2v-theme=light] #p2vD .img{background:#f7fafd;border:1px solid var(--p2v-g-line)}",
     /* 浅色图纸：invert 翻明暗、hue-rotate 把色相转回来，516 张插画与所有画布无需重绘 */
     "html[data-p2v-theme=light] #p2vG .tile .im svg,",
     "html[data-p2v-theme=light] #p2vD .img svg,",
@@ -9926,6 +9927,7 @@ var META = {
     "color:var(--p2v-g-ink);padding:6px 12px;border-radius:6px;cursor:pointer;",
     "font-size:13px;white-space:nowrap;letter-spacing:.2px}",
     ".p2v-theme-btn:hover{border-color:var(--p2v-g-accent);color:var(--p2v-g-accent)}",
+    "#p2vG .gbar .p2v-theme-btn{border-color:var(--p2v-g-accent);color:var(--p2v-g-accent);font-weight:600}",
     ".p2v-theme-btn.floating{position:absolute;right:20px;top:18px;z-index:5}",
     ".p2v-reopen{position:fixed;right:16px;bottom:16px;z-index:9997;display:none;padding:9px 15px;border-radius:8px}",
     "html[data-p2v-theme=light] .p2v-theme-btn{box-shadow:0 2px 8px rgba(22,34,47,.08)}"
@@ -9991,16 +9993,18 @@ var META = {
     var q = /[?&]theme=(light|dark)\b/.exec(loc.search || "");
     if (q) return q[1];
     var v = storeGet();
-    return (v === "light" || v === "dark") ? v : "dark";
+    return (v === "light" || v === "dark") ? v : "light";
   }
   function themeApply(v) {
     var root = document.documentElement;
     if (root && root.setAttribute) root.setAttribute("data-p2v-theme", v);
-    var label = v === "light" ? "夜间模式" : "日间模式";
+    var isLight = v === "light";
+    var label = isLight ? "当前日间 · 切换夜间" : "当前夜间 · 切换日间";
+    var target = isLight ? "夜间模式" : "日间模式";
     for (var i = 0; i < themeButtons.length; i++) {
       themeButtons[i].textContent = label;
-      themeButtons[i].title = "切换到" + label;
-      themeButtons[i].setAttribute("aria-label", "切换到" + label);
+      themeButtons[i].title = "切换到" + target;
+      themeButtons[i].setAttribute("aria-label", "切换到" + target);
     }
     storeSet(v);
   }
@@ -10041,7 +10045,7 @@ var META = {
     '<span class="cnt">共 <b id="p2vCount">0</b> 台 · 点击贴片看结构详情</span>' +
     '<span class="sp"></span>' +
     '<input id="p2vSearch" placeholder="搜索装置标题…" autocomplete="off">' +
-    '<button class="p2v-theme-btn" type="button" id="p2vTheme">日间模式</button>' +
+    '<button class="p2v-theme-btn" type="button" id="p2vTheme">当前日间 · 切换夜间</button>' +
     '<button class="gbtn" id="p2vHide">进入完整页面</button>' +
     '</div>' +
     '<div class="ggrid" id="p2vGrid"></div>';
@@ -10148,6 +10152,7 @@ var META = {
     ov.style.display = "none"; det.classList.remove("on"); showReopen();
   });
 })();
+
 
 
 //__P2V_GALLERY_END__
