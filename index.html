@@ -9857,10 +9857,13 @@ var META = {
 <!-- p2v-meta:end -->
 <!-- p2v-gallery:start -->
 <script>
-/* p2v 装置图库：10 列轴测贴片 + 点击看详情（自包含，不依赖兄弟文件）
-   数据源：window.P2V_3D（装置表/META）+ window.P2V_SCHEMATICS（结构图 SVG）
-   两个页面（index.html / apparatus-3d.html）共用本块，注入于 </body> 前。 */
+/* p2v 装置图库 + 日间/夜间主题（自包含，注入于 </body> 前；index.html / apparatus-3d.html 共用）
+   数据源：window.P2V_3D（装置表）+ window.META（出处/缺陷）+ window.P2V_SCHEMATICS（结构图 SVG）
+   主题：两套完整配色与背景层次（光晕 + 网格），不只是换文字色；
+        516 张结构图 SVG 与 3D/图表 canvas 在日间模式统一翻成浅色图纸；
+        图库顶栏与页面顶部各一个切换按钮，localStorage 持久化，?theme=light|dark 可直达。 */
 (function () {
+  "use strict";
   function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
   var D3 = window.P2V_3D || {};
   var MODELS = D3.models || {};
@@ -9871,51 +9874,144 @@ var META = {
     LIST = Object.keys(SCH).map(function (k) { return { key: k, title: (MODELS[k] && MODELS[k].title) || k }; });
   }
 
-  /* ── 样式 ── */
+  /* ══════════ 主题层：两套配色 + 大规模背景层次 ══════════ */
+  var themeCSS = [
+    /* 夜间（默认）：沿用两页原有变量，另给背景加极淡的双光晕与 32px 网格 */
+    ":root{",
+    "--p2v-g-bg:var(--bg);--p2v-g-bar:#10161f;--p2v-g-panel:var(--panel);",
+    "--p2v-g-panel2:var(--panel2);--p2v-g-line:var(--line);--p2v-g-ink:var(--ink);",
+    "--p2v-g-dim:var(--dim);--p2v-g-accent:var(--accent);--p2v-g-good:#34d399;",
+    "--p2v-g-canvas:#0a0e14;--p2v-g-overlay:rgba(4,7,11,.84);",
+    "--p2v-glow1:rgba(56,189,248,.07);--p2v-glow2:rgba(52,211,153,.05);",
+    "--p2v-grid:rgba(255,255,255,.022)",
+    "}",
+    /* 日间：整套变量重定义 —— 底、面板、线条、文字、强调色、画板、遮罩全部换 */
+    "html[data-p2v-theme=light]{",
+    "--bg:#eef3f9;--panel:#ffffff;--panel2:#e6edf6;--line:#c8d6e6;",
+    "--ink:#16222f;--dim:#5b6b80;--accent:#0b6fbd;--accent2:#0f8a5f;--good:#0f8a5f;",
+    "--warn:#a8660a;--bad:#c0392b;",
+    "--p2v-g-bg:#f2f6fb;--p2v-g-bar:#ffffff;--p2v-g-panel:#ffffff;",
+    "--p2v-g-panel2:#e6edf6;--p2v-g-line:#c8d6e6;--p2v-g-ink:#16222f;",
+    "--p2v-g-dim:#5b6b80;--p2v-g-accent:#0b6fbd;--p2v-g-good:#0f8a5f;",
+    "--p2v-g-canvas:#f7fafd;--p2v-g-overlay:rgba(24,38,56,.44);",
+    "--p2v-glow1:rgba(11,111,189,.11);--p2v-glow2:rgba(15,138,95,.08);",
+    "--p2v-grid:rgba(22,34,47,.04)",
+    "}",
+    /* 背景层次：body 与全屏图库共用同一套光晕/网格，切换主题时整体换底 */
+    "body,#p2vG{",
+    "background-color:var(--bg);",
+    "background-image:radial-gradient(1100px 620px at 8% -12%,var(--p2v-glow1),transparent 70%),",
+    "radial-gradient(900px 520px at 94% 0%,var(--p2v-glow2),transparent 72%),",
+    "linear-gradient(var(--p2v-grid) 1px,transparent 1px),",
+    "linear-gradient(90deg,var(--p2v-grid) 1px,transparent 1px);",
+    "background-size:auto,auto,32px 32px,32px 32px;",
+    "background-attachment:fixed,fixed,fixed,fixed",
+    "}",
+    /* 页面里原本写死的背景：顶栏渐变、3D 舞台、提示条、进度槽、画布、结构图容器 */
+    "header{position:relative}",
+    "html[data-p2v-theme=light] header{background:linear-gradient(180deg,#ffffff,#e9f0f8)}",
+    "html[data-p2v-theme=light] .stage{background:radial-gradient(circle at 50% 40%,#ffffff,#dbe6f2)}",
+    "html[data-p2v-theme=light] .hint{background:rgba(255,255,255,.82)}",
+    "html[data-p2v-theme=light] .bar{background:#dfe8f3}",
+    "html[data-p2v-theme=light] canvas{background:#0e1622}",
+    "html[data-p2v-theme=light] .schWrap{background:#f7fafd}",
+    "html[data-p2v-theme=light] #p2vG .tile .im,html[data-p2v-theme=light] #p2vD .img{background:#f7fafd}",
+    /* 浅色图纸：invert 翻明暗、hue-rotate 把色相转回来，516 张插画与所有画布无需重绘 */
+    "html[data-p2v-theme=light] #p2vG .tile .im svg,",
+    "html[data-p2v-theme=light] #p2vD .img svg,",
+    "html[data-p2v-theme=light] .schWrap svg,",
+    "html[data-p2v-theme=light] canvas{filter:invert(1) hue-rotate(180deg) saturate(.92)}",
+    /* 切换按钮：两处共用外观，随主题换色 */
+    ".p2v-theme-btn{background:var(--p2v-g-panel2);border:1px solid var(--p2v-g-line);",
+    "color:var(--p2v-g-ink);padding:6px 12px;border-radius:6px;cursor:pointer;",
+    "font-size:13px;white-space:nowrap;letter-spacing:.2px}",
+    ".p2v-theme-btn:hover{border-color:var(--p2v-g-accent);color:var(--p2v-g-accent)}",
+    ".p2v-theme-btn.floating{position:absolute;right:20px;top:18px;z-index:5}",
+    ".p2v-reopen{position:fixed;right:16px;bottom:16px;z-index:9997;display:none;padding:9px 15px;border-radius:8px}",
+    "html[data-p2v-theme=light] .p2v-theme-btn{box-shadow:0 2px 8px rgba(22,34,47,.08)}"
+  ];
+
+  /* ══════════ 图库层：颜色全部走主题变量 ══════════ */
   var css = [
-    "#p2vG{position:fixed;inset:0;z-index:9998;background:#0b0e13;overflow:auto;display:flex;flex-direction:column}",
-    "#p2vG .gbar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 18px;background:#10161f;border-bottom:1px solid #2a3442}",
+    "#p2vG{position:fixed;inset:0;z-index:9998;background-color:var(--p2v-g-bg);overflow:auto;display:flex;flex-direction:column}",
+    "#p2vG .gbar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 18px;background:var(--p2v-g-bar);border-bottom:1px solid var(--p2v-g-line)}",
     "#p2vG .gbar h1{margin:0;font-size:16px;letter-spacing:.4px}",
-    "#p2vG .cnt{color:#9fb0c0;font-size:12px}",
-    "#p2vG .cnt b{color:#38bdf8}",
+    "#p2vG .cnt{color:var(--p2v-g-dim);font-size:12px}",
+    "#p2vG .cnt b{color:var(--p2v-g-accent)}",
     "#p2vG .sp{flex:1}",
-    "#p2vG input{background:#1b232f;border:1px solid #2a3442;color:#e6edf3;padding:6px 11px;border-radius:6px;font-size:13px;width:200px}",
-    "#p2vG input:focus{outline:none;border-color:#38bdf8}",
-    "#p2vG .gbtn{background:#1b232f;border:1px solid #2a3442;color:#e6edf3;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:13px}",
-    "#p2vG .gbtn:hover{border-color:#38bdf8}",
+    "#p2vG input{background:var(--p2v-g-panel2);border:1px solid var(--p2v-g-line);color:var(--p2v-g-ink);padding:6px 11px;border-radius:6px;font-size:13px;width:200px}",
+    "#p2vG input:focus{outline:none;border-color:var(--p2v-g-accent)}",
+    "#p2vG .gbtn{background:var(--p2v-g-panel2);border:1px solid var(--p2v-g-line);color:var(--p2v-g-ink);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:13px}",
+    "#p2vG .gbtn:hover{border-color:var(--p2v-g-accent)}",
     "#p2vG .ggrid{display:grid;grid-template-columns:repeat(10,1fr);gap:10px;padding:16px 18px 40px}",
-    "#p2vG .tile{background:#141a23;border:1px solid #2a3442;border-radius:8px;padding:6px;cursor:pointer;display:flex;flex-direction:column;transition:border-color .12s,transform .12s}",
-    "#p2vG .tile:hover{border-color:#38bdf8;transform:translateY(-2px)}",
-    "#p2vG .tile .im{aspect-ratio:16/8;background:#0a0e14;border-radius:5px;overflow:hidden;display:flex;align-items:center;justify-content:center}",
+    "#p2vG .tile{background:var(--p2v-g-panel);border:1px solid var(--p2v-g-line);border-radius:8px;padding:6px;cursor:pointer;display:flex;flex-direction:column;transition:border-color .12s,transform .12s}",
+    "#p2vG .tile:hover{border-color:var(--p2v-g-accent);transform:translateY(-2px)}",
+    "#p2vG .tile .im{aspect-ratio:16/8;background:var(--p2v-g-canvas);border-radius:5px;overflow:hidden;display:flex;align-items:center;justify-content:center}",
     "#p2vG .tile .im svg{width:100%;height:100%;display:block}",
-    "#p2vG .tile .im .no{color:#5b6b7d;font-size:11px}",
-    "#p2vG .tile .lb{font-size:11px;color:#9fb0c0;margin-top:6px;line-height:1.35;height:3em;overflow:hidden}",
-    "#p2vG .tile .lb b{color:#e6edf3;font-weight:600}",
+    "#p2vG .tile .im .no{color:var(--p2v-g-dim);font-size:11px}",
+    "#p2vG .tile .lb{font-size:11px;color:var(--p2v-g-dim);margin-top:6px;line-height:1.35;height:3em;overflow:hidden}",
+    "#p2vG .tile .lb b{color:var(--p2v-g-ink);font-weight:600}",
     "@media(max-width:1180px){#p2vG .ggrid{grid-template-columns:repeat(6,1fr)}}",
     "@media(max-width:720px){#p2vG .ggrid{grid-template-columns:repeat(3,1fr)}#p2vG input{width:140px}}",
-    "#p2vD{position:fixed;inset:0;z-index:9999;background:rgba(4,7,11,.84);display:none;overflow:auto;padding:26px 16px}",
+    "#p2vD{position:fixed;inset:0;z-index:9999;background:var(--p2v-g-overlay);display:none;overflow:auto;padding:26px 16px}",
     "#p2vD.on{display:block}",
-    "#p2vD .box{max-width:1000px;margin:0 auto;background:#141a23;border:1px solid #2a3442;border-radius:12px;padding:22px 24px}",
-    "#p2vD .num{font-size:12px;color:#9fb0c0;letter-spacing:.5px}",
+    "#p2vD .box{max-width:1000px;margin:0 auto;background:var(--p2v-g-panel);border:1px solid var(--p2v-g-line);border-radius:12px;padding:22px 24px}",
+    "#p2vD .num{font-size:12px;color:var(--p2v-g-dim);letter-spacing:.5px}",
     "#p2vD h2{margin:2px 0 6px;font-size:20px}",
-    "#p2vD .paper{color:#38bdf8;font-size:13px;margin:0 0 12px;line-height:1.5}",
+    "#p2vD .paper{color:var(--p2v-g-accent);font-size:13px;margin:0 0 12px;line-height:1.5}",
     "#p2vD .row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}",
     "@media(max-width:760px){#p2vD .row{grid-template-columns:1fr}}",
-    "#p2vD .img{background:#0a0e14;border:1px solid #2a3442;border-radius:8px;padding:10px}",
+    "#p2vD .img{background:var(--p2v-g-canvas);border:1px solid var(--p2v-g-line);border-radius:8px;padding:10px}",
     "#p2vD .img svg{width:100%;height:auto;display:block}",
-    "#p2vD .img .cap{font-size:11px;color:#9fb0c0;margin-top:7px;text-align:center}",
+    "#p2vD .img .cap{font-size:11px;color:var(--p2v-g-dim);margin-top:7px;text-align:center}",
     "#p2vD .kv{font-size:13px;line-height:1.75;margin:8px 0}",
-    "#p2vD .kv b{color:#e6edf3}",
+    "#p2vD .kv b{color:var(--p2v-g-ink)}",
     "#p2vD .defects{margin:6px 0 0;padding-left:18px;font-size:13px;line-height:1.7}",
-    "#p2vD .defects li{color:#e6edf3}",
-    "#p2vD .src{font-size:12px;color:#9fb0c0;margin-top:12px;word-break:break-all}",
-    "#p2vD .src a{color:#38bdf8}",
+    "#p2vD .defects li{color:var(--p2v-g-ink)}",
+    "#p2vD .src{font-size:12px;color:var(--p2v-g-dim);margin-top:12px;word-break:break-all}",
+    "#p2vD .src a{color:var(--p2v-g-accent)}",
     "#p2vD .acts{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}",
-    "#p2vD .close{background:#1b232f;border:1px solid #2a3442;color:#e6edf3;padding:9px 18px;border-radius:7px;cursor:pointer;font-size:13px}",
-    "#p2vD .close:hover{border-color:#38bdf8}",
-    "#p2vD .close.primary{border-color:#34d399;color:#34d399}"
-  ].join("");
-  var st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
+    "#p2vD .close{background:var(--p2v-g-panel2);border:1px solid var(--p2v-g-line);color:var(--p2v-g-ink);padding:9px 18px;border-radius:7px;cursor:pointer;font-size:13px}",
+    "#p2vD .close:hover{border-color:var(--p2v-g-accent)}",
+    "#p2vD .close.primary{border-color:var(--p2v-g-good);color:var(--p2v-g-good)}"
+  ];
+  var st = document.createElement("style");
+  st.id = "p2vTheme";
+  st.textContent = themeCSS.join("") + css.join("");
+  document.head.appendChild(st);
+
+  /* ══════════ 主题状态：默认夜间，localStorage 持久化，?theme= 可直达 ══════════ */
+  var THEME_STORE = "p2v-theme";
+  var themeButtons = [];
+  function storeGet() { try { return localStorage.getItem(THEME_STORE); } catch (e) { return null; } }
+  function storeSet(v) { try { localStorage.setItem(THEME_STORE, v); } catch (e) { /* file:// 下可能禁用，忽略 */ } }
+  function themeInitial() {
+    var q = /[?&]theme=(light|dark)\b/.exec(window.location.search || "");
+    if (q) return q[1];
+    var v = storeGet();
+    return (v === "light" || v === "dark") ? v : "dark";
+  }
+  function themeApply(v) {
+    document.documentElement.setAttribute("data-p2v-theme", v);
+    var label = v === "light" ? "夜间模式" : "日间模式";
+    for (var i = 0; i < themeButtons.length; i++) {
+      themeButtons[i].textContent = label;
+      themeButtons[i].title = "切换到" + label;
+      themeButtons[i].setAttribute("aria-label", "切换到" + label);
+    }
+    storeSet(v);
+  }
+  function themeToggle() {
+    var cur = document.documentElement.getAttribute("data-p2v-theme") === "light" ? "light" : "dark";
+    themeApply(cur === "light" ? "dark" : "light");
+  }
+  function themeButton(cls, id) {
+    var b = document.createElement("button");
+    b.type = "button"; b.id = id; b.className = cls;
+    b.addEventListener("click", themeToggle);
+    themeButtons.push(b);
+    return b;
+  }
 
   /* ── 取第 which 张 SVG（0=剖面，1=轴测）并去固定尺寸 ── */
   function svgOf(key, which) {
@@ -9933,7 +10029,7 @@ var META = {
     return sv;
   }
 
-  /* ── 图库骨架 ── */
+  /* ── 图库骨架：顶栏放第一个主题按钮 ── */
   var ov = document.createElement("div"); ov.id = "p2vG";
   ov.innerHTML =
     '<div class="gbar">' +
@@ -9941,6 +10037,7 @@ var META = {
     '<span class="cnt">共 <b id="p2vCount">0</b> 台 · 点击贴片看结构详情</span>' +
     '<span class="sp"></span>' +
     '<input id="p2vSearch" placeholder="搜索装置标题…" autocomplete="off">' +
+    '<button class="p2v-theme-btn" type="button" id="p2vTheme">日间模式</button>' +
     '<button class="gbtn" id="p2vHide">进入完整页面</button>' +
     '</div>' +
     '<div class="ggrid" id="p2vGrid"></div>';
@@ -9948,6 +10045,18 @@ var META = {
   var det = document.createElement("div"); det.id = "p2vD";
   det.innerHTML = '<div class="box" id="p2vDBox"></div>';
   document.body.appendChild(det);
+
+  var gTheme = document.getElementById("p2vTheme");
+  gTheme.addEventListener("click", themeToggle);
+  themeButtons.push(gTheme);
+
+  /* 页面顶部（隐藏图库后仍可切换）：三维专页挂 .toolbar，主页挂 header 右上角 */
+  var topHost = document.querySelector(".toolbar") || document.querySelector("header");
+  if (topHost) {
+    var isHeader = topHost.tagName === "HEADER";
+    topHost.appendChild(themeButton("p2v-theme-btn" + (isHeader ? " floating" : ""), "p2vThemeTop"));
+  }
+  themeApply(themeInitial());
 
   /* ── 铺贴片 ── */
   var grid = document.getElementById("p2vGrid");
@@ -10022,8 +10131,9 @@ var META = {
 
   /* ── 进入完整页面 / 重新打开图库 ── */
   var reopen = document.createElement("button");
+  reopen.type = "button"; reopen.id = "p2vReopen";
+  reopen.className = "p2v-theme-btn p2v-reopen";
   reopen.textContent = "图库";
-  reopen.style.cssText = "position:fixed;right:16px;bottom:16px;z-index:9997;background:#1b232f;border:1px solid #2a3442;color:#e6edf3;padding:9px 15px;border-radius:8px;cursor:pointer;font-size:13px;display:none";
   document.body.appendChild(reopen);
   function showReopen() { reopen.style.display = "block"; }
   reopen.addEventListener("click", function () { ov.style.display = "flex"; reopen.style.display = "none"; });
@@ -10031,6 +10141,7 @@ var META = {
     ov.style.display = "none"; det.classList.remove("on"); showReopen();
   });
 })();
+
 //__P2V_GALLERY_END__
 </script>
 </body>
