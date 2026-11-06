@@ -9978,7 +9978,8 @@ var META = {
   var st = document.createElement("style");
   st.id = "p2vTheme";
   st.textContent = themeCSS.join("") + css.join("");
-  document.head.appendChild(st);
+  var styleHost = document.head || document.body;
+  if (styleHost && styleHost.appendChild) styleHost.appendChild(st);
 
   /* ══════════ 主题状态：默认夜间，localStorage 持久化，?theme= 可直达 ══════════ */
   var THEME_STORE = "p2v-theme";
@@ -9986,13 +9987,15 @@ var META = {
   function storeGet() { try { return localStorage.getItem(THEME_STORE); } catch (e) { return null; } }
   function storeSet(v) { try { localStorage.setItem(THEME_STORE, v); } catch (e) { /* file:// 下可能禁用，忽略 */ } }
   function themeInitial() {
-    var q = /[?&]theme=(light|dark)\b/.exec(window.location.search || "");
+    var loc = window.location || {};
+    var q = /[?&]theme=(light|dark)\b/.exec(loc.search || "");
     if (q) return q[1];
     var v = storeGet();
     return (v === "light" || v === "dark") ? v : "dark";
   }
   function themeApply(v) {
-    document.documentElement.setAttribute("data-p2v-theme", v);
+    var root = document.documentElement;
+    if (root && root.setAttribute) root.setAttribute("data-p2v-theme", v);
     var label = v === "light" ? "夜间模式" : "日间模式";
     for (var i = 0; i < themeButtons.length; i++) {
       themeButtons[i].textContent = label;
@@ -10002,7 +10005,8 @@ var META = {
     storeSet(v);
   }
   function themeToggle() {
-    var cur = document.documentElement.getAttribute("data-p2v-theme") === "light" ? "light" : "dark";
+    var root = document.documentElement;
+    var cur = (root && root.getAttribute && root.getAttribute("data-p2v-theme") === "light") ? "light" : "dark";
     themeApply(cur === "light" ? "dark" : "light");
   }
   function themeButton(cls, id) {
@@ -10019,7 +10023,7 @@ var META = {
     if (!s || !s.svg) return null;
     var host = document.createElement("div");
     host.innerHTML = s.svg;
-    var svs = host.querySelectorAll("svg");
+    var svs = host.querySelectorAll ? (host.querySelectorAll("svg") || []) : [];
     if (!svs.length) return null;
     var sv = which === 1 ? (svs[1] || svs[0]) : svs[0];
     sv.removeAttribute("width"); sv.removeAttribute("height");
@@ -10051,8 +10055,10 @@ var META = {
   themeButtons.push(gTheme);
 
   /* 页面顶部（隐藏图库后仍可切换）：三维专页挂 .toolbar，主页挂 header 右上角 */
-  var topHost = document.querySelector(".toolbar") || document.querySelector("header");
-  if (topHost) {
+  var topHost = document.querySelector
+    ? (document.querySelector(".toolbar") || document.querySelector("header"))
+    : null;
+  if (topHost && topHost.appendChild) {
     var isHeader = topHost.tagName === "HEADER";
     topHost.appendChild(themeButton("p2v-theme-btn" + (isHeader ? " floating" : ""), "p2vThemeTop"));
   }
@@ -10123,10 +10129,11 @@ var META = {
 
   /* ── 深链：#d=<序号> 直接打开某装置详情 ── */
   function openFromHash() {
-    var m = /#d=(\d+)/.exec(window.location.hash || "");
+    var h = (window.location && window.location.hash) || "";
+    var m = /#d=(\d+)/.exec(h);
     if (m) { var i = parseInt(m[1], 10); if (i >= 0 && i < LIST.length) openDetail(i); }
   }
-  window.addEventListener("hashchange", openFromHash);
+  if (window.addEventListener) window.addEventListener("hashchange", openFromHash);
   openFromHash();
 
   /* ── 进入完整页面 / 重新打开图库 ── */
@@ -10141,6 +10148,7 @@ var META = {
     ov.style.display = "none"; det.classList.remove("on"); showReopen();
   });
 })();
+
 
 //__P2V_GALLERY_END__
 </script>
